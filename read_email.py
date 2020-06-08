@@ -11,6 +11,14 @@ mail.login(u, p)
 mail.list()
 mail.select('inbox')
 
+n = 0
+return_code, messages = mail.search(None, '(UNSEEN)')
+if return_code == 'OK':
+    for num in messages[0].split():
+        n = n + 1
+
+print(f'You have {n} unread emails.')
+
 return_code, messages = mail.search(None, '(UNSEEN)')
 if return_code == 'OK':
     for num in messages[0].split():
@@ -36,5 +44,5 @@ if return_code == 'OK':
                         if get_user_input == 'Y' or get_user_input == 'y':
                             print(f'{msg}\n')
                         else:
-                            print(f'We respect your privacy, body of the email from {sender} '
+                            print(f'Privacy matters, body of the email from {sender} '
                                   'will not be displayed.\n')
