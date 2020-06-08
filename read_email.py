@@ -1,5 +1,5 @@
-import imaplib
 import email
+import imaplib
 import os
 from datetime import datetime, timedelta
 
@@ -31,5 +31,10 @@ if return_code == 'OK':
                         sender = (original_email['From'] + '\n').strip()
                         sub = (original_email['Subject'] + '\n').strip()
                         msg = (body.decode('utf-8')).strip()
-                        print(f"You have an email from {sender} at {receive} with subject '{sub}'\n"
-                              f"Below is the content:\n{msg}")
+                        print(f"You have an email from {sender} with subject '{sub}' {receive}")
+                        get_user_input = input('Enter Y/N to read the email:\n')
+                        if get_user_input == 'Y' or get_user_input == 'y':
+                            print(f'{msg}\n')
+                        else:
+                            print(f'We respect your privacy, body of the email from {sender} '
+                                  'will not be displayed.\n')
