@@ -2,6 +2,7 @@ import email
 import imaplib
 import os
 from datetime import datetime, timedelta
+import sys
 
 u = os.getenv('user')
 p = os.getenv('pass')
@@ -51,3 +52,11 @@ else:
                                 else:
                                     print(f'Privacy matters, body of the email from {sender} '
                                           'will not be displayed.\n')
+                                if i < n:
+                                    continue_confirmation = input('Enter Y/N to continue reading emails:\n')
+                                    if continue_confirmation == 'N':
+                                        sys.exit()
+                                    elif continue_confirmation == 'n':
+                                        sys.exit()
+                                    else:
+                                        pass
