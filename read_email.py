@@ -1,6 +1,7 @@
 import imaplib
 import email
 import os
+from datetime import datetime, timedelta
 
 u = os.getenv('user')
 p = os.getenv('pass')
@@ -18,6 +19,9 @@ if return_code == 'OK':
             if isinstance(response_part, tuple):
                 original_email = email.message_from_bytes(response_part[1])
                 raw_receive = (original_email['Received'].split(';')[-1]).strip()
+                received_pdt = (raw_receive.split(',')[-1].split('-')[0]).strip()
+                datetime_obj = datetime.strptime(received_pdt, "%d %b %Y %H:%M:%S") + timedelta(hours=2)
+                receive = (datetime_obj.strftime("on %A, %B %d, %Y at %I:%M %p CDT"))
                 raw_email = data[0][1]
                 raw_email_string = raw_email.decode('utf-8')
                 email_message = email.message_from_string(raw_email_string)
@@ -27,5 +31,5 @@ if return_code == 'OK':
                         sender = (original_email['From'] + '\n').strip()
                         sub = (original_email['Subject'] + '\n').strip()
                         msg = (body.decode('utf-8')).strip()
-                        print(f"You have an email from {sender} at {raw_receive} with subject '{sub}'\n"
+                        print(f"You have an email from {sender} at {receive} with subject '{sub}'\n"
                               f"Below is the content:\n{msg}")
