@@ -17,13 +17,15 @@ if return_code == 'OK':
         for response_part in data:
             if isinstance(response_part, tuple):
                 original_email = email.message_from_bytes(response_part[1])
+                raw_receive = (original_email['Received'].split(';')[-1]).strip()
                 raw_email = data[0][1]
-                decoded_raw_email = raw_email.decode('utf-8')
-                email_message = email.message_from_string(decoded_raw_email)
+                raw_email_string = raw_email.decode('utf-8')
+                email_message = email.message_from_string(raw_email_string)
                 for part in email_message.walk():
                     if part.get_content_type() == "text/plain":  # ignore attachments/html
                         body = part.get_payload(decode=True)
-                        sender = (original_email['From'] + '\n')
-                        sub = (original_email['Subject'] + '\n')
-                        msg = (body.decode('utf-8'))
-                        print(msg)
+                        sender = (original_email['From'] + '\n').strip()
+                        sub = (original_email['Subject'] + '\n').strip()
+                        msg = (body.decode('utf-8')).strip()
+                        print(f"You have an email from {sender} at {raw_receive} with subject '{sub}'\n"
+                              f"Below is the content:\n{msg}")
