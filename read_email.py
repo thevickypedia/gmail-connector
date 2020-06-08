@@ -15,10 +15,15 @@ if return_code == 'OK':
     for num in messages[0].split():
         typ, data = mail.fetch(num, '(RFC822)')
         for response_part in data:
-            print(response_part)
             if isinstance(response_part, tuple):
-                original = email.message_from_bytes(response_part[1])
+                original_email = email.message_from_bytes(response_part[1])
                 raw_email = data[0][1]
-                raw_email_string = raw_email.decode('utf-8')
-                email_message = email.message_from_string(raw_email_string)
-                print(email_message)
+                decoded_raw_email = raw_email.decode('utf-8')
+                email_message = email.message_from_string(decoded_raw_email)
+                for part in email_message.walk():
+                    if part.get_content_type() == "text/plain":  # ignore attachments/html
+                        body = part.get_payload(decode=True)
+                        sender = (original_email['From'] + '\n')
+                        sub = (original_email['Subject'] + '\n')
+                        msg = (body.decode('utf-8'))
+                        print(msg)
