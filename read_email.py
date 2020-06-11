@@ -36,13 +36,14 @@ def main():
                         # generates the file names in a directory tree by walking the tree bottom-up
                         # it yields a 3-tuple (body, sender, subject).
                         for part in email_message.walk():
-                            """The 'if' condition below is important as parts onf an email includes
-                            text/html, multipart/alternative, text/plain and other attachments
-                            We choose only text/plain as it is the only code-friendly part
+                            """The 'if' condition below is important as parts of an email may include
+                            text/html, multipart/alternative, text/plain and other attachments.
+                            We choose only text/plain as it is the only code-friendly part of a multipart email.
                             Choosing text/html can make the output look messed up with unnecessary html tags
                             Choosing multipart/alternative leaves us with decoding errors
                             Though I have an exception handler to handle the decoding exceptions,
-                            if the condition below is removed the loop will keep running through all the parts"""
+                            if the condition below is removed the loop will keep running through all the parts within a 
+                            single email"""
                             if part.get_content_type() == "text/plain":  # ignore attachments/html/multipart/alternative
                                 # returns message's entire payload, a string or a message instance.
                                 # decode=true decodes the payload received.
@@ -78,6 +79,7 @@ if __name__ == '__main__':
     if return_code == 'OK':  # looks for "OK" in response
         for num in messages[0].split():
             n = n + 1  # add count of emails
+    # only executes the main part if the count of emails is > 1
     if n == 0:
         print('You have no unread emails')
     else:
