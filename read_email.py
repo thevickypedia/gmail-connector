@@ -26,9 +26,9 @@ def main():
                     if isinstance(response_part, tuple):  # checks for isinstance(__o, __t)
                         original_email = email.message_from_bytes(response_part[1])  # gets the rawest content
                         raw_receive = (original_email['Received'].split(';')[-1]).strip()  # gets raw received time
-                        received_pdt = (raw_receive.split(',')[-1].split('-')[0]).strip()  # extracts datetime part
                         # converts pdt to cdt
-                        datetime_obj = datetime.strptime(received_pdt, "%d %b %Y %H:%M:%S") + timedelta(hours=2)
+                        datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") + timedelta(
+                            hours=2)
                         receive = (datetime_obj.strftime("on %A, %B %d, %Y at %I:%M %p CDT"))  # formats datetime
                         raw_email = data[0][1]
                         raw_email_string = raw_email.decode('utf-8')  # decodes the raw email
@@ -79,8 +79,8 @@ if __name__ == '__main__':
     if return_code == 'OK':  # looks for "OK" in response
         for num in messages[0].split():
             n = n + 1  # add count of emails
-    # only executes the main part if the count of emails is > 1
+    # only executes the main part if the count of emails is > 0
     if n == 0:
-        print('You have no unread emails')
+        print('You have no unread emails.')
     else:
         main()
