@@ -1,16 +1,25 @@
 import email
 import imaplib
 import os
-import sys
 from datetime import datetime, timedelta
 
 u = os.getenv('user')
 p = os.getenv('pass')
+if not u or not p:
+    print('No environment variables found for username or password.\nSet user=username and pass=password to proceed.')
+    exit(0)
 
 mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to gmail using imaplib
-mail.login(u, p)  # login to your gmail account using the env variables
-mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
-mail.select('inbox')  # selects inbox from the list
+try:
+    mail.login(f'{u}@gmail.com', f'{p}')  # login to your gmail account using the env variables
+    mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
+    mail.select('inbox')  # selects inbox from the list
+except:
+    print('BUMMER! I was unable to read your emails.\n\nTroubleshooting Steps:\n'
+          '    1. Make sure your username and password are right.\n'
+          '    2. Logon to https://myaccount.google.com/lesssecureapps and turn ON access to less secure apps.\n'
+          '    3. If you have enabled 2 factor authentication, make sure you are using the App Password generated.')
+    exit(1)
 
 
 def main():
@@ -66,9 +75,9 @@ def main():
                                 if i < n:  # proceeds only if loop count is less than the number of unread emails
                                     continue_confirmation = input('Enter N/n to quit or any other key to continue:\n')
                                     if continue_confirmation == 'N':
-                                        sys.exit()
+                                        exit(0)
                                     elif continue_confirmation == 'n':
-                                        sys.exit()
+                                        exit(0)
                                     else:
                                         pass
 
