@@ -3,11 +3,13 @@ import imaplib
 import os
 from datetime import datetime, timedelta
 
-u = os.getenv('user')
-p = os.getenv('pass')
-if not u or not p:
+
+if not os.getenv('user') or not os.getenv('pass'):
     print('No environment variables found for username or password.\nSet user=username and pass=password to proceed.')
     exit(0)
+
+u = os.getenv('user')
+p = os.getenv('pass')
 
 mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to gmail using imaplib
 try:
@@ -16,7 +18,7 @@ try:
     mail.select('inbox')  # selects inbox from the list
 except:
     print('BUMMER! I was unable to read your emails.\n\nTroubleshooting Steps:\n'
-          '    1. Make sure your username and password are right.\n'
+          '    1. Make sure your username and password are correct.\n'
           '    2. Logon to https://myaccount.google.com/lesssecureapps and turn ON access to less secure apps.\n'
           '    3. If you have enabled 2 factor authentication, make sure you are using the App Password generated.')
     exit(1)
@@ -90,6 +92,6 @@ if __name__ == '__main__':
             n = n + 1  # add count of emails
     # only executes the main part if the count of emails is > 0
     if n == 0:
-        print('You have no unread emails.')
+        print(f'You have no unread emails. Account username: {u}')
     else:
         main()
