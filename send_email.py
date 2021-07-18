@@ -8,22 +8,20 @@ class Emailer:
 
     >>> Emailer
 
+        Args:
+            - gmail_user: Username to login to TLS.
+            - gmail_pass: Password to authenticate TLS session.
+            - recipient: Email address of the recipient to whom the email has to be sent.
+            - subject: Subject line of the email.
+            - attachment: Filename that has to be attached.
+            - body: Body of the email.
+            - sender: Email address of the sender. Defaults to gmail_user.
+
     """
 
     def __init__(self, gmail_user: str, gmail_pass: str, recipient: str, subject: str, attachment: str, body: str,
                  sender: str = None):
-        """Gathers all the necessary parameters to send an email.
-
-        Args:
-            gmail_user: Username to login to TLS.
-            gmail_pass: Password to authenticate TLS session.
-            recipient: Email address of the recipient to whom the email has to be sent.
-            subject: Subject line of the email.
-            attachment: Filename that has to be attached.
-            body: Body of the email.
-            sender: Email address of the sender. Defaults to gmail_user.
-
-        """
+        """Gathers all the necessary parameters to send an email."""
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
         self.recipient = recipient

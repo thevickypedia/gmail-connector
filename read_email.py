@@ -9,16 +9,14 @@ class Emailer:
 
     >>> Emailer
 
+        Args:
+            - gmail_user: Email address (GMAIL)
+            - gmail_pass: Login password
+
     """
 
     def __init__(self, gmail_user: str, gmail_pass: str):
-        """Gathers all the necessary parameters to read emails.
-
-        Args:
-            gmail_user: Email address (GMAIL)
-            gmail_pass: Login password
-
-        """
+        """Gathers all the necessary parameters to read emails."""
         self.mail = IMAP4_SSL('imap.gmail.com')  # connects to gmail using imaplib
         # noinspection PyBroadException
         try:
@@ -36,6 +34,7 @@ class Emailer:
         """Prints the number of emails and gets user confirmation before proceeding, press N/n to quit.
 
         Returns:
+            tuple:
             A tuple containing number of email messages, return code and the messages itself.
 
         """
@@ -49,7 +48,7 @@ class Emailer:
             exit(f'You have no unread emails. Account username: {self.username}')
         return n, return_code, messages
 
-    def read_email(self):
+    def read_email(self) -> None:
         """Prints unread emails one by one after getting user confirmation."""
         n, return_code, messages = self.main()
         user_ip = input(f'You have {n} unread emails. Press Y/y to continue:\n')
