@@ -1,8 +1,10 @@
 # Gmail Connector
 
-[Email Reader](read_email.py)
+[Send SMS](send_sms.py)
 
-[Email Sender](send_email.py)
+[Send Email](send_email.py)
+
+[Read Email](read_email.py)
 
 ### Pre-Commit
 `pip3 install pre-commit==2.13.0`

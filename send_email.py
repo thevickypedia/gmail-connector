@@ -13,28 +13,34 @@ class Emailer:
             - gmail_pass: Password to authenticate TLS session.
             - recipient: Email address of the recipient to whom the email has to be sent.
             - subject: Subject line of the email.
-            - attachment: Filename that has to be attached.
-            - body: Body of the email.
-            - sender: Email address of the sender. Defaults to gmail_user.
+            - attachment `[Optional]` : Filename that has to be attached.
+            - body `[Optional]` : Body of the email. Defaults to no body.
+            - sender `[Optional]` : Email address of the sender. Defaults to gmail_user.
 
     """
 
-    def __init__(self, gmail_user: str, gmail_pass: str, recipient: str, subject: str, attachment: str, body: str,
-                 sender: str = None):
+    def __init__(self, gmail_user: str, gmail_pass: str, recipient: str, subject: str,
+                 attachment: str = None, body: str = None, sender: str = None):
         """Gathers all the necessary parameters to send an email."""
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
         self.recipient = recipient
         self.subject = subject
         self.body = body
-        self.sender = f"PersonalCloud <{sender}>" if sender else f"PersonalCloud <{gmail_user}>"
+        self.sender = f"GmailConnector <{sender}>" if sender else f"GmailConnector <{gmail_user}>"
         self.attachment = attachment
+        self.server = SMTP('smtp.gmail.com')
+
+    def __del__(self):
+        """Destructor has been called to close the TLS connection and logout."""
+        print('Session will be closed and logged out.')
+        self.server.quit()
 
     def multipart_message(self) -> multipart.MIMEMultipart:
         """Creates a multipart message with the subject, body, from and to address, and attachment if passed.
 
         Returns:
-            multipart.MIMEMultipart:
+            `multipart.MIMEMultipart`:
             MIMEMultipart version of the created message.
 
         """
@@ -58,14 +64,13 @@ class Emailer:
         """Initiates a TLS connection and sends the email.
 
         Returns:
-            str:
+            `str`:
             Status of the email message.
 
         """
-        server = SMTP('smtp.gmail.com')
-        server.starttls()
+        self.server.starttls()
         try:
-            server.login(user=self.gmail_user, password=self.gmail_pass)
+            self.server.login(user=self.gmail_user, password=self.gmail_pass)
         except SMTPAuthenticationError:
             return "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
                    "Ensure the credentials stored in env vars are set correct.\n" \
@@ -75,11 +80,21 @@ class Emailer:
         except SMTPConnectError:
             return "Error during connection establishment with GMAIL server.\n"
 
-        server.sendmail(
+        self.server.sendmail(
             from_addr=self.sender,
             to_addrs=[self.recipient],
             msg=self.multipart_message().as_string()
         )
-        server.quit()
 
-        return f'Client information has been emailed to {self.recipient}'
+        return f'Email has been sent to {self.recipient}'
+
+
+if __name__ == '__main__':
+    from datetime import datetime
+    from os import environ
+
+    email_obj = Emailer(
+        gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'), recipient=environ.get('recipient'),
+        subject=datetime.now().strftime("%B %d, %Y %I:%M %p"), attachment=None, body=None, sender=None
+    )
+    print(email_obj.send_email())

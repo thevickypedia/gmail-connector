@@ -12,15 +12,14 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
 
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'Gmail Connector'
 copyright = '2021, Vignesh Sivanandha Rao'
 author = 'Vignesh Sivanandha Rao'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -44,16 +43,12 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 html_theme = 'classic'
-html_theme_options = {
-    "body_max_width": "80%"
-}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

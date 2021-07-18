@@ -10,15 +10,22 @@ Welcome to Gmail Connector's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-GmailConnector - Send Email
-===========================
+Send SMS
+========
+
+.. automodule:: send_sms
+   :members:
+   :undoc-members:
+
+Send Email
+==========
 
 .. automodule:: send_email
    :members:
    :undoc-members:
 
-GmailConnector - Read Email
-===========================
+Read Email
+==========
 
 .. automodule:: read_email
    :members:
