@@ -59,8 +59,8 @@ class Messenger:
 
 
 if __name__ == '__main__':
-    from os import environ
     from datetime import datetime
+    from os import environ
 
     messenger = Messenger(
         gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'),
