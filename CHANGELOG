@@ -10,3 +10,9 @@ Change Log
 0.0.15 (07/18/2021)
 -------------------
 - Update project description and README.md
+
+0.0.16 (07/19/2021)
+-------------------
+- Add module usage in description
+- Fix broken hyperlinks in README.md
+- Setup github actions for pypi publish

@@ -18,7 +18,7 @@ def read(name):
 
 setup(
     name='gmail-connector',
-    version='0.0.15',
+    version='0.0.16',
     description='Python module to, send SMS, emails and read unread emails.',
     long_description=read('README.md') + '\n\n' + read('CHANGELOG'),
     url='https://github.com/thevickypedia/gmail-connector',
