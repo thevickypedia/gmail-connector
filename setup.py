@@ -1,5 +1,8 @@
 from os import path
+
 from setuptools import setup
+
+from version import version_info
 
 classifiers = [
     'Development Status :: 5 - Production/Stable',
@@ -12,13 +15,13 @@ classifiers = [
 
 
 def read(name):
-    """https://pythonhosted.org/an_example_pypi_project/setuptools.html#setting-up-setup-py"""
+    """https://pythonhosted.org/an_example_pypi_project/setuptools.html#setting-up-setup-py - reference."""
     return open(path.join(path.dirname(__file__), name)).read()
 
 
 setup(
     name='gmail-connector',
-    version='0.0.16',
+    version='.'.join(str(c) for c in version_info),
     description='Python module to, send SMS, emails and read unread emails.',
     long_description=read('README.md') + '\n\n' + read('CHANGELOG'),
     url='https://github.com/thevickypedia/gmail-connector',
