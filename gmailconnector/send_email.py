@@ -3,19 +3,19 @@ from email.mime.application import MIMEApplication
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
 
-class Emailer:
+class SendEmail:
     """Initiates Emailer object to send an email to defined recipient from a defined sender with or without attachments.
 
-    >>> Emailer
+    >>> SendEmail
 
-        Args:
-            - gmail_user: Username to login to TLS.
-            - gmail_pass: Password to authenticate TLS session.
-            - recipient: Email address of the recipient to whom the email has to be sent.
-            - subject: Subject line of the email.
-            - attachment `[Optional]` : Filename that has to be attached.
-            - body `[Optional]` : Body of the email. Defaults to no body.
-            - sender `[Optional]` : Email address of the sender. Defaults to gmail_user.
+    Args:
+        - gmail_user: Username to login to TLS.
+        - gmail_pass: Password to authenticate TLS session.
+        - recipient: Email address of the recipient to whom the email has to be sent.
+        - subject: Subject line of the email.
+        - attachment [Optional] : Filename that has to be attached.
+        - body [Optional] : Body of the email. Defaults to no body.
+        - sender [Optional] : Email address of the sender. Defaults to gmail_user.
 
     """
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     from datetime import datetime
     from os import environ
 
-    email_obj = Emailer(
+    email_obj = SendEmail(
         gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'), recipient=environ.get('recipient'),
         subject=datetime.now().strftime("%B %d, %Y %I:%M %p"), attachment=None, body=None, sender=None
     )

@@ -1,0 +1,5 @@
+recursive-include gmailconnector *
+recursive-exclude venv *
+recursive-exclude docs *
+recursive-exclude doc_generator *
+exclude gen_docs.sh .gitignore .pre-commit-config.yaml

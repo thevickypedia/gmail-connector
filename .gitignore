@@ -1,4 +1,12 @@
+# python generated
 .idea
 venv
-_build
 __pycache__
+
+# sphinx documentation generator
+_build
+
+# pypi package
+build
+dist
+gmail_connector.egg-info

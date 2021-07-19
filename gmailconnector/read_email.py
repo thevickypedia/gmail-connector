@@ -4,14 +4,14 @@ from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
 
 
-class Emailer:
+class ReadEmail:
     """Initiates Emailer object to authenticate and print the unread emails.
 
-    >>> Emailer
+    >>> ReadEmail
 
-        Args:
-            - gmail_user: Email address (GMAIL)
-            - gmail_pass: Login password
+    Args:
+        - gmail_user: Email address (GMAIL)
+        - gmail_pass: Login password
 
     """
 
@@ -68,13 +68,11 @@ class Emailer:
             for response_part in data:
                 if isinstance(response_part, tuple):
                     original_email = message_from_bytes(response_part[1])  # gets the rawest content
-                    raw_receive = (original_email['Received'].split(';')[-1]).strip()  # gets raw received time
-                    if '(PDT)' in raw_receive:
-                        datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
-                                       + timedelta(hours=2)
-                    elif '(PST)' in raw_receive:
-                        datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
-                                       + timedelta(hours=2)
+                    date = (original_email['Received'].split(';')[-1]).strip()  # gets raw received time
+                    if '(PDT)' in date:
+                        datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") + timedelta(hours=2)
+                    elif '(PST)' in date:
+                        datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0800 (PST)") + timedelta(hours=2)
                     else:
                         datetime_obj = datetime.now()
                     receive = (datetime_obj.strftime("on %A, %B %d, %Y at %I:%M %p CT"))  # formats datetime
@@ -122,4 +120,4 @@ class Emailer:
 if __name__ == '__main__':
     from os import environ
 
-    Emailer(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass')).read_email()
+    ReadEmail(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass')).read_email()

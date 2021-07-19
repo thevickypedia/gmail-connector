@@ -6,12 +6,12 @@ class Messenger:
 
     >>> Messenger
 
-        Args:
-            - gmail_user: Gmail username to authenticate SMTP lib.
-            - gmail_pass: Gmail password to authenticate SMTP lib.
-            - phone_number: Phone number stored as env var.
-            - subject `[Optional]` : Subject line for the message. Defaults to "Message from GmailConnector"
-            - message: Content of the message.
+    Args:
+        - gmail_user: Gmail username to authenticate SMTP lib.
+        - gmail_pass: Gmail password to authenticate SMTP lib.
+        - phone_number: Phone number stored as env var.
+        - subject [Optional] : Subject line for the message. Defaults to "Message from GmailConnector"
+        - message: Content of the message.
     """
 
     def __init__(self, gmail_user: str, gmail_pass: str, phone_number: str, message: str,
