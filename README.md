@@ -44,20 +44,29 @@ print(messenger.send_sms())
 
 [Send Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py)
 ```python
-from pathlib import PurePath
 from gmailconnector.send_email import SendEmail
 
 email_obj = SendEmail(
         gmail_user='username@gmail.com',
         gmail_pass='<ACCOUNT_PASSWORD>',
         recipient='another_username@gmail.com',
-        subject='Howdy!',
-        attachment=PurePath(__file__).name,  # filename of the attachment
-        body='Attached is the code that generated this very email',
-        sender=None
+        subject='Howdy!'
     )
 print(email_obj.send_email())
 ```
+<details>
+<summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">SendEmail</a></strong></summary>
+
+###### Additional args:
+- **body:** Body of the email. Defaults to blank.
+- **attachment:** Filename that has to be attached.
+- **cc:** Email address of the recipient to whom the email has to be CC'd.
+- **bcc:** Email address of the recipient to whom the email has to be BCC'd.
+
+> Note: To send email to more than one recipient, wrap `recipient`/`cc`/`bcc` in a list.
+>
+> `recipient=['username1@gmail.com', 'username2@gmail.com']`
+</details>
 
 [Read Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py)
 ```python
