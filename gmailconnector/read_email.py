@@ -2,6 +2,11 @@ from datetime import datetime, timedelta
 from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
+from logging import INFO, basicConfig, getLogger
+from pathlib import PurePath
+
+basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s', level=INFO)
+logger = getLogger(PurePath(__file__).stem)
 
 
 class ReadEmail:
@@ -24,17 +29,19 @@ class ReadEmail:
             self.mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
             self.mail.select('inbox')  # selects inbox from the list
         except Exception:
-            exit('BUMMER! I was unable to read your emails.\n\nTroubleshooting Steps:\n'
-                 '    1. Make sure your username and password are correct.\n'
-                 '    2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n'
-                 '    3. If you have enabled 2 factor authentication, use thee App Password generated.')
+            self.mail = None
+            logger.error('BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n'
+                         '    1. Make sure your username and password are correct.\n'
+                         '    2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n'
+                         '    3. If you have enabled 2 factor authentication, use thee App Password generated.')
         self.username = gmail_user
 
     def __del__(self):
         """Destructor called to close the mailbox and logout."""
-        print('Session will be closed and logged out.')
-        self.mail.close()
-        self.mail.logout()
+        if self.mail:
+            logger.info('Session will be closed and logged out.')
+            self.mail.close()
+            self.mail.logout()
 
     def main(self) -> tuple:
         """Prints the number of emails and gets user confirmation before proceeding, press N/n to quit.
@@ -56,6 +63,9 @@ class ReadEmail:
 
     def read_email(self) -> None:
         """Prints unread emails one by one after getting user confirmation."""
+        if not self.mail:
+            return
+
         n, return_code, messages = self.main()
         user_ip = input(f'You have {n} unread emails. Press Y/y to continue:\n')
         if return_code != 'OK' or not (user_ip == 'Y' or user_ip == 'y'):  # proceeds only if user input is Y or y
@@ -107,10 +117,7 @@ class ReadEmail:
                                     msg = (body.decode('utf-8')).strip()  # decodes body of the email
                                     print(f'{msg}\n')
                                 except (UnicodeDecodeError, AttributeError):  # catches both the decoding errors
-                                    print('Unable to decode body of the email. Unicode/Attribute Error.')
-                            else:
-                                print(f'Privacy matters, body of the email from {sender} '
-                                      'will not be displayed.\n')
+                                    logger.error('Unable to decode body of the email. Unicode/Attribute Error.')
                             if i < n:  # proceeds only if loop count is less than the number of unread emails
                                 continue_confirmation = input('Enter N/n to quit, any other key to continue:\n')
                                 if continue_confirmation == 'N' or continue_confirmation == 'n':

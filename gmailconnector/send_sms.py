@@ -1,4 +1,9 @@
+from logging import INFO, basicConfig, getLogger
+from pathlib import PurePath
 from smtplib import SMTP
+
+basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s', level=INFO)
+logger = getLogger(PurePath(__file__).stem)
 
 
 class Messenger:
@@ -25,10 +30,10 @@ class Messenger:
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
-        print('Session will be closed and logged out.')
+        logger.info('Session will be closed and logged out.')
         self.server.close()
 
-    def send_sms(self) -> str:
+    def send_sms(self) -> None:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
 
         Raises:
@@ -41,10 +46,6 @@ class Messenger:
         Notes:
             Other flags that can be set includes `replace` and `xmlcharrefreplace`
 
-        Returns:
-            `str`:
-            Status of the SMS.
-
         """
         subject = "Message from GmailConnector" if not self.subject else self.subject
         body = self.message.encode('ascii', 'ignore').decode('ascii')
@@ -55,7 +56,7 @@ class Messenger:
         self.server.login(user=self.username, password=self.password)
         self.server.sendmail(self.username, to, message)
 
-        return f'SMS has been sent to {to}'
+        logger.info(f'SMS has been sent to {to}')
 
 
 if __name__ == '__main__':

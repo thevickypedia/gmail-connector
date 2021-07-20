@@ -1,6 +1,11 @@
 from email.mime import multipart, text
 from email.mime.application import MIMEApplication
+from logging import INFO, basicConfig, getLogger
+from pathlib import PurePath
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
+
+basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s', level=INFO)
+logger = getLogger(PurePath(__file__).stem)
 
 
 class SendEmail:
@@ -33,8 +38,9 @@ class SendEmail:
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
-        print('Session will be closed and logged out.')
-        self.server.quit()
+        if self.server:
+            logger.info('Session will be closed and logged out.')
+            self.server.quit()
 
     def multipart_message(self) -> multipart.MIMEMultipart:
         """Creates a multipart message with the subject, body, from and to address, and attachment if passed.
@@ -60,25 +66,23 @@ class SendEmail:
 
         return msg
 
-    def send_email(self) -> str:
-        """Initiates a TLS connection and sends the email.
-
-        Returns:
-            `str`:
-            Status of the email message.
-
-        """
+    def send_email(self) -> None:
+        """Initiates a TLS connection and sends the email."""
         self.server.starttls()
         try:
             self.server.login(user=self.gmail_user, password=self.gmail_pass)
         except SMTPAuthenticationError:
-            return "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
-                   "Ensure the credentials stored in env vars are set correct.\n" \
-                   "Logon to https://myaccount.google.com/lesssecureapps and turn ON access to less secure apps.\n" \
-                   "If 2 factor authentication is enabled, set `gmail_pass` to the generated App Password.\n" \
-                   "More info: https://support.google.com/mail/?p=BadCredentials\n"
+            self.server = None
+            logger.error("GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
+                         "Ensure the credentials stored in env vars are set correct.\n"
+                         "Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n"
+                         "If 2 factor authentication is enabled, set `gmail_pass` to the generated App Password.\n"
+                         "More info: https://support.google.com/mail/?p=BadCredentials")
+            return
         except SMTPConnectError:
-            return "Error during connection establishment with GMAIL server.\n"
+            self.server = None
+            logger.error("Error during connection establishment with GMAIL server.")
+            return
 
         self.server.sendmail(
             from_addr=self.sender,
@@ -86,7 +90,7 @@ class SendEmail:
             msg=self.multipart_message().as_string()
         )
 
-        return f'Email has been sent to {self.recipient}'
+        logger.info(f'Email has been sent to {self.recipient}')
 
 
 if __name__ == '__main__':

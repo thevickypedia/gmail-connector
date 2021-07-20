@@ -16,3 +16,13 @@ Change Log
 - Add module usage in description
 - Fix broken hyperlinks in README.md
 - Setup github actions for pypi publish
+
+0.0.17 (07/19/2021)
+-------------------
+- Bump version.
+- Supports github action to auto upload to pypi.
+
+0.0.18 (07/19/2021)
+-------------------
+- Add logger module.
+- Remove print statements.
