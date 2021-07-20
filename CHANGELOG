@@ -26,3 +26,12 @@ Change Log
 -------------------
 - Add logger module.
 - Remove print statements.
+
+0.1.9 (07/19/2021)
+-------------------
+- Allow users to add multiple recipients while sending email.
+- Add CC and BCC options.
+- Check if attachment file is available before trying to attach.
+- Wrap recipient, cc and bcc items in a single list before email kick off.
+- Remove sender arg and default to the user login email address.
+- Fix version number format.
