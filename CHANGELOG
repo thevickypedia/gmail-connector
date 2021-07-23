@@ -35,3 +35,10 @@ Change Log
 - Wrap recipient, cc and bcc items in a single list before email kick off.
 - Remove sender arg and default to the user login email address.
 - Fix version number format.
+
+0.2.0 (07/22/2021)
+-------------------
+- Return a dictionary element after sending an email/SMS.
+- Add status code and description to return dict.
+- Update docs and CHANGELOG
+- Bump version.

@@ -45,7 +45,7 @@ class SendEmail:
         """Destructor has been called to close the TLS connection and logout."""
         if self.server:
             logger.info('Session will be closed and logged out.')
-            self.server.quit()
+            self.server.close()
 
     def multipart_message(self) -> multipart.MIMEMultipart:
         """Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.
@@ -77,23 +77,39 @@ class SendEmail:
 
         return msg
 
-    def send_email(self) -> None:
-        """Initiates a TLS connection and sends the email."""
+    def send_email(self) -> dict:
+        """Initiates a TLS connection and sends the email.
+
+        Returns:
+            dict:
+            A dictionary with key-value pairs of ok: bool, status: int and body: str to the user.
+
+        """
         self.server.starttls()
         try:
             self.server.login(user=self.gmail_user, password=self.gmail_pass)
         except SMTPAuthenticationError:
             self.server = None
-            logger.error("GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
-                         "Ensure the credentials stored in env vars are set correct.\n"
-                         "Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n"
-                         "If 2 factor authentication is enabled, set `gmail_pass` to the generated App Password.\n"
-                         "More info: https://support.google.com/mail/?p=BadCredentials")
-            return
+            return_msg = "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
+                         "Ensure the credentials stored in env vars are set correct.\n" \
+                         "Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n" \
+                         "If 2 factor authentication is enabled, set `gmail_pass` to the generated App Password.\n" \
+                         "More info: https://support.google.com/mail/?p=BadCredentials"
+            logger.error(return_msg)
+            return {
+                'ok': False,
+                'status': 403,
+                'body': return_msg
+            }
         except SMTPConnectError:
             self.server = None
-            logger.error("Error during connection establishment with GMAIL server.")
-            return
+            return_msg = "Error during connection establishment with GMAIL server."
+            logger.error(return_msg)
+            return {
+                'ok': False,
+                'status': 503,
+                'body': return_msg
+            }
 
         to = self.recipient
         recipients = [to] if isinstance(to, str) else to
@@ -110,15 +126,30 @@ class SendEmail:
             msg=self.multipart_message().as_string()
         )
 
-        logger.info(f'Email has been sent to {self.recipient}')
+        return_msg = f'Email has been sent to {self.recipient}'
+        logger.info(return_msg)
+        return {
+            'ok': True,
+            'status': 200,
+            'body': return_msg
+        }
 
 
 if __name__ == '__main__':
     from datetime import datetime
+    from logging import disable
     from os import environ
 
-    email_obj = SendEmail(
+    disable()
+
+    response = SendEmail(
         gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'), recipient=environ.get('recipient'),
         subject=datetime.now().strftime("%B %d, %Y %I:%M %p")
-    )
-    print(email_obj.send_email())
+    ).send_email()
+
+    if response.get('ok') and response.get('status') == 200:
+        print('SUCCESS')
+    elif response.get('status') == 403:
+        print('AUTH ERROR')
+    elif response.get('status') == 503:
+        print('SERVICE UNAVAILABLE')

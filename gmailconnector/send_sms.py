@@ -33,7 +33,7 @@ class Messenger:
         logger.info('Session will be closed and logged out.')
         self.server.close()
 
-    def send_sms(self) -> None:
+    def send_sms(self) -> dict:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
 
         Raises:
@@ -46,6 +46,10 @@ class Messenger:
         Notes:
             Other flags that can be set includes `replace` and `xmlcharrefreplace`
 
+        Returns:
+            dict:
+            A dictionary with key-value pairs of ok: bool, status: int and body: str to the user.
+
         """
         subject = "Message from GmailConnector" if not self.subject else self.subject
         body = self.message.encode('ascii', 'ignore').decode('ascii')
@@ -56,15 +60,28 @@ class Messenger:
         self.server.login(user=self.username, password=self.password)
         self.server.sendmail(self.username, to, message)
 
-        logger.info(f'SMS has been sent to {to}')
+        return_msg = f'SMS has been sent to {to}'
+        logger.info(return_msg)
+        return {
+            'ok': True,
+            'status': 200,
+            'body': return_msg
+        }
 
 
 if __name__ == '__main__':
     from datetime import datetime
+    from logging import disable
     from os import environ
 
-    messenger = Messenger(
+    disable()
+
+    response = Messenger(
         gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'),
         phone_number=environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
-    )
-    print(messenger.send_sms())
+    ).send_sms()
+
+    if response.get('ok') and response.get('status') == 200:
+        print('SUCCESS')
+    else:
+        print('FAILED')
