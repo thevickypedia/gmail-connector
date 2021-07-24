@@ -1,12 +1,7 @@
 from email.mime import multipart, text
 from email.mime.application import MIMEApplication
-from logging import INFO, basicConfig, getLogger
 from os.path import isfile, realpath
-from pathlib import PurePath
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
-
-basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s', level=INFO)
-logger = getLogger(PurePath(__file__).stem)
 
 
 class SendEmail:
@@ -39,18 +34,18 @@ class SendEmail:
         self.body = body
         self.sender = f"GmailConnector <{gmail_user}>"
         self.attachment = attachment
+        self.file_not_available = None
         self.server = SMTP('smtp.gmail.com')
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
         if self.server:
-            logger.info('Session will be closed and logged out.')
             self.server.close()
 
     def multipart_message(self) -> multipart.MIMEMultipart:
         """Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.
 
-        Logs a message if a filename is given for attachment but not available at the right path.
+        Returns a message if a filename is given for attachment but not available at the given path.
 
         Returns:
             `multipart.MIMEMultipart`:
@@ -73,7 +68,7 @@ class SendEmail:
             attribute.add_header('Content-Disposition', 'attachment', filename=filename)
             msg.attach(payload=attribute)
         elif filename:
-            logger.warning(f"{filename} is unavailable at {realpath(filename='')}\nProceeding without the attachment.")
+            self.file_not_available = True
 
         return msg
 
@@ -91,11 +86,7 @@ class SendEmail:
         except SMTPAuthenticationError:
             self.server = None
             return_msg = "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
-                         "Ensure the credentials stored in env vars are set correct.\n" \
-                         "Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n" \
-                         "If 2 factor authentication is enabled, set `gmail_pass` to the generated App Password.\n" \
-                         "More info: https://support.google.com/mail/?p=BadCredentials"
-            logger.error(return_msg)
+                         "Ensure the credentials stored in env vars are set correct.\n"
             return {
                 'ok': False,
                 'status': 403,
@@ -104,7 +95,6 @@ class SendEmail:
         except SMTPConnectError:
             self.server = None
             return_msg = "Error during connection establishment with GMAIL server."
-            logger.error(return_msg)
             return {
                 'ok': False,
                 'status': 503,
@@ -127,20 +117,25 @@ class SendEmail:
         )
 
         return_msg = f'Email has been sent to {self.recipient}'
-        logger.info(return_msg)
-        return {
-            'ok': True,
-            'status': 200,
-            'body': return_msg
-        }
+
+        if self.file_not_available:
+            return {
+                'ok': True,
+                'status': 206,
+                'body': return_msg + f"\n{self.attachment} is unavailable at {realpath(filename='')}.\n"
+                                     f"Email was sent without an attachment."
+            }
+        else:
+            return {
+                'ok': True,
+                'status': 200,
+                'body': return_msg
+            }
 
 
 if __name__ == '__main__':
     from datetime import datetime
-    from logging import disable
     from os import environ
-
-    disable()
 
     response = SendEmail(
         gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'), recipient=environ.get('recipient'),

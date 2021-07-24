@@ -42,3 +42,10 @@ Change Log
 - Add status code and description to return dict.
 - Update docs and CHANGELOG
 - Bump version.
+
+0.2.1 (07/24/2021)
+-------------------
+- Remove logger module.
+- Add exception handlers for Messenger class.
+- Update docs and CHANGELOG
+- Bump version.

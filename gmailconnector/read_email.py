@@ -2,11 +2,6 @@ from datetime import datetime, timedelta
 from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
-from logging import INFO, basicConfig, getLogger
-from pathlib import PurePath
-
-basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s', level=INFO)
-logger = getLogger(PurePath(__file__).stem)
 
 
 class ReadEmail:
@@ -30,16 +25,11 @@ class ReadEmail:
             self.mail.select('inbox')  # selects inbox from the list
         except Exception:
             self.mail = None
-            logger.error('BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n'
-                         '    1. Make sure your username and password are correct.\n'
-                         '    2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n'
-                         '    3. If you have enabled 2 factor authentication, use thee App Password generated.')
         self.username = gmail_user
 
     def __del__(self):
         """Destructor called to close the mailbox and logout."""
         if self.mail:
-            logger.info('Session will be closed and logged out.')
             self.mail.close()
             self.mail.logout()
 
@@ -61,10 +51,18 @@ class ReadEmail:
             exit(f'You have no unread emails. Account username: {self.username}')
         return n, return_code, messages
 
-    def read_email(self) -> None:
+    def read_email(self) -> dict or None:
         """Prints unread emails one by one after getting user confirmation."""
         if not self.mail:
-            return
+            return_msg = 'BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n' \
+                         '\t1. Make sure your username and password are correct.\n' \
+                         '\t2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n' \
+                         '\t3. If you have enabled 2 factor authentication, use thee App Password generated.'
+            return {
+                'ok': False,
+                'status': 200,
+                'body': return_msg
+            }
 
         n, return_code, messages = self.main()
         user_ip = input(f'You have {n} unread emails. Press Y/y to continue:\n')
@@ -111,13 +109,13 @@ class ReadEmail:
                                 if original_email['Subject'] else None
                             print(f"You have an email from {sender} with subject '{sub}' {receive}")
                             #  gets user confirmation before printing the decoded body of the email
-                            get_user_input = input('Enter Y/N to read the email:\n')
-                            if get_user_input == 'Y' or get_user_input == 'y':
-                                try:
-                                    msg = (body.decode('utf-8')).strip()  # decodes body of the email
+                            try:
+                                msg = (body.decode('utf-8')).strip()  # decodes body of the email
+                                get_user_input = input('Enter Y/N to read the email:\n')
+                                if get_user_input == 'Y' or get_user_input == 'y':
                                     print(f'{msg}\n')
-                                except (UnicodeDecodeError, AttributeError):  # catches both the decoding errors
-                                    logger.error('Unable to decode body of the email. Unicode/Attribute Error.')
+                            except (UnicodeDecodeError, AttributeError):  # catches both the decoding errors
+                                continue
                             if i < n:  # proceeds only if loop count is less than the number of unread emails
                                 continue_confirmation = input('Enter N/n to quit, any other key to continue:\n')
                                 if continue_confirmation == 'N' or continue_confirmation == 'n':
@@ -127,4 +125,5 @@ class ReadEmail:
 if __name__ == '__main__':
     from os import environ
 
-    ReadEmail(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass')).read_email()
+    if response := ReadEmail(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass')).read_email():
+        print(response.get('body'))

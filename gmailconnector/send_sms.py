@@ -1,9 +1,4 @@
-from logging import INFO, basicConfig, getLogger
-from pathlib import PurePath
-from smtplib import SMTP
-
-basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s', level=INFO)
-logger = getLogger(PurePath(__file__).stem)
+from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
 
 class Messenger:
@@ -30,8 +25,8 @@ class Messenger:
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
-        logger.info('Session will be closed and logged out.')
-        self.server.close()
+        if self.server:
+            self.server.close()
 
     def send_sms(self) -> dict:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
@@ -57,11 +52,30 @@ class Messenger:
         message = (f"From: {self.username}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + body)
 
         self.server.starttls()
-        self.server.login(user=self.username, password=self.password)
+
+        try:
+            self.server.login(user=self.username, password=self.password)
+        except SMTPAuthenticationError:
+            self.server = None
+            return_msg = "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
+                         "Ensure the credentials stored in env vars are set correct.\n"
+            return {
+                'ok': False,
+                'status': 403,
+                'body': return_msg
+            }
+        except SMTPConnectError:
+            self.server = None
+            return_msg = "Error during connection establishment with GMAIL server."
+            return {
+                'ok': False,
+                'status': 503,
+                'body': return_msg
+            }
+
         self.server.sendmail(self.username, to, message)
 
         return_msg = f'SMS has been sent to {to}'
-        logger.info(return_msg)
         return {
             'ok': True,
             'status': 200,
@@ -71,10 +85,7 @@ class Messenger:
 
 if __name__ == '__main__':
     from datetime import datetime
-    from logging import disable
     from os import environ
-
-    disable()
 
     response = Messenger(
         gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'),
