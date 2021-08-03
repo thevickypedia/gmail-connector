@@ -60,7 +60,7 @@ class ReadEmail:
                          '\t3. If you have enabled 2 factor authentication, use thee App Password generated.'
             return {
                 'ok': False,
-                'status': 200,
+                'status': 401,
                 'body': return_msg
             }
 

@@ -89,7 +89,7 @@ class SendEmail:
                          "Ensure the credentials stored in env vars are set correct.\n"
             return {
                 'ok': False,
-                'status': 403,
+                'status': 401,
                 'body': return_msg
             }
         except SMTPConnectError:
