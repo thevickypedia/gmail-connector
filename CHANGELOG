@@ -53,3 +53,8 @@ Change Log
 0.2.2 (08/02/2021)
 ------------------
 - Fix incorrect HTTP return codes
+
+0.2.3 (08/11/2021)
+------------------
+- Add new lines to the message start to separate subject and body of the SMS
+- Update sphinx documentation to 4.1.2

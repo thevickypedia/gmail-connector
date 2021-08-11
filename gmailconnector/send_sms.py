@@ -20,7 +20,7 @@ class Messenger:
         self.password = gmail_pass
         self.phone_number = phone_number
         self.subject = subject
-        self.message = message
+        self.message = f'\n\n{message}'
         self.server = SMTP("smtp.gmail.com", 587)
 
     def __del__(self):
