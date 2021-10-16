@@ -8,7 +8,9 @@ Welcome to Gmail Connector's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Read Me:
+
+   README
 
 Send SMS
 ========

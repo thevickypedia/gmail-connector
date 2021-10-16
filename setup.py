@@ -24,6 +24,7 @@ setup(
     version='.'.join(str(c) for c in version_info),
     description='Python module to, send SMS, emails and read unread emails.',
     long_description=read('README.md') + '\n\n' + read('CHANGELOG'),
+    long_description_content_type='text/markdown',
     url='https://github.com/thevickypedia/gmail-connector',
     author='Vignesh Sivanandha Rao',
     author_email='svignesh1793@gmail.com',
@@ -31,5 +32,10 @@ setup(
     classifiers=classifiers,
     keywords='gmail, smtp, imap, tls',
     packages=['.gmailconnector'],
-    install_requires=['']
+    python_requires=">=3.8",
+    install_requires=[''],
+    project_urls={
+        'Docs': 'https://thevickypedia.github.io/gmail-connector',
+        'Bug Tracker': 'https://github.com/thevickypedia/gmail-connector/issues'
+    },
 )

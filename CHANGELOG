@@ -1,33 +1,133 @@
 Change Log
 ==========
 
-0.0.14 (07/18/2021)
--------------------
-- Delete broken releases
-- Modify and update CHANGELOG
-- Change URL for HomePage
+0.0.1 (06/07/2020)
+------------------
+- Initial commit
 
-0.0.15 (07/18/2021)
--------------------
-- Update project description and README.md
+0.0.2 (06/08/2020)
+------------------
+- read raw email
 
-0.0.16 (07/19/2021)
--------------------
-- Add module usage in description
-- Fix broken hyperlinks in README.md
-- Setup github actions for pypi publish
+0.0.3 (06/08/2020)
+------------------
+- decode raw email using email library
 
-0.0.17 (07/19/2021)
--------------------
-- Bump version.
-- Supports github action to auto upload to pypi.
+0.0.4 (06/08/2020)
+------------------
+- decode body of the email and display only text part
 
-0.0.18 (07/19/2021)
--------------------
-- Add logger module.
-- Remove print statements.
+0.0.5 (06/08/2020)
+------------------
+- added time when the email was received
 
-0.1.9 (07/19/2021)
+0.0.6 (06/08/2020)
+------------------
+- pdt to cdt
+
+0.0.7 (06/08/2020)
+------------------
+- user input condition to read email
+
+0.0.8 (06/08/2020)
+------------------
+- include number of unread emails on top
+
+0.0.9 (06/08/2020)
+------------------
+- get user input before showing any content
+
+0.1.0 (06/08/2020)
+------------------
+- get user input before reading multiple emails
+
+0.1.1 (06/08/2020)
+------------------
+- added comments
+
+0.1.2 (06/08/2020)
+------------------
+- improve coding standards
+
+0.1.3 (06/09/2020)
+------------------
+- improve coding standards
+
+0.1.4 (06/11/2020)
+------------------
+- fix typo
+
+0.1.5 (06/27/2020)
+------------------
+- modify date time type standards instead of using index values
+
+0.1.6 (06/27/2020)
+------------------
+- included exception handler
+
+0.1.7 (06/28/2020)
+------------------
+- look for env variables before failing
+
+0.1.8 (06/28/2020)
+------------------
+- add LICENSE
+
+0.1.9 (06/28/2020)
+------------------
+- update README.md
+
+0.2.0 (07/17/2021)
+------------------
+- Refactor read_email.py and add send_email.py
+- Add pre-commit for linting
+- Update README.md
+
+0.2.1 (07/17/2021)
+------------------
+- Onboard sphinx auto generated documentation
+
+0.2.2 (07/18/2021)
+------------------
+- Onboard send_sms.py and update docs
+
+0.2.3 (07/18/2021)
+------------------
+- Increase page width and update README.md
+
+0.2.4 (07/18/2021)
+------------------
+- Onboard `pypi` module
+- Add `setup.py`, `setup.cfg`, `__init__.py`, `CHANGELOG`
+- Update README.md and docs
+- Move files to `gmailconnector` support package
+
+0.2.5 (07/19/2021)
+------------------
+- Add badges
+- Update README.md and CHANGELOG
+- Bump version
+
+0.2.6 (07/19/2021)
+------------------
+- onboard docs.yml but only prints a statement
+
+0.2.7 (07/19/2021)
+------------------
+- auto upload to pypi when tagged a release version
+
+0.2.8 (07/19/2021)
+------------------
+- Bump version to support github action
+- Auto upload to pypi
+
+0.2.9 (07/19/2021)
+------------------
+- Add logging
+- Remove print statements
+- Bump version
+
+0.3.0 (07/19/2021)
 ------------------
 - Allow users to add multiple recipients while sending email.
 - Add CC and BCC options.
@@ -36,25 +136,32 @@ Change Log
 - Remove sender arg and default to the user login email address.
 - Fix version number format.
 
-0.2.0 (07/22/2021)
+0.3.1 (07/22/2021)
 ------------------
 - Return a dictionary element after sending an email/SMS.
 - Add status code and description to return dict.
 - Update docs and CHANGELOG
 - Bump version.
 
-0.2.1 (07/24/2021)
+0.3.2 (07/24/2021)
 ------------------
 - Remove logger module.
 - Add exception handlers for Messenger class.
 - Update docs and CHANGELOG
 - Bump version.
 
-0.2.2 (08/02/2021)
+0.3.3 (08/04/2021)
 ------------------
 - Fix incorrect HTTP return codes
 
-0.2.3 (08/11/2021)
+0.3.4 (08/11/2021)
 ------------------
 - Add new lines to the message start to separate subject and body of the SMS
 - Update sphinx documentation to 4.1.2
+
+0.3.5 (10/16/2021)
+------------------
+- Add project URLs and package requirements to pypi
+- Add markdown support to sphinx autodocs
+- Add a condition check for version upgrade
+- Update docs and changelog
