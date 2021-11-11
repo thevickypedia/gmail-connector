@@ -1,4 +1,11 @@
+from concurrent.futures import ThreadPoolExecutor
+from email import message_from_bytes
+from email.header import decode_header, make_header
+from imaplib import IMAP4_SSL
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
+from threading import Thread
+
+from gmailconnector.responder import Response
 
 
 class Messenger:
@@ -18,9 +25,10 @@ class Messenger:
                  subject: str = None):
         self.username = gmail_user
         self.password = gmail_pass
-        self.phone_number = phone_number
-        self.subject = subject
-        self.message = f'\n\n{message}'
+        self.mail = None
+        self.subject = "Message from GmailConnector" if not subject else subject
+        self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
+        self.to = f"{phone_number}@tmomail.net"
         self.server = SMTP("smtp.gmail.com", 587)
 
     def __del__(self):
@@ -28,7 +36,7 @@ class Messenger:
         if self.server:
             self.server.close()
 
-    def send_sms(self) -> dict:
+    def send_sms(self) -> Response:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
 
         Raises:
@@ -42,15 +50,10 @@ class Messenger:
             Other flags that can be set includes `replace` and `xmlcharrefreplace`
 
         Returns:
-            dict:
-            A dictionary with key-value pairs of ok: bool, status: int and body: str to the user.
-
+            Response:
+            A custom response class with properties: ok, status and body to the user.
         """
-        subject = "Message from GmailConnector" if not self.subject else self.subject
-        body = self.message.encode('ascii', 'ignore').decode('ascii')
-        to = f"{self.phone_number}@tmomail.net"
-        message = (f"From: {self.username}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + body)
-
+        message = (f"From: {self.username}\n" + f"To: {self.to}\n" + f"Subject: {self.subject}\n" + self.body)
         self.server.starttls()
 
         try:
@@ -59,28 +62,63 @@ class Messenger:
             self.server = None
             return_msg = "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
                          "Ensure the credentials stored in env vars are set correct.\n"
-            return {
+            return Response(dictionary={
                 'ok': False,
                 'status': 401,
                 'body': return_msg
-            }
+            })
         except SMTPConnectError:
             self.server = None
             return_msg = "Error during connection establishment with GMAIL server."
-            return {
+            return Response(dictionary={
                 'ok': False,
                 'status': 503,
                 'body': return_msg
-            }
+            })
 
-        self.server.sendmail(self.username, to, message)
+        self.server.sendmail(self.username, self.to, message)
 
-        return_msg = f'SMS has been sent to {to}'
-        return {
+        Thread(target=self._delete_sent, daemon=True).start()
+
+        return Response(dictionary={
             'ok': True,
             'status': 200,
-            'body': return_msg
-        }
+            'body': f'SMS has been sent to {self.to}'
+        })
+
+    def _thread_executor(self, item_id):
+        """Gets invoked as multi-threading, to check for the message which was just sent and sets the flag as Deleted.
+
+        Args:
+            item_id: Takes the ID of the message as an argument.
+        """
+        dummy, data = self.mail.fetch(item_id, '(RFC822)')
+        for response_part in data:
+            if not isinstance(response_part, tuple):
+                continue
+            original_email = message_from_bytes(response_part[1])  # gets the rawest content
+            sender = str(make_header(decode_header((original_email['From']).split(' <')[0])))
+            sub = str(make_header(decode_header(original_email['Subject'])))
+            to = str(make_header(decode_header(original_email['To'])))
+            if to == self.to and sub == self.subject and sender == self.username:
+                self.mail.store(item_id.decode('UTF-8'), '+FLAGS', '\\Deleted')
+                self.mail.expunge()
+                self.mail.close()
+                self.mail.logout()
+
+    def _delete_sent(self):
+        """Deletes the email from GMAIL's sent items right after sending the message.
+
+        See Also:
+            Invokes ``thread_executor`` with 20 workers to sweep through sent items to delete the email.
+        """
+        self.mail = IMAP4_SSL('imap.gmail.com')
+        self.mail.login(user=self.username, password=self.password)
+        self.mail.list()
+        self.mail.select('"[Gmail]/Sent Mail"')
+        return_code, messages = self.mail.search(None, 'ALL')  # Includes SEEN and UNSEEN, although sent is always SEEN
+        with ThreadPoolExecutor(max_workers=20) as executor:
+            executor.map(self._thread_executor, sorted(messages[0].split(), reverse=True))
 
 
 if __name__ == '__main__':
@@ -92,7 +130,8 @@ if __name__ == '__main__':
         phone_number=environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
     ).send_sms()
 
-    if response.get('ok') and response.get('status') == 200:
+    if response.ok and response.status == 200:
         print('SUCCESS')
     else:
         print('FAILED')
+    print(response.json())

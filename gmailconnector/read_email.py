@@ -3,6 +3,8 @@ from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
 
+from gmailconnector.responder import Response
+
 
 class ReadEmail:
     """Initiates Emailer object to authenticate and print the unread emails.
@@ -33,42 +35,76 @@ class ReadEmail:
             self.mail.close()
             self.mail.logout()
 
-    def main(self) -> tuple:
+    def _instantiate(self) -> Response:
         """Prints the number of emails and gets user confirmation before proceeding, press N/n to quit.
 
         Returns:
-            `tuple`:
+            Response:
             A tuple containing number of email messages, return code and the messages itself.
-
         """
-        n = 0
         return_code, messages = self.mail.search(None, 'UNSEEN')  # looks for unread emails
-        if return_code == 'OK':
-            n = len(messages[0].split())
-        else:
-            exit("Unable access your email account.")
-        if not n:
-            exit(f'You have no unread emails. Account username: {self.username}')
-        return n, return_code, messages
+        n = len(messages[0].split())
 
-    def read_email(self) -> dict or None:
-        """Prints unread emails one by one after getting user confirmation."""
+        if return_code != 'OK':
+            return Response(dictionary={
+                'ok': False,
+                'status': 404,
+                'body': 'Unable to read messages.'
+            })
+
+        if not n:
+            return Response(dictionary={
+                'ok': False,
+                'status': 204,
+                'body': f'You have no unread emails. Account username: {self.username}'
+            })
+
+        if return_code == 'OK':
+            user_ip = input(f'You have {n} unread emails. Press Y/y to continue:\n')
+            if user_ip.upper() == 'Y':
+                return Response(dictionary={
+                    'ok': True,
+                    'status': 200,
+                    'body': messages
+                })
+            else:
+                return Response(dictionary={
+                    'ok': False,
+                    'status': 202,
+                    'body': 'User declined to read the email.'
+                })
+        else:
+            return Response(dictionary={
+                'ok': False,
+                'status': 401,
+                'body': "Unable access your email account."
+            })
+
+    def read_email(self) -> Response:
+        """Prints unread emails one by one after getting user confirmation.
+
+        Returns:
+            Response:
+            A custom response class with properties: ok, status and body to the user.
+        """
         if not self.mail:
             return_msg = 'BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n' \
                          '\t1. Make sure your username and password are correct.\n' \
                          '\t2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n' \
                          '\t3. If you have enabled 2 factor authentication, use thee App Password generated.'
-            return {
+            return Response(dictionary={
                 'ok': False,
                 'status': 401,
                 'body': return_msg
-            }
+            })
 
-        n, return_code, messages = self.main()
-        user_ip = input(f'You have {n} unread emails. Press Y/y to continue:\n')
-        if return_code != 'OK' or not (user_ip == 'Y' or user_ip == 'y'):  # proceeds only if user input is Y or y
-            return
+        initiator = self._instantiate()
+        if initiator.ok:
+            messages = initiator.body
+        else:
+            return initiator
 
+        n = len(messages[0].split())
         i = 0
         for nm in messages[0].split():
             i += 1
@@ -119,11 +155,21 @@ class ReadEmail:
                             if i < n:  # proceeds only if loop count is less than the number of unread emails
                                 continue_confirmation = input('Enter N/n to quit, any other key to continue:\n')
                                 if continue_confirmation == 'N' or continue_confirmation == 'n':
-                                    return
+                                    return Response(dictionary={
+                                        'ok': False,
+                                        'status': 202,
+                                        'body': 'User declined to continue reading emails.'
+                                    })
+                            else:
+                                return Response(dictionary={
+                                    'ok': True,
+                                    'status': 200,
+                                    'body': 'All messages have been read.'
+                                })
 
 
 if __name__ == '__main__':
     from os import environ
 
-    if response := ReadEmail(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass')).read_email():
-        print(response.get('body'))
+    response = ReadEmail(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass')).read_email()
+    print(response.json())

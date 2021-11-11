@@ -73,25 +73,27 @@
 <br><p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector.send_sms</span> <span class="kn">import</span> <span class="n">Messenger</span>
 
-<span class="n">messenger</span> <span class="o">=</span> <span class="n">Messenger</span><span class="p">(</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">Messenger</span><span class="p">(</span>
     <span class="n">gmail_user</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span><span class="p">,</span>
     <span class="n">gmail_pass</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span><span class="p">,</span>
     <span class="n">phone_number</span><span class="o">=</span><span class="s1">&#39;+11234567890&#39;</span><span class="p">,</span>
     <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Test SMS using gmail-connector&#39;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">messenger</span><span class="o">.</span><span class="n">send_sms</span><span class="p">())</span>
+<span class="p">)</span><span class="o">.</span><span class="n">send_sms</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
 <p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector.send_email</span> <span class="kn">import</span> <span class="n">SendEmail</span>
 
-<span class="n">email_obj</span> <span class="o">=</span> <span class="n">SendEmail</span><span class="p">(</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">SendEmail</span><span class="p">(</span>
         <span class="n">gmail_user</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span><span class="p">,</span>
         <span class="n">gmail_pass</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span><span class="p">,</span>
         <span class="n">recipient</span><span class="o">=</span><span class="s1">&#39;another_username@gmail.com&#39;</span><span class="p">,</span>
         <span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Howdy!&#39;</span>
-    <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">email_obj</span><span class="o">.</span><span class="n">send_email</span><span class="p">())</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">send_email</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
 <details>
@@ -122,7 +124,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">PreCommit</span></code> will ensure linting, and the doc creation are run on every commit.</p>
 <p><strong>Requirement</strong>
 <br>
-<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--no-cache</span> <span class="pre">--upgrade</span> <span class="pre">sphinx</span> <span class="pre">pre-commit</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--no-cache</span> <span class="pre">--upgrade</span> <span class="pre">sphinx</span> <span class="pre">pre-commit</span> <span class="pre">recommonmark</span></code></p>
 <p><strong>Usage</strong>
 <br>
 <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code></p>
@@ -212,7 +214,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
   </body>
 </html>

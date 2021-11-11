@@ -33,26 +33,28 @@ https://pypi.org/project/gmail-connector/
 ```python
 from gmailconnector.send_sms import Messenger
 
-messenger = Messenger(
+response = Messenger(
     gmail_user='username@gmail.com',
     gmail_pass='<ACCOUNT_PASSWORD>',
     phone_number='+11234567890',
     message='Test SMS using gmail-connector'
-)
-print(messenger.send_sms())
+).send_sms()
+if response.ok:
+    print(response.json())
 ```
 
 [Send Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py)
 ```python
 from gmailconnector.send_email import SendEmail
 
-email_obj = SendEmail(
+response = SendEmail(
         gmail_user='username@gmail.com',
         gmail_pass='<ACCOUNT_PASSWORD>',
         recipient='another_username@gmail.com',
         subject='Howdy!'
-    )
-print(email_obj.send_email())
+    ).send_email()
+if response.ok:
+    print(response.json())
 ```
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">SendEmail</a></strong></summary>
@@ -83,7 +85,7 @@ ReadEmail(
 
 **Requirement**
 <br>
-`pip install --no-cache --upgrade sphinx pre-commit`
+`pip install --no-cache --upgrade sphinx pre-commit recommonmark`
 
 **Usage**
 <br>

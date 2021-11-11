@@ -3,6 +3,8 @@ from email.mime.application import MIMEApplication
 from os.path import isfile, realpath
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
+from gmailconnector.responder import Response
+
 
 class SendEmail:
     """Initiates Emailer object to send an email to defined recipient from a defined sender with or without attachments.
@@ -42,7 +44,7 @@ class SendEmail:
         if self.server:
             self.server.close()
 
-    def multipart_message(self) -> multipart.MIMEMultipart:
+    def _multipart_message(self) -> multipart.MIMEMultipart:
         """Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.
 
         Returns a message if a filename is given for attachment but not available at the given path.
@@ -72,13 +74,12 @@ class SendEmail:
 
         return msg
 
-    def send_email(self) -> dict:
+    def send_email(self) -> Response:
         """Initiates a TLS connection and sends the email.
 
         Returns:
-            dict:
-            A dictionary with key-value pairs of ok: bool, status: int and body: str to the user.
-
+            Response:
+            A custom response class with properties: ok, status and body to the user.
         """
         self.server.starttls()
         try:
@@ -87,19 +88,19 @@ class SendEmail:
             self.server = None
             return_msg = "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
                          "Ensure the credentials stored in env vars are set correct.\n"
-            return {
+            return Response(dictionary={
                 'ok': False,
                 'status': 401,
                 'body': return_msg
-            }
+            })
         except SMTPConnectError:
             self.server = None
             return_msg = "Error during connection establishment with GMAIL server."
-            return {
+            return Response(dictionary={
                 'ok': False,
                 'status': 503,
                 'body': return_msg
-            }
+            })
 
         to = self.recipient
         recipients = [to] if isinstance(to, str) else to
@@ -113,24 +114,24 @@ class SendEmail:
         self.server.sendmail(
             from_addr=self.sender,
             to_addrs=recipients,
-            msg=self.multipart_message().as_string()
+            msg=self._multipart_message().as_string()
         )
 
         return_msg = f'Email has been sent to {self.recipient}'
 
         if self.file_not_available:
-            return {
+            return Response(dictionary={
                 'ok': True,
                 'status': 206,
                 'body': return_msg + f"\n{self.attachment} is unavailable at {realpath(filename='')}.\n"
                                      f"Email was sent without an attachment."
-            }
+            })
         else:
-            return {
+            return Response(dictionary={
                 'ok': True,
                 'status': 200,
                 'body': return_msg
-            }
+            })
 
 
 if __name__ == '__main__':
@@ -142,9 +143,10 @@ if __name__ == '__main__':
         subject=datetime.now().strftime("%B %d, %Y %I:%M %p")
     ).send_email()
 
-    if response.get('ok') and response.get('status') == 200:
+    if response.ok and response.status == 200:
         print('SUCCESS')
-    elif response.get('status') == 403:
+    elif response.status == 403:
         print('AUTH ERROR')
-    elif response.get('status') == 503:
+    elif response.status == 503:
         print('SERVICE UNAVAILABLE')
+    print(response.json())
