@@ -3,7 +3,7 @@ from email.mime.application import MIMEApplication
 from os.path import isfile, realpath
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
-from responder import Response
+from gmailconnector.responder import Response
 
 
 class SendEmail:

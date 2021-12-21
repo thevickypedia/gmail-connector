@@ -5,8 +5,9 @@ from imaplib import IMAP4_SSL
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 from threading import Thread
 
-from responder import Response
 from validate_email import validate_email
+
+from gmailconnector.responder import Response
 
 
 class Messenger:

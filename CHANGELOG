@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+0.3.8 (12/20/2021)
+------------------
+- Fix import issues with module vs sphinx
+
 0.3.7 (12/20/2021)
 ------------------
 - Specify carrier based sms-gateway to increase success rate

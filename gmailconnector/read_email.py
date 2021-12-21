@@ -3,7 +3,7 @@ from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
 
-from responder import Response
+from gmailconnector.responder import Response
 
 
 class ReadEmail:
