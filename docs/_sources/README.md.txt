@@ -15,14 +15,10 @@
 # Gmail Connector
 Python module to, send SMS, emails and read `unread` emails in `inbox` folder.
 
-###### Uses the default python modules:
+###### Modules and Protocols
 - `email` - Format emails as `MIMEMultipart` object, read emails from `bytes` and `str` and decode headers.
 - `smtplib` - `SMTP` Simple Mail Transfer Protocol to connect to `gmail` server, do `auth` and perform outgoing tasks.
 - `imaplib` - `IMAP` Internet Message Access Protocol to access messages in an email mailbox.
-- `datetime` - Uses `datetime` module to skim the date and time when the email arrived.
-
-## Pypi Module
-https://pypi.org/project/gmail-connector/
 
 ## Usage
 `pip install gmail-connector`
@@ -36,7 +32,7 @@ from gmailconnector.send_sms import Messenger
 response = Messenger(
     gmail_user='username@gmail.com',
     gmail_pass='<ACCOUNT_PASSWORD>',
-    phone_number='+11234567890',
+    phone='+11234567890',
     message='Test SMS using gmail-connector'
 ).send_sms()
 if response.ok:
@@ -109,8 +105,14 @@ ReadEmail(
 **Usage**
 `changelog`
 
+### Pypi Module
+[https://pypi.org/project/gmail-connector/](https://pypi.org/project/gmail-connector/)
+
 ### Runbook
-https://thevickypedia.github.io/gmail-connector/
+[https://thevickypedia.github.io/gmail-connector/](https://thevickypedia.github.io/gmail-connector/)
+
+### Repository
+[https://github.com/thevickypedia/gmail-connector](https://github.com/thevickypedia/gmail-connector)
 
 ## License & copyright
 

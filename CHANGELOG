@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+0.3.9 (12/20/2021)
+------------------
+- Create a separate method to validate input arguments
+- Change arg phone_number to phone
+
 0.3.8 (12/20/2021)
 ------------------
 - Fix import issues with module vs sphinx

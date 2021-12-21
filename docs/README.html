@@ -54,18 +54,13 @@
 <section id="gmail-connector">
 <h1>Gmail Connector<a class="headerlink" href="#gmail-connector" title="Permalink to this headline">¶</a></h1>
 <p>Python module to, send SMS, emails and read <code class="docutils literal notranslate"><span class="pre">unread</span></code> emails in <code class="docutils literal notranslate"><span class="pre">inbox</span></code> folder.</p>
-<section id="uses-the-default-python-modules">
-<h2>Uses the default python modules:<a class="headerlink" href="#uses-the-default-python-modules" title="Permalink to this headline">¶</a></h2>
+<section id="modules-and-protocols">
+<h2>Modules and Protocols<a class="headerlink" href="#modules-and-protocols" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">email</span></code> - Format emails as <code class="docutils literal notranslate"><span class="pre">MIMEMultipart</span></code> object, read emails from <code class="docutils literal notranslate"><span class="pre">bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">str</span></code> and decode headers.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">smtplib</span></code> - <code class="docutils literal notranslate"><span class="pre">SMTP</span></code> Simple Mail Transfer Protocol to connect to <code class="docutils literal notranslate"><span class="pre">gmail</span></code> server, do <code class="docutils literal notranslate"><span class="pre">auth</span></code> and perform outgoing tasks.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">imaplib</span></code> - <code class="docutils literal notranslate"><span class="pre">IMAP</span></code> Internet Message Access Protocol to access messages in an email mailbox.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">datetime</span></code> - Uses <code class="docutils literal notranslate"><span class="pre">datetime</span></code> module to skim the date and time when the email arrived.</p></li>
 </ul>
-</section>
-<section id="pypi-module">
-<h2>Pypi Module<a class="headerlink" href="#pypi-module" title="Permalink to this headline">¶</a></h2>
-<p>https://pypi.org/project/gmail-connector/</p>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
@@ -76,7 +71,7 @@
 <span class="n">response</span> <span class="o">=</span> <span class="n">Messenger</span><span class="p">(</span>
     <span class="n">gmail_user</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span><span class="p">,</span>
     <span class="n">gmail_pass</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span><span class="p">,</span>
-    <span class="n">phone_number</span><span class="o">=</span><span class="s1">&#39;+11234567890&#39;</span><span class="p">,</span>
+    <span class="n">phone</span><span class="o">=</span><span class="s1">&#39;+11234567890&#39;</span><span class="p">,</span>
     <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Test SMS using gmail-connector&#39;</span>
 <span class="p">)</span><span class="o">.</span><span class="n">send_sms</span><span class="p">()</span>
 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
@@ -149,9 +144,17 @@
 <p><strong>Usage</strong>
 <code class="docutils literal notranslate"><span class="pre">changelog</span></code></p>
 </section>
+<section id="pypi-module">
+<h3>Pypi Module<a class="headerlink" href="#pypi-module" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://pypi.org/project/gmail-connector/">https://pypi.org/project/gmail-connector/</a></p>
+</section>
 <section id="runbook">
 <h3>Runbook<a class="headerlink" href="#runbook" title="Permalink to this headline">¶</a></h3>
-<p>https://thevickypedia.github.io/gmail-connector/</p>
+<p><a class="reference external" href="https://thevickypedia.github.io/gmail-connector/">https://thevickypedia.github.io/gmail-connector/</a></p>
+</section>
+<section id="repository">
+<h3>Repository<a class="headerlink" href="#repository" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector">https://github.com/thevickypedia/gmail-connector</a></p>
 </section>
 </section>
 <section id="license-copyright">
@@ -171,14 +174,15 @@
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Gmail Connector</a><ul>
-<li><a class="reference internal" href="#uses-the-default-python-modules">Uses the default python modules:</a></li>
-<li><a class="reference internal" href="#pypi-module">Pypi Module</a></li>
+<li><a class="reference internal" href="#modules-and-protocols">Modules and Protocols</a></li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#additional-args">Additional args:</a></li>
 <li><a class="reference internal" href="#id1">Additional args:</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>
 <li><a class="reference internal" href="#change-log">Change Log</a></li>
+<li><a class="reference internal" href="#pypi-module">Pypi Module</a></li>
 <li><a class="reference internal" href="#runbook">Runbook</a></li>
+<li><a class="reference internal" href="#repository">Repository</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#license-copyright">License &amp; copyright</a></li>

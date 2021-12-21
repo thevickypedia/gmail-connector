@@ -18,6 +18,7 @@ Send SMS
 .. automodule:: send_sms
    :members:
    :undoc-members:
+   :exclude-members: SMS_GATEWAY
 
 Send Email
 ==========

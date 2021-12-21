@@ -18,7 +18,7 @@ class Messenger:
     Args:
         gmail_user: Gmail username to authenticate SMTP lib.
         gmail_pass: Gmail password to authenticate SMTP lib.
-        phone_number: Phone number stored as env var.
+        phone: Phone number stored as env var.
         message: Content of the message.
         subject [Optional] : Subject line for the message. Defaults to "Message from GmailConnector"
         carrier [Optional]: Takes any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``
@@ -37,21 +37,21 @@ class Messenger:
         "us-cellular": "email.uscc.net",
     }
 
-    def __init__(self, gmail_user: str, gmail_pass: str, phone_number: str, message: str,
+    def __init__(self, gmail_user: str, gmail_pass: str, phone: str, message: str,
                  subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None,
                  delete_sent: bool = True):
-        if not all([gmail_user, gmail_pass, phone_number, message]):
-            raise ValueError(
-                'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone_number` and `message`'
-            )
         self.username = gmail_user
         self.password = gmail_pass
-        self.phone = phone_number
+        self.phone = phone
         self.delete_sent = delete_sent
 
         self.subject = subject or "Message from GmailConnector"
-        self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
+        self.message = message
         self.server = SMTP("smtp.gmail.com", 587)
+
+        self.arg_validator()
+
+        self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
 
         carrier = carrier.lower()
         if carrier not in list(self.SMS_GATEWAY.keys()):
@@ -65,6 +65,21 @@ class Messenger:
         """Destructor has been called to close the TLS connection and logout."""
         if self.server:
             self.server.close()
+
+    def arg_validator(self):
+        """Validates all the arguments passed during object initialization.
+
+        Raises:
+            ValueError: If any arg is missing or malformed.
+        """
+        if not all([self.username, self.password, self.phone, self.message]):
+            raise ValueError(
+                'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone` and `message`'
+            )
+        if len(self.phone) != 10 or not len(self.phone) != 12:
+            raise ValueError('Phone number should either be 10 or 12 digits (if includes country code)')
+        if self.phone.startswith('+') and not self.phone.startswith('+1'):
+            raise ValueError('Unsupported country code. Module works only for US based contact numbers.')
 
     def validator(self) -> bool:
         """Check if the email address generated using the SMS gateway is valid.
@@ -95,11 +110,6 @@ class Messenger:
             str:
             Returns the formed endpoint. `Example: ``+11234567890@tmomail.net```
         """
-        if len(self.phone) != 10 or not len(self.phone) != 12:
-            raise ValueError('Phone number should either be 10 or 12 digits (if includes country code)')
-        if self.phone.startswith('+') and not self.phone.startswith('+1'):
-            raise ValueError('Unsupported country code. Module works only for US based contact numbers.')
-
         if len(self.phone) == 11 and self.phone.startswith('1'):
             self.phone = f'+{self.phone}'
         if not self.phone.startswith('+'):
@@ -205,7 +215,7 @@ if __name__ == '__main__':
 
     response = Messenger(
         gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'),
-        phone_number=environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
+        phone=environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
     ).send_sms()
 
     if response.ok and response.status == 200:
