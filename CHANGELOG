@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+0.3.7 (12/20/2021)
+------------------
+- Specify carrier based sms-gateway to increase success rate
+- Introduce carrier, sms_gateway and delete_sent as optional arguments
+- Use a third-party email-validator to check endpoint before sending the email
+- Remove redundant variables
+- Add requirements.txt, update README.md and .gitignore
+
 0.3.6 (11/10/2021)
 ------------------
 - Return responses as a class object instead of a dictionary

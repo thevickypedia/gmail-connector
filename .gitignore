@@ -10,3 +10,6 @@ _build
 build
 dist
 gmail_connector.egg-info
+
+# Env
+.env

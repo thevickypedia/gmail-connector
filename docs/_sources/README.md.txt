@@ -42,6 +42,17 @@ response = Messenger(
 if response.ok:
     print(response.json())
 ```
+<details>
+<summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></strong></summary>
+
+###### Additional args:
+- **subject:** Subject of the message. Defaults to `Message from GmailConnector`
+- **carrier:** Use any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``. Defaults to `t-mobile`.
+- **sms_gateway:** SMS gateway of the carrier. Defaults to ``tmomail.net`` since the default carrier is ``t-mobile``.
+- **delete_sent:** Boolean flag to delete the outbound email from SentItems. Defaults to ``True``
+
+> Note: If known, using the `sms_gateway` will ensure proper delivery of the SMS.
+</details>
 
 [Send Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py)
 ```python
@@ -57,7 +68,7 @@ if response.ok:
     print(response.json())
 ```
 <details>
-<summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">SendEmail</a></strong></summary>
+<summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></strong></summary>
 
 ###### Additional args:
 - **body:** Body of the email. Defaults to blank.

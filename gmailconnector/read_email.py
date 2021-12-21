@@ -3,7 +3,7 @@ from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
 
-from gmailconnector.responder import Response
+from responder import Response
 
 
 class ReadEmail:
@@ -14,7 +14,6 @@ class ReadEmail:
     Args:
         - gmail_user: Email address (GMAIL)
         - gmail_pass: Login password
-
     """
 
     def __init__(self, gmail_user: str, gmail_pass: str):
@@ -88,14 +87,13 @@ class ReadEmail:
             A custom response class with properties: ok, status and body to the user.
         """
         if not self.mail:
-            return_msg = 'BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n' \
-                         '\t1. Make sure your username and password are correct.\n' \
-                         '\t2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n' \
-                         '\t3. If you have enabled 2 factor authentication, use thee App Password generated.'
             return Response(dictionary={
                 'ok': False,
                 'status': 401,
-                'body': return_msg
+                'body': 'BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n'
+                        '\t1. Make sure your username and password are correct.\n'
+                        '\t2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n'
+                        '\t3. If you have enabled 2 factor authentication, use thee App Password generated.'
             })
 
         initiator = self._instantiate()

@@ -19,6 +19,19 @@ def read(name):
     return open(path.join(path.dirname(__file__), name)).read()
 
 
+def dependencies() -> list:
+    """Gathers dependencies from requirements file.
+
+    Returns:
+        list:
+        List of dependencies to be installed.
+    """
+    if path.isfile('requirements.txt'):
+        with open('requirements.txt') as requirements:
+            install_requires = requirements.read().splitlines()
+    return install_requires
+
+
 setup(
     name='gmail-connector',
     version='.'.join(str(c) for c in version_info),
@@ -33,7 +46,7 @@ setup(
     keywords='gmail, smtp, imap, tls',
     packages=['.gmailconnector'],
     python_requires=">=3.8",
-    install_requires=[''],
+    install_requires=dependencies(),
     project_urls={
         'Docs': 'https://thevickypedia.github.io/gmail-connector',
         'Bug Tracker': 'https://github.com/thevickypedia/gmail-connector/issues'

@@ -5,36 +5,105 @@ from imaplib import IMAP4_SSL
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 from threading import Thread
 
-from gmailconnector.responder import Response
+from responder import Response
+from validate_email import validate_email
 
 
 class Messenger:
-    """Initiates Messenger object to send an SMS to a phone number using SMS gateway of destination number.
+    """Initiates Messenger object to send an SMS to a phone number using SMS gateway provided by the mobile carrier.
 
     >>> Messenger
 
     Args:
-        - gmail_user: Gmail username to authenticate SMTP lib.
-        - gmail_pass: Gmail password to authenticate SMTP lib.
-        - phone_number: Phone number stored as env var.
-        - subject [Optional] : Subject line for the message. Defaults to "Message from GmailConnector"
-        - message: Content of the message.
+        gmail_user: Gmail username to authenticate SMTP lib.
+        gmail_pass: Gmail password to authenticate SMTP lib.
+        phone_number: Phone number stored as env var.
+        message: Content of the message.
+        subject [Optional] : Subject line for the message. Defaults to "Message from GmailConnector"
+        carrier [Optional]: Takes any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``
+        sms_gateway [Optional]: Takes the SMS gateway of the carrier as an argument.
+
+    See Also:
+        Carrier defaults to ``t-mobile`` which uses ``tmomail.net`` as the SMS gateway.
     """
 
+    SMS_GATEWAY = {
+        "at&t": "mms.att.net",
+        "t-mobile": "tmomail.net",
+        "verizon": "vtext.com",
+        "boost": "smsmyboostmobile.com",
+        "cricket": "sms.cricketwireless.net",
+        "us-cellular": "email.uscc.net",
+    }
+
     def __init__(self, gmail_user: str, gmail_pass: str, phone_number: str, message: str,
-                 subject: str = None):
+                 subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None,
+                 delete_sent: bool = True):
+        if not all([gmail_user, gmail_pass, phone_number, message]):
+            raise ValueError(
+                'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone_number` and `message`'
+            )
         self.username = gmail_user
         self.password = gmail_pass
-        self.mail = None
-        self.subject = "Message from GmailConnector" if not subject else subject
+        self.phone = phone_number
+        self.delete_sent = delete_sent
+
+        self.subject = subject or "Message from GmailConnector"
         self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
-        self.to = f"{phone_number}@tmomail.net"
         self.server = SMTP("smtp.gmail.com", 587)
+
+        carrier = carrier.lower()
+        if carrier not in list(self.SMS_GATEWAY.keys()):
+            carrier = 't-mobile'
+        self.gateway = sms_gateway or self.SMS_GATEWAY.get(carrier)
+
+        self.to = self.generate_address()
+        self.mail = None
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
         if self.server:
             self.server.close()
+
+    def validator(self) -> bool:
+        """Check if the email address generated using the SMS gateway is valid.
+
+        Returns:
+            bool:
+            Boolean flag.
+        """
+        return validate_email(
+            email_address=self.to,
+            check_format=True,
+            check_blacklist=True,
+            check_dns=True,
+            dns_timeout=10,
+            check_smtp=True,
+            smtp_timeout=10,
+            smtp_helo_host=self.gateway,
+            smtp_from_address=self.username,
+            smtp_skip_tls=False,
+            smtp_tls_context=None,
+            smtp_debug=False
+        )
+
+    def generate_address(self) -> str:
+        """Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.
+
+        Returns:
+            str:
+            Returns the formed endpoint. `Example: ``+11234567890@tmomail.net```
+        """
+        if len(self.phone) != 10 or not len(self.phone) != 12:
+            raise ValueError('Phone number should either be 10 or 12 digits (if includes country code)')
+        if self.phone.startswith('+') and not self.phone.startswith('+1'):
+            raise ValueError('Unsupported country code. Module works only for US based contact numbers.')
+
+        if len(self.phone) == 11 and self.phone.startswith('1'):
+            self.phone = f'+{self.phone}'
+        if not self.phone.startswith('+'):
+            self.phone = f'+1{self.phone}'
+        return self.phone + '@' + self.gateway
 
     def send_sms(self) -> Response:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
@@ -45,6 +114,7 @@ class Messenger:
         See Also:
             - Encodes body of the message to `ascii` with `ignore` flag and then decodes it.
             - This is done to ignore special characters (like °) without raising `UnicodeEncodeError`
+            - Validates the endpoint ``phone-number@sms-gateway`` before trying to send the SMS.
 
         Notes:
             Other flags that can be set includes `replace` and `xmlcharrefreplace`
@@ -53,6 +123,13 @@ class Messenger:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
+        if not self.validator():
+            return Response(dictionary={
+                'ok': False,
+                'status': 422,
+                'body': f'{self.to} was invalid. Please check the sms gateway of your carrier and pass it manually.'
+            })
+
         message = (f"From: {self.username}\n" + f"To: {self.to}\n" + f"Subject: {self.subject}\n" + self.body)
         self.server.starttls()
 
@@ -60,25 +137,24 @@ class Messenger:
             self.server.login(user=self.username, password=self.password)
         except SMTPAuthenticationError:
             self.server = None
-            return_msg = "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
-                         "Ensure the credentials stored in env vars are set correct.\n"
             return Response(dictionary={
                 'ok': False,
                 'status': 401,
-                'body': return_msg
+                'body': "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
+                        "Ensure the credentials stored in env vars are set correct.\n"
             })
         except SMTPConnectError:
             self.server = None
-            return_msg = "Error during connection establishment with GMAIL server."
             return Response(dictionary={
                 'ok': False,
                 'status': 503,
-                'body': return_msg
+                'body': "Error during connection establishment with GMAIL server."
             })
 
         self.server.sendmail(self.username, self.to, message)
 
-        Thread(target=self._delete_sent, daemon=True).start()
+        if self.delete_sent:
+            Thread(target=self._delete_sent, daemon=True).start()
 
         return Response(dictionary={
             'ok': True,
@@ -96,7 +172,7 @@ class Messenger:
         for response_part in data:
             if not isinstance(response_part, tuple):
                 continue
-            original_email = message_from_bytes(response_part[1])  # gets the rawest content
+            original_email = message_from_bytes(response_part[1])  # gets the raw content
             sender = str(make_header(decode_header((original_email['From']).split(' <')[0])))
             sub = str(make_header(decode_header(original_email['Subject'])))
             to = str(make_header(decode_header(original_email['To'])))
@@ -105,6 +181,7 @@ class Messenger:
                 self.mail.expunge()
                 self.mail.close()
                 self.mail.logout()
+                break
 
     def _delete_sent(self):
         """Deletes the email from GMAIL's sent items right after sending the message.

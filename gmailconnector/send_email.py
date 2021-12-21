@@ -3,7 +3,7 @@ from email.mime.application import MIMEApplication
 from os.path import isfile, realpath
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
-from gmailconnector.responder import Response
+from responder import Response
 
 
 class SendEmail:
@@ -20,7 +20,6 @@ class SendEmail:
         - attachment [Optional] : Filename that has to be attached.
         - cc [Optional]: Email address of the recipient to whom the email has to be CC'd.
         - bcc [Optional]: Email address of the recipient to whom the email has to be BCC'd.
-
     """
 
     def __init__(self, gmail_user: str, gmail_pass: str, recipient: str or list,
@@ -86,20 +85,18 @@ class SendEmail:
             self.server.login(user=self.gmail_user, password=self.gmail_pass)
         except SMTPAuthenticationError:
             self.server = None
-            return_msg = "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n" \
-                         "Ensure the credentials stored in env vars are set correct.\n"
             return Response(dictionary={
                 'ok': False,
                 'status': 401,
-                'body': return_msg
+                'body': "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
+                        "Ensure the credentials stored in env vars are set correct.\n"
             })
         except SMTPConnectError:
             self.server = None
-            return_msg = "Error during connection establishment with GMAIL server."
             return Response(dictionary={
                 'ok': False,
                 'status': 503,
-                'body': return_msg
+                'body': "Error during connection establishment with GMAIL server."
             })
 
         to = self.recipient

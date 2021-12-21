@@ -1,0 +1,2 @@
+py3-validate-email>=1.0.5
+setuptools>=58.2.0

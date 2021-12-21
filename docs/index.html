@@ -60,25 +60,50 @@
 <span id="send-sms"></span><h1>Send SMS<a class="headerlink" href="#module-send_sms" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="send_sms.Messenger">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">send_sms.</span></span><span class="sig-name descname"><span class="pre">Messenger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Messenger object to send an SMS to a phone number using SMS gateway of destination number.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">send_sms.</span></span><span class="sig-name descname"><span class="pre">Messenger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">carrier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'t-mobile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sms_gateway</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_sent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Messenger object to send an SMS to a phone number using SMS gateway provided by the mobile carrier.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Messenger</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- gmail_user</strong> – Gmail username to authenticate SMTP lib.</p></li>
-<li><p><strong>- gmail_pass</strong> – Gmail password to authenticate SMTP lib.</p></li>
-<li><p><strong>- phone_number</strong> – Phone number stored as env var.</p></li>
-<li><p><strong>- subject [Optional]</strong> – Subject line for the message. Defaults to “Message from GmailConnector”</p></li>
-<li><p><strong>- message</strong> – Content of the message.</p></li>
+<li><p><strong>gmail_user</strong> – Gmail username to authenticate SMTP lib.</p></li>
+<li><p><strong>gmail_pass</strong> – Gmail password to authenticate SMTP lib.</p></li>
+<li><p><strong>phone_number</strong> – Phone number stored as env var.</p></li>
+<li><p><strong>message</strong> – Content of the message.</p></li>
+<li><p><strong>subject [Optional]</strong> – Subject line for the message. Defaults to “Message from GmailConnector”</p></li>
+<li><p><strong>carrier [Optional]</strong> – Takes any of <code class="docutils literal notranslate"><span class="pre">at&amp;t</span></code>, <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">verizon</span></code>, <code class="docutils literal notranslate"><span class="pre">boost</span></code>, <code class="docutils literal notranslate"><span class="pre">cricket</span></code>, <code class="docutils literal notranslate"><span class="pre">us-cellular</span></code></p></li>
+<li><p><strong>sms_gateway [Optional]</strong> – Takes the SMS gateway of the carrier as an argument.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Carrier defaults to <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code> which uses <code class="docutils literal notranslate"><span class="pre">tmomail.net</span></code> as the SMS gateway.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="send_sms.Messenger.SMS_GATEWAY">
+<span class="sig-name descname"><span class="pre">SMS_GATEWAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'at&amp;t':</span> <span class="pre">'mms.att.net',</span> <span class="pre">'boost':</span> <span class="pre">'smsmyboostmobile.com',</span> <span class="pre">'cricket':</span> <span class="pre">'sms.cricketwireless.net',</span> <span class="pre">'t-mobile':</span> <span class="pre">'tmomail.net',</span> <span class="pre">'us-cellular':</span> <span class="pre">'email.uscc.net',</span> <span class="pre">'verizon':</span> <span class="pre">'vtext.com'}</span></em><a class="headerlink" href="#send_sms.Messenger.SMS_GATEWAY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="send_sms.Messenger.generate_address">
+<span class="sig-name descname"><span class="pre">generate_address</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#send_sms.Messenger.generate_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the formed endpoint. <cite>Example: ``+11234567890&#64;tmomail.net``</cite></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="send_sms.Messenger.send_sms">
-<span class="sig-name descname"><span class="pre">send_sms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#send_sms.Messenger.send_sms" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_sms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">responder.Response</span></span></span><a class="headerlink" href="#send_sms.Messenger.send_sms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates a TLS connection and sends a text message through SMS gateway of destination number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -90,6 +115,7 @@
 <ul class="simple">
 <li><p>Encodes body of the message to <cite>ascii</cite> with <cite>ignore</cite> flag and then decodes it.</p></li>
 <li><p>This is done to ignore special characters (like °) without raising <cite>UnicodeEncodeError</cite></p></li>
+<li><p>Validates the endpoint <code class="docutils literal notranslate"><span class="pre">phone-number&#64;sms-gateway</span></code> before trying to send the SMS.</p></li>
 </ul>
 </div>
 <p class="rubric">Notes</p>
@@ -100,6 +126,20 @@
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="send_sms.Messenger.validator">
+<span class="sig-name descname"><span class="pre">validator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#send_sms.Messenger.validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the email address generated using the SMS gateway is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean flag.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -133,7 +173,7 @@
 <p>Gathers all the necessary parameters to send an email.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="send_email.SendEmail.send_email">
-<span class="sig-name descname"><span class="pre">send_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#send_email.SendEmail.send_email" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">responder.Response</span></span></span><a class="headerlink" href="#send_email.SendEmail.send_email" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates a TLS connection and sends the email.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -168,7 +208,7 @@
 <p>Gathers all the necessary parameters to read emails.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="read_email.ReadEmail.read_email">
-<span class="sig-name descname"><span class="pre">read_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#read_email.ReadEmail.read_email" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">read_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">responder.Response</span></span></span><a class="headerlink" href="#read_email.ReadEmail.read_email" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints unread emails one by one after getting user confirmation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -250,7 +290,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>
