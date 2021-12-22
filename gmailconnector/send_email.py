@@ -12,14 +12,14 @@ class SendEmail:
     >>> SendEmail
 
     Args:
-        - gmail_user: Username to login to TLS.
-        - gmail_pass: Password to authenticate TLS session.
-        - recipient: Email address of the recipient to whom the email has to be sent.
-        - subject: Subject line of the email.
-        - body [Optional] : Body of the email. Defaults to no body.
-        - attachment [Optional] : Filename that has to be attached.
-        - cc [Optional]: Email address of the recipient to whom the email has to be CC'd.
-        - bcc [Optional]: Email address of the recipient to whom the email has to be BCC'd.
+        gmail_user: Username to login to TLS.
+        gmail_pass: Password to authenticate TLS session.
+        recipient: Email address of the recipient to whom the email has to be sent.
+        subject: Subject line of the email.
+        body [Optional] : Body of the email. Defaults to no body.
+        attachment [Optional] : Filename that has to be attached.
+        cc [Optional]: Email address of the recipient to whom the email has to be CC'd.
+        bcc [Optional]: Email address of the recipient to whom the email has to be BCC'd.
     """
 
     def __init__(self, gmail_user: str, gmail_pass: str, recipient: str or list,

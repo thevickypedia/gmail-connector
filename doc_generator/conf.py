@@ -33,6 +33,10 @@ extensions = [
     'recommonmark',  # supports markdown integration
 ]
 
+# Include private members in the docs
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_default_options
+autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True}
+
 # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#configuration
 napoleon_google_docstring = True
 napoleon_use_param = False
@@ -59,7 +63,6 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
 
 # Add docstrings from __init__ method
 # Reference: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autoclass_content

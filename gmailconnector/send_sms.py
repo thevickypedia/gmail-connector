@@ -49,7 +49,7 @@ class Messenger:
         self.message = message
         self.server = SMTP("smtp.gmail.com", 587)
 
-        self.arg_validator()
+        self._arg_validator()
 
         self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
 
@@ -58,7 +58,7 @@ class Messenger:
             carrier = 't-mobile'
         self.gateway = sms_gateway or self.SMS_GATEWAY.get(carrier)
 
-        self.to = self.generate_address()
+        self.to = self._generate_address()
         self.mail = None
 
     def __del__(self):
@@ -66,7 +66,7 @@ class Messenger:
         if self.server:
             self.server.close()
 
-    def arg_validator(self):
+    def _arg_validator(self):
         """Validates all the arguments passed during object initialization.
 
         Raises:
@@ -81,7 +81,7 @@ class Messenger:
         if self.phone.startswith('+') and not self.phone.startswith('+1'):
             raise ValueError('Unsupported country code. Module works only for US based contact numbers.')
 
-    def validator(self) -> bool:
+    def _validator(self) -> bool:
         """Check if the email address generated using the SMS gateway is valid.
 
         Returns:
@@ -103,7 +103,7 @@ class Messenger:
             smtp_debug=False
         )
 
-    def generate_address(self) -> str:
+    def _generate_address(self) -> str:
         """Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.
 
         Returns:
@@ -134,7 +134,7 @@ class Messenger:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        if not self.validator():
+        if not self._validator():
             return Response(dictionary={
                 'ok': False,
                 'status': 422,

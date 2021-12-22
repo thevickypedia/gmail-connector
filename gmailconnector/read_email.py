@@ -12,8 +12,8 @@ class ReadEmail:
     >>> ReadEmail
 
     Args:
-        - gmail_user: Email address (GMAIL)
-        - gmail_pass: Login password
+        gmail_user: Email address (GMAIL)
+        gmail_pass: Login password
     """
 
     def __init__(self, gmail_user: str, gmail_pass: str):

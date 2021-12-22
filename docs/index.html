@@ -82,8 +82,8 @@
 <p>Carrier defaults to <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code> which uses <code class="docutils literal notranslate"><span class="pre">tmomail.net</span></code> as the SMS gateway.</p>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="send_sms.Messenger.arg_validator">
-<span class="sig-name descname"><span class="pre">arg_validator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger.arg_validator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="send_sms.Messenger._arg_validator">
+<span class="sig-name descname"><span class="pre">_arg_validator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger._arg_validator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates all the arguments passed during object initialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -93,8 +93,18 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="send_sms.Messenger.generate_address">
-<span class="sig-name descname"><span class="pre">generate_address</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#send_sms.Messenger.generate_address" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="send_sms.Messenger._delete_sent">
+<span class="sig-name descname"><span class="pre">_delete_sent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger._delete_sent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the email from GMAIL’s sent items right after sending the message.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Invokes <code class="docutils literal notranslate"><span class="pre">thread_executor</span></code> with 20 workers to sweep through sent items to delete the email.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="send_sms.Messenger._generate_address">
+<span class="sig-name descname"><span class="pre">_generate_address</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#send_sms.Messenger._generate_address" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -102,6 +112,31 @@
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="send_sms.Messenger._thread_executor">
+<span class="sig-name descname"><span class="pre">_thread_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger._thread_executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets invoked as multi-threading, to check for the message which was just sent and sets the flag as Deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item_id</strong> – Takes the ID of the message as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="send_sms.Messenger._validator">
+<span class="sig-name descname"><span class="pre">_validator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#send_sms.Messenger._validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the email address generated using the SMS gateway is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean flag.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -135,20 +170,6 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="send_sms.Messenger.validator">
-<span class="sig-name descname"><span class="pre">validator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#send_sms.Messenger.validator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the email address generated using the SMS gateway is valid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Boolean flag.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -164,18 +185,33 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- gmail_user</strong> – Username to login to TLS.</p></li>
-<li><p><strong>- gmail_pass</strong> – Password to authenticate TLS session.</p></li>
-<li><p><strong>- recipient</strong> – Email address of the recipient to whom the email has to be sent.</p></li>
-<li><p><strong>- subject</strong> – Subject line of the email.</p></li>
-<li><p><strong>- body [Optional]</strong> – Body of the email. Defaults to no body.</p></li>
-<li><p><strong>- attachment [Optional]</strong> – Filename that has to be attached.</p></li>
-<li><p><strong>- cc [Optional]</strong> – Email address of the recipient to whom the email has to be CC’d.</p></li>
-<li><p><strong>- bcc [Optional]</strong> – Email address of the recipient to whom the email has to be BCC’d.</p></li>
+<li><p><strong>gmail_user</strong> – Username to login to TLS.</p></li>
+<li><p><strong>gmail_pass</strong> – Password to authenticate TLS session.</p></li>
+<li><p><strong>recipient</strong> – Email address of the recipient to whom the email has to be sent.</p></li>
+<li><p><strong>subject</strong> – Subject line of the email.</p></li>
+<li><p><strong>body [Optional]</strong> – Body of the email. Defaults to no body.</p></li>
+<li><p><strong>attachment [Optional]</strong> – Filename that has to be attached.</p></li>
+<li><p><strong>cc [Optional]</strong> – Email address of the recipient to whom the email has to be CC’d.</p></li>
+<li><p><strong>bcc [Optional]</strong> – Email address of the recipient to whom the email has to be BCC’d.</p></li>
 </ul>
 </dd>
 </dl>
 <p>Gathers all the necessary parameters to send an email.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="send_email.SendEmail._multipart_message">
+<span class="sig-name descname"><span class="pre">_multipart_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">email.mime.multipart.MIMEMultipart</span></span></span><a class="headerlink" href="#send_email.SendEmail._multipart_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.</p>
+<p>Returns a message if a filename is given for attachment but not available at the given path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>MIMEMultipart version of the created message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><cite>multipart.MIMEMultipart</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="send_email.SendEmail.send_email">
 <span class="sig-name descname"><span class="pre">send_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#send_email.SendEmail.send_email" title="Permalink to this definition">¶</a></dt>
@@ -205,12 +241,26 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- gmail_user</strong> – Email address (GMAIL)</p></li>
-<li><p><strong>- gmail_pass</strong> – Login password</p></li>
+<li><p><strong>gmail_user</strong> – Email address (GMAIL)</p></li>
+<li><p><strong>gmail_pass</strong> – Login password</p></li>
 </ul>
 </dd>
 </dl>
 <p>Gathers all the necessary parameters to read emails.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="read_email.ReadEmail._instantiate">
+<span class="sig-name descname"><span class="pre">_instantiate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#read_email.ReadEmail._instantiate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the number of emails and gets user confirmation before proceeding, press N/n to quit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A tuple containing number of email messages, return code and the messages itself.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="read_email.ReadEmail.read_email">
 <span class="sig-name descname"><span class="pre">read_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#read_email.ReadEmail.read_email" title="Permalink to this definition">¶</a></dt>
