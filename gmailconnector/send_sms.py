@@ -76,7 +76,7 @@ class Messenger:
             raise ValueError(
                 'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone` and `message`'
             )
-        if len(self.phone) != 10 or not len(self.phone) != 12:
+        if len(self.phone) != 10 and len(self.phone) != 12:
             raise ValueError('Phone number should either be 10 or 12 digits (if includes country code)')
         if self.phone.startswith('+') and not self.phone.startswith('+1'):
             raise ValueError('Unsupported country code. Module works only for US based contact numbers.')
