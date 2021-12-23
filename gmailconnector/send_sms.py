@@ -5,8 +5,6 @@ from imaplib import IMAP4_SSL
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 from threading import Thread
 
-from validate_email import validate_email
-
 from gmailconnector.responder import Response
 
 
@@ -81,28 +79,6 @@ class Messenger:
         if self.phone.startswith('+') and not self.phone.startswith('+1'):
             raise ValueError('Unsupported country code. Module works only for US based contact numbers.')
 
-    def _validator(self) -> bool:
-        """Check if the email address generated using the SMS gateway is valid.
-
-        Returns:
-            bool:
-            Boolean flag.
-        """
-        return validate_email(
-            email_address=self.to,
-            check_format=True,
-            check_blacklist=True,
-            check_dns=True,
-            dns_timeout=10,
-            check_smtp=True,
-            smtp_timeout=10,
-            smtp_helo_host=self.gateway,
-            smtp_from_address=self.username,
-            smtp_skip_tls=False,
-            smtp_tls_context=None,
-            smtp_debug=False
-        )
-
     def _generate_address(self) -> str:
         """Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.
 
@@ -134,13 +110,6 @@ class Messenger:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        if not self._validator():
-            return Response(dictionary={
-                'ok': False,
-                'status': 422,
-                'body': f'{self.to} was invalid. Please check the sms gateway of your carrier and pass it manually.'
-            })
-
         message = (f"From: {self.username}\n" + f"To: {self.to}\n" + f"Subject: {self.subject}\n" + self.body)
         self.server.starttls()
 

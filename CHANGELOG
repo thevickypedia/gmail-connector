@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+0.4.2 (12/22/2021)
+------------------
+- Remove endpoint validator due to high inaccuracies
+
 0.4.1 (12/22/2021)
 ------------------
 - Mark internal methods as private
