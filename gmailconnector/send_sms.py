@@ -116,7 +116,8 @@ class Messenger:
             return Response(dictionary={
                 'ok': False,
                 'status': 413,
-                'body': f'Payload length: {len(message)}, which is more than the optimal size: 428'
+                'body': f'Payload length: {len(message):,}, which is more than the optimal size: 428. '
+                        f'Message length: {len(self.body):,}'
             })
 
         self.server.starttls()

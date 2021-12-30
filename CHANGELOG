@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+0.4.4 (12/30/2021)
+------------------
+- Add more information to payload restriction
+
 0.4.3 (12/30/2021)
 ------------------
 - Add payload limit for SMS
