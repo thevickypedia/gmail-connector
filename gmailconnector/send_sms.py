@@ -111,6 +111,14 @@ class Messenger:
             A custom response class with properties: ok, status and body to the user.
         """
         message = (f"From: {self.username}\n" + f"To: {self.to}\n" + f"Subject: {self.subject}\n" + self.body)
+
+        if len(message) > 428:
+            return Response(dictionary={
+                'ok': False,
+                'status': 413,
+                'body': f'Payload length: {len(message)}, which is more than the optimal size: 428'
+            })
+
         self.server.starttls()
 
         try:

@@ -41,6 +41,8 @@ if response.ok:
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></strong></summary>
 
+:warning: Gmail's SMS Gateway has a payload limit. So, it is recommended to break larger messages into multiple SMS.
+
 ###### Additional args:
 - **subject:** Subject of the message. Defaults to `Message from GmailConnector`
 - **carrier:** Use any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``. Defaults to `t-mobile`.
