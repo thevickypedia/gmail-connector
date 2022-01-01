@@ -36,7 +36,7 @@ class SendEmail:
         self.sender = f"GmailConnector <{gmail_user}>"
         self.attachment = attachment
         self.file_not_available = None
-        self.server = SMTP('smtp.gmail.com')
+        self.server = SMTP(host='smtp.gmail.com', port=587)
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
