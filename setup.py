@@ -33,7 +33,7 @@ setup(
     keywords='gmail, smtp, imap, tls',
     packages=['.gmailconnector'],
     python_requires=">=3.8",
-    install_requires=[],
+    install_requires=['python-dotenv>=0.19.2'],
     project_urls={
         'Docs': 'https://thevickypedia.github.io/gmail-connector',
         'Bug Tracker': 'https://github.com/thevickypedia/gmail-connector/issues'

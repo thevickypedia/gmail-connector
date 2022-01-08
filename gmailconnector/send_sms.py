@@ -1,11 +1,14 @@
-from concurrent.futures import ThreadPoolExecutor
-from email import message_from_bytes
-from email.header import decode_header, make_header
-from imaplib import IMAP4_SSL
+from os import environ, path
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 from threading import Thread
 
+from dotenv import load_dotenv
+
 from gmailconnector.responder import Response
+from gmailconnector.sms_deleter import DeleteSent
+
+if path.isfile('.env'):
+    load_dotenv(dotenv_path='.env', verbose=True, override=True)
 
 
 class Messenger:
@@ -13,17 +16,6 @@ class Messenger:
 
     >>> Messenger
 
-    Args:
-        gmail_user: Gmail username to authenticate SMTP lib.
-        gmail_pass: Gmail password to authenticate SMTP lib.
-        phone: Phone number stored as env var.
-        message: Content of the message.
-        subject [Optional] : Subject line for the message. Defaults to "Message from GmailConnector"
-        carrier [Optional]: Takes any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``
-        sms_gateway [Optional]: Takes the SMS gateway of the carrier as an argument.
-
-    See Also:
-        Carrier defaults to ``t-mobile`` which uses ``tmomail.net`` as the SMS gateway.
     """
 
     SMS_GATEWAY = {
@@ -35,21 +27,37 @@ class Messenger:
         "us-cellular": "email.uscc.net",
     }
 
-    def __init__(self, gmail_user: str, gmail_pass: str, phone: str, message: str,
-                 subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None,
-                 delete_sent: bool = True):
-        self.username = gmail_user
-        self.password = gmail_pass
-        self.phone = phone
-        self.delete_sent = delete_sent
+    def __init__(self, phone: str, message: str,
+                 gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass'),
+                 subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None, delete_sent: bool = True):
+        """Initiates all the necessary args.
 
-        self.subject = subject or "Message from GmailConnector"
+        Args:
+            gmail_user: Gmail username to authenticate SMTP lib.
+            gmail_pass: Gmail password to authenticate SMTP lib.
+            phone: Phone number stored as env var.
+            message: Content of the message.
+            subject: Subject line for the message. Defaults to "Message from GmailConnector"
+            carrier: Takes any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``
+            sms_gateway: Takes the SMS gateway of the carrier as an argument.
+
+        See Also:
+            Carrier defaults to ``t-mobile`` which uses ``tmomail.net`` as the SMS gateway.
+        """
+        if not all([gmail_user, gmail_pass, phone, message]):
+            raise ValueError(
+                'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone` and `message`'
+            )
+        self.server, self.mail = None, None
+        self.gmail_user = gmail_user
+        self.gmail_pass = gmail_pass
         self.message = message
-        self.server = SMTP("smtp.gmail.com", 587)
-
-        self._arg_validator()
+        self.phone = phone
+        self._validate_phone()
 
         self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
+        self.subject = subject or "Message from GmailConnector"
+        self.delete_sent = delete_sent
 
         carrier = carrier.lower()
         if carrier not in list(self.SMS_GATEWAY.keys()):
@@ -57,23 +65,19 @@ class Messenger:
         self.gateway = sms_gateway or self.SMS_GATEWAY.get(carrier)
 
         self.to = self._generate_address()
-        self.mail = None
+        self.server = SMTP(host="smtp.gmail.com", port=587)
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
         if self.server:
             self.server.close()
 
-    def _arg_validator(self):
+    def _validate_phone(self):
         """Validates all the arguments passed during object initialization.
 
         Raises:
             ValueError: If any arg is missing or malformed.
         """
-        if not all([self.username, self.password, self.phone, self.message]):
-            raise ValueError(
-                'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone` and `message`'
-            )
         if len(self.phone) != 10 and len(self.phone) != 12:
             raise ValueError('Phone number should either be 10 or 12 digits (if includes country code)')
         if self.phone.startswith('+') and not self.phone.startswith('+1'):
@@ -110,7 +114,7 @@ class Messenger:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        message = (f"From: {self.username}\n" + f"To: {self.to}\n" + f"Subject: {self.subject}\n" + self.body)
+        message = (f"From: {self.gmail_user}\n" + f"To: {self.to}\n" + f"Subject: {self.subject}\n" + self.body)
 
         if len(message) > 428:
             return Response(dictionary={
@@ -123,9 +127,8 @@ class Messenger:
         self.server.starttls()
 
         try:
-            self.server.login(user=self.username, password=self.password)
+            self.server.login(user=self.gmail_user, password=self.gmail_pass)
         except SMTPAuthenticationError:
-            self.server = None
             return Response(dictionary={
                 'ok': False,
                 'status': 401,
@@ -133,17 +136,17 @@ class Messenger:
                         "Ensure the credentials stored in env vars are set correct.\n"
             })
         except SMTPConnectError:
-            self.server = None
             return Response(dictionary={
                 'ok': False,
                 'status': 503,
                 'body': "Error during connection establishment with GMAIL server."
             })
 
-        self.server.sendmail(self.username, self.to, message)
+        self.server.sendmail(self.gmail_user, self.to, message)
 
         if self.delete_sent:
-            Thread(target=self._delete_sent, daemon=True).start()
+            delete = DeleteSent(username=self.gmail_user, password=self.gmail_pass, subject=self.subject)
+            Thread(target=delete.delete_sent(), daemon=True).start()
 
         return Response(dictionary={
             'ok': True,
@@ -151,48 +154,11 @@ class Messenger:
             'body': f'SMS has been sent to {self.to}'
         })
 
-    def _thread_executor(self, item_id):
-        """Gets invoked as multi-threading, to check for the message which was just sent and sets the flag as Deleted.
-
-        Args:
-            item_id: Takes the ID of the message as an argument.
-        """
-        dummy, data = self.mail.fetch(item_id, '(RFC822)')
-        for response_part in data:
-            if not isinstance(response_part, tuple):
-                continue
-            original_email = message_from_bytes(response_part[1])  # gets the raw content
-            sender = str(make_header(decode_header((original_email['From']).split(' <')[0])))
-            sub = str(make_header(decode_header(original_email['Subject'])))
-            to = str(make_header(decode_header(original_email['To'])))
-            if to == self.to and sub == self.subject and sender == self.username:
-                self.mail.store(item_id.decode('UTF-8'), '+FLAGS', '\\Deleted')
-                self.mail.expunge()
-                self.mail.close()
-                self.mail.logout()
-                break
-
-    def _delete_sent(self):
-        """Deletes the email from GMAIL's sent items right after sending the message.
-
-        See Also:
-            Invokes ``thread_executor`` with 20 workers to sweep through sent items to delete the email.
-        """
-        self.mail = IMAP4_SSL('imap.gmail.com')
-        self.mail.login(user=self.username, password=self.password)
-        self.mail.list()
-        self.mail.select('"[Gmail]/Sent Mail"')
-        return_code, messages = self.mail.search(None, 'ALL')  # Includes SEEN and UNSEEN, although sent is always SEEN
-        with ThreadPoolExecutor(max_workers=20) as executor:
-            executor.map(self._thread_executor, sorted(messages[0].split(), reverse=True))
-
 
 if __name__ == '__main__':
     from datetime import datetime
-    from os import environ
 
     response = Messenger(
-        gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'),
         phone=environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
     ).send_sms()
 

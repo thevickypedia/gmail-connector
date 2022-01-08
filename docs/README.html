@@ -65,12 +65,17 @@
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gmail-connector</span></code></p>
-<br><p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></p>
+<section id="env-vars">
+<h3>Env Vars<a class="headerlink" href="#env-vars" title="Permalink to this headline">¶</a></h3>
+<p>Store a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with the args:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">gmail_user</span> <span class="o">=</span> <span class="s1">&#39;username@gmail.com&#39;</span>,
+<span class="nv">gmail_pass</span> <span class="o">=</span> <span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector.send_sms</span> <span class="kn">import</span> <span class="n">Messenger</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">Messenger</span><span class="p">(</span>
-    <span class="n">gmail_user</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span><span class="p">,</span>
-    <span class="n">gmail_pass</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span><span class="p">,</span>
     <span class="n">phone</span><span class="o">=</span><span class="s1">&#39;+11234567890&#39;</span><span class="p">,</span>
     <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Test SMS using gmail-connector&#39;</span>
 <span class="p">)</span><span class="o">.</span><span class="n">send_sms</span><span class="p">()</span>
@@ -81,7 +86,7 @@
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></strong></summary><p>:warning: Gmail’s SMS Gateway has a payload limit. So, it is recommended to break larger messages into multiple SMS.</p>
 <section id="additional-args">
-<h3>Additional args:<a class="headerlink" href="#additional-args" title="Permalink to this headline">¶</a></h3>
+<h4>Additional args:<a class="headerlink" href="#additional-args" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p><strong>subject:</strong> Subject of the message. Defaults to <code class="docutils literal notranslate"><span class="pre">Message</span> <span class="pre">from</span> <span class="pre">GmailConnector</span></code></p></li>
 <li><p><strong>carrier:</strong> Use any of <code class="docutils literal notranslate"><span class="pre">at&amp;t</span></code>, <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">verizon</span></code>, <code class="docutils literal notranslate"><span class="pre">boost</span></code>, <code class="docutils literal notranslate"><span class="pre">cricket</span></code>, <code class="docutils literal notranslate"><span class="pre">us-cellular</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>.</p></li>
@@ -95,8 +100,6 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector.send_email</span> <span class="kn">import</span> <span class="n">SendEmail</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">SendEmail</span><span class="p">(</span>
-        <span class="n">gmail_user</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span><span class="p">,</span>
-        <span class="n">gmail_pass</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span><span class="p">,</span>
         <span class="n">recipient</span><span class="o">=</span><span class="s1">&#39;another_username@gmail.com&#39;</span><span class="p">,</span>
         <span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Howdy!&#39;</span>
     <span class="p">)</span><span class="o">.</span><span class="n">send_email</span><span class="p">()</span>
@@ -107,7 +110,7 @@
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></strong></summary></section>
 <section id="id1">
-<h3>Additional args:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h4>Additional args:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p><strong>body:</strong> Body of the email. Defaults to blank.</p></li>
 <li><p><strong>attachment:</strong> Filename that has to be attached.</p></li>
@@ -121,12 +124,10 @@
 </details><p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py">Read Email</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector.read_email</span> <span class="kn">import</span> <span class="n">ReadEmail</span>
 
-<span class="n">ReadEmail</span><span class="p">(</span>
-    <span class="n">gmail_user</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span><span class="p">,</span>
-    <span class="n">gmail_pass</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">read_email</span><span class="p">()</span>
+<span class="n">ReadEmail</span><span class="p">()</span><span class="o">.</span><span class="n">read_email</span><span class="p">()</span>
 </pre></div>
 </div>
+</section>
 </section>
 <section id="linting">
 <h3>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h3>
@@ -177,8 +178,11 @@
 <li><a class="reference internal" href="#">Gmail Connector</a><ul>
 <li><a class="reference internal" href="#modules-and-protocols">Modules and Protocols</a></li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#env-vars">Env Vars</a><ul>
 <li><a class="reference internal" href="#additional-args">Additional args:</a></li>
 <li><a class="reference internal" href="#id1">Additional args:</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#linting">Linting</a></li>
 <li><a class="reference internal" href="#change-log">Change Log</a></li>
 <li><a class="reference internal" href="#pypi-module">Pypi Module</a></li>

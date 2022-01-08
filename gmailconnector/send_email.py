@@ -1,31 +1,46 @@
 from email.mime import multipart, text
 from email.mime.application import MIMEApplication
+from os import environ, path
 from os.path import isfile, realpath
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
+from dotenv import load_dotenv
+
 from gmailconnector.responder import Response
+
+if path.isfile('.env'):
+    load_dotenv(dotenv_path='.env', verbose=True, override=True)
 
 
 class SendEmail:
-    """Initiates Emailer object to send an email to defined recipient from a defined sender with or without attachments.
+    """Initiates Emailer object to email defined recipient from a defined sender with or without attachments.
 
     >>> SendEmail
 
-    Args:
-        gmail_user: Username to login to TLS.
-        gmail_pass: Password to authenticate TLS session.
-        recipient: Email address of the recipient to whom the email has to be sent.
-        subject: Subject line of the email.
-        body [Optional] : Body of the email. Defaults to no body.
-        attachment [Optional] : Filename that has to be attached.
-        cc [Optional]: Email address of the recipient to whom the email has to be CC'd.
-        bcc [Optional]: Email address of the recipient to whom the email has to be BCC'd.
     """
 
-    def __init__(self, gmail_user: str, gmail_pass: str, recipient: str or list,
-                 subject: str, body: str = None, attachment: str = None,
-                 cc: str or list = None, bcc: str or list = None):
-        """Gathers all the necessary parameters to send an email."""
+    def __init__(self, recipient: str or list, subject: str,
+                 gmail_user: str = environ.get('username'), gmail_pass: str = environ.get('password'),
+                 body: str = None, attachment: str = None, cc: str or list = None, bcc: str or list = None,
+                 mask_username: str = None, mask_email: str = None):
+        """Initiates all the necessary args.
+
+        Args:
+            recipient: Email address of the recipient to whom the email has to be sent.
+            subject: Subject line of the email.
+            gmail_user: Login email address.
+            gmail_pass: Login password.
+            body: Body of the email. Defaults to ``None``.
+            attachment: Filename that has to be attached.
+            cc: Email address of the recipient to whom the email has to be CC'd.
+            bcc: Email address of the recipient to whom the email has to be BCC'd.
+            mask_username: Shield username to show up in the email.
+            mask_email: Shield email ID to show up in the email.
+        """
+        if not all([gmail_user, gmail_pass, recipient, subject]):
+            raise ValueError(
+                'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `recipient` and `subject`'
+            )
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
         self.recipient = recipient
@@ -33,7 +48,15 @@ class SendEmail:
         self.cc = cc
         self.bcc = bcc
         self.body = body
-        self.sender = f"GmailConnector <{gmail_user}>"
+
+        if mask_username and mask_email:
+            self.sender = f"{mask_username} <{mask_email}>"
+        elif mask_username:
+            self.sender = f"{mask_username} <{gmail_user}>"
+        elif mask_email:
+            self.sender = f"GmailConnector <{mask_email}>"
+        else:
+            self.sender = f"GmailConnector <{gmail_user}>"
         self.attachment = attachment
         self.file_not_available = None
         self.server = SMTP(host='smtp.gmail.com', port=587)
@@ -133,11 +156,9 @@ class SendEmail:
 
 if __name__ == '__main__':
     from datetime import datetime
-    from os import environ
 
     response = SendEmail(
-        gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'), recipient=environ.get('recipient'),
-        subject=datetime.now().strftime("%B %d, %Y %I:%M %p")
+        recipient=environ.get('recipient'), subject=datetime.now().strftime("%B %d, %Y %I:%M %p")
     ).send_email()
 
     if response.ok and response.status == 200:

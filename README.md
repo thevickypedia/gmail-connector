@@ -23,15 +23,18 @@ Python module to, send SMS, emails and read `unread` emails in `inbox` folder.
 ## Usage
 `pip install gmail-connector`
 
-<br>
+### Env Vars
+Store a `.env` file with the args:
+```bash
+gmail_user = 'username@gmail.com',
+gmail_pass = '<ACCOUNT_PASSWORD>'
+```
 
 [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
 ```python
 from gmailconnector.send_sms import Messenger
 
 response = Messenger(
-    gmail_user='username@gmail.com',
-    gmail_pass='<ACCOUNT_PASSWORD>',
     phone='+11234567890',
     message='Test SMS using gmail-connector'
 ).send_sms()
@@ -57,8 +60,6 @@ if response.ok:
 from gmailconnector.send_email import SendEmail
 
 response = SendEmail(
-        gmail_user='username@gmail.com',
-        gmail_pass='<ACCOUNT_PASSWORD>',
         recipient='another_username@gmail.com',
         subject='Howdy!'
     ).send_email()
@@ -83,10 +84,7 @@ if response.ok:
 ```python
 from gmailconnector.read_email import ReadEmail
 
-ReadEmail(
-    gmail_user='username@gmail.com',
-    gmail_pass='<ACCOUNT_PASSWORD>'
-).read_email()
+ReadEmail().read_email()
 ```
 
 ### Linting

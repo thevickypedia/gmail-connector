@@ -20,6 +20,13 @@ Send SMS
    :undoc-members:
    :exclude-members: SMS_GATEWAY
 
+Delete Sent SMS
+===============
+
+.. automodule:: sms_deleter
+   :members:
+   :undoc-members:
+
 Send Email
 ==========
 

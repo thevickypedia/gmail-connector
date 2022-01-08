@@ -1,7 +1,13 @@
 Change Log
 ==========
 
-0.4.4 (1/1/2021)
+0.4.6 (1/8/2021)
+------------------
+- Load env vars from a .env file
+- Reformat docstrings
+- Fix sent item after sending an SMS
+
+0.4.5 (1/1/2021)
 ------------------
 - Add SMTP port number to send email
 

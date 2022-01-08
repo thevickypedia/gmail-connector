@@ -2,8 +2,14 @@ from datetime import datetime, timedelta
 from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
+from os import environ, path
+
+from dotenv import load_dotenv
 
 from gmailconnector.responder import Response
+
+if path.isfile('.env'):
+    load_dotenv(dotenv_path='.env', verbose=True, override=True)
 
 
 class ReadEmail:
@@ -11,13 +17,19 @@ class ReadEmail:
 
     >>> ReadEmail
 
-    Args:
-        gmail_user: Email address (GMAIL)
-        gmail_pass: Login password
     """
 
-    def __init__(self, gmail_user: str, gmail_pass: str):
-        """Gathers all the necessary parameters to read emails."""
+    def __init__(self, gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass')):
+        """Initiates all the necessary args.
+
+        Args:
+            gmail_user: Login email address.
+            gmail_pass: Login password.
+        """
+        if not all([gmail_user, gmail_pass]):
+            raise ValueError(
+                'Cannot proceed without the args or env vars: `gmail_user` and `gmail_pass`'
+            )
         self.mail = IMAP4_SSL('imap.gmail.com')  # connects to gmail using imaplib
         # noinspection PyBroadException
         try:
@@ -26,7 +38,7 @@ class ReadEmail:
             self.mail.select('inbox')  # selects inbox from the list
         except Exception:
             self.mail = None
-        self.username = gmail_user
+        self.gmail_user = gmail_user
 
     def __del__(self):
         """Destructor called to close the mailbox and logout."""
@@ -55,7 +67,7 @@ class ReadEmail:
             return Response(dictionary={
                 'ok': False,
                 'status': 204,
-                'body': f'You have no unread emails. Account username: {self.username}'
+                'body': f'You have no unread emails. Account username: {self.gmail_user}'
             })
 
         if return_code == 'OK':
@@ -167,7 +179,5 @@ class ReadEmail:
 
 
 if __name__ == '__main__':
-    from os import environ
-
-    response = ReadEmail(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass')).read_email()
+    response = ReadEmail().read_email()
     print(response.json())
