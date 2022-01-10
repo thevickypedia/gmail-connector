@@ -27,7 +27,7 @@ class Messenger:
         "us-cellular": "email.uscc.net",
     }
 
-    def __init__(self, phone: str, message: str,
+    def __init__(self, message: str, phone: str = environ.get('phone'),
                  gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass'),
                  subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None, delete_sent: bool = True):
         """Initiates all the necessary args.
@@ -44,11 +44,13 @@ class Messenger:
         See Also:
             Carrier defaults to ``t-mobile`` which uses ``tmomail.net`` as the SMS gateway.
         """
+        self.server, self.mail = None, None
         if not all([gmail_user, gmail_pass, phone, message]):
             raise ValueError(
                 'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone` and `message`'
             )
-        self.server, self.mail = None, None
+        if not gmail_user.endswith('@gmail.com'):
+            gmail_user = gmail_user + '@gmail.com'
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
         self.message = message
@@ -56,7 +58,7 @@ class Messenger:
         self._validate_phone()
 
         self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
-        self.subject = subject or "Message from GmailConnector"
+        self.subject = subject or f"Message from {gmail_user.replace('@gmail.com', '')}"
         self.delete_sent = delete_sent
 
         carrier = carrier.lower()

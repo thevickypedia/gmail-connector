@@ -19,24 +19,24 @@ class SendEmail:
 
     """
 
-    def __init__(self, recipient: str or list, subject: str,
-                 gmail_user: str = environ.get('username'), gmail_pass: str = environ.get('password'),
+    def __init__(self, subject: str, recipient: str or list = environ.get('recipient'),
+                 gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass'),
                  body: str = None, attachment: str = None, cc: str or list = None, bcc: str or list = None,
-                 mask_username: str = None, mask_email: str = None):
+                 sender: str = None):
         """Initiates all the necessary args.
 
         Args:
-            recipient: Email address of the recipient to whom the email has to be sent.
-            subject: Subject line of the email.
             gmail_user: Login email address.
             gmail_pass: Login password.
+            recipient: Email address of the recipient to whom the email has to be sent.
+            subject: Subject line of the email.
             body: Body of the email. Defaults to ``None``.
             attachment: Filename that has to be attached.
             cc: Email address of the recipient to whom the email has to be CC'd.
             bcc: Email address of the recipient to whom the email has to be BCC'd.
-            mask_username: Shield username to show up in the email.
-            mask_email: Shield email ID to show up in the email.
+            sender: Add sender name to the email.
         """
+        self.server = None
         if not all([gmail_user, gmail_pass, recipient, subject]):
             raise ValueError(
                 'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `recipient` and `subject`'
@@ -49,12 +49,8 @@ class SendEmail:
         self.bcc = bcc
         self.body = body
 
-        if mask_username and mask_email:
-            self.sender = f"{mask_username} <{mask_email}>"
-        elif mask_username:
-            self.sender = f"{mask_username} <{gmail_user}>"
-        elif mask_email:
-            self.sender = f"GmailConnector <{mask_email}>"
+        if sender:
+            self.sender = f"{sender} <{gmail_user}>"
         else:
             self.sender = f"GmailConnector <{gmail_user}>"
         self.attachment = attachment

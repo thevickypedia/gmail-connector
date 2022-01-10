@@ -26,6 +26,7 @@ class ReadEmail:
             gmail_user: Login email address.
             gmail_pass: Login password.
         """
+        self.mail = None
         if not all([gmail_user, gmail_pass]):
             raise ValueError(
                 'Cannot proceed without the args or env vars: `gmail_user` and `gmail_pass`'
