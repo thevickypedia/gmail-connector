@@ -1,7 +1,6 @@
 from email.mime import multipart, text
 from email.mime.application import MIMEApplication
 from os import environ, path
-from os.path import isfile, realpath
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
 from dotenv import load_dotenv
@@ -21,8 +20,8 @@ class SendEmail:
 
     def __init__(self, subject: str, recipient: str or list = environ.get('recipient'),
                  gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass'),
-                 body: str = None, attachment: str = None, cc: str or list = None, bcc: str or list = None,
-                 sender: str = None):
+                 sender: str = 'GmailConnector', body: str = None, attachment: str = None, filename: str = None,
+                 cc: str or list = None, bcc: str or list = None):
         """Initiates all the necessary args.
 
         Args:
@@ -31,7 +30,8 @@ class SendEmail:
             recipient: Email address of the recipient to whom the email has to be sent.
             subject: Subject line of the email.
             body: Body of the email. Defaults to ``None``.
-            attachment: Filename that has to be attached.
+            attachment: Name of the file that has to be attached.
+            filename: Custom name of the attachment.
             cc: Email address of the recipient to whom the email has to be CC'd.
             bcc: Email address of the recipient to whom the email has to be BCC'd.
             sender: Add sender name to the email.
@@ -49,12 +49,9 @@ class SendEmail:
         self.bcc = bcc
         self.body = body
 
-        if sender:
-            self.sender = f"{sender} <{gmail_user}>"
-        else:
-            self.sender = f"GmailConnector <{gmail_user}>"
+        self.sender = f"{sender} <{gmail_user}>"
         self.attachment = attachment
-        self.file_not_available = None
+        self.filename = filename
         self.server = SMTP(host='smtp.gmail.com', port=587)
 
     def __del__(self):
@@ -82,13 +79,20 @@ class SendEmail:
         if body := self.body:
             msg.attach(payload=text.MIMEText(body))
 
-        if (filename := self.attachment) and (isfile(filename)):
-            with open(filename, 'rb') as attachment:
-                attribute = MIMEApplication(attachment.read(), _subtype=filename.split('.')[-1])
-            attribute.add_header('Content-Disposition', 'attachment', filename=filename)
+        if self.attachment and (path.isfile(self.attachment)):
+            file_type = self.attachment.split('.')[-1]
+            if self.filename and '.' in self.filename:  # filename is passed with an extn
+                pass
+            elif self.filename and '.' in self.attachment:  # file name's extn is got from attachment name
+                self.filename = f'{self.filename}.{file_type}'
+            elif self.filename:  # filename is passed without an extn so proceeding with the same
+                pass
+            else:
+                self.filename = self.attachment.split(path.sep)[-1].strip()  # rips path from attachment as filename
+            with open(self.attachment, 'rb') as attachment:
+                attribute = MIMEApplication(attachment.read(), _subtype=file_type)
+            attribute.add_header('Content-Disposition', 'attachment', filename=self.filename)
             msg.attach(payload=attribute)
-        elif filename:
-            self.file_not_available = True
 
         return msg
 
@@ -135,12 +139,12 @@ class SendEmail:
 
         return_msg = f'Email has been sent to {self.recipient}'
 
-        if self.file_not_available:
+        if self.attachment and not path.isfile(self.attachment):
             return Response(dictionary={
                 'ok': True,
                 'status': 206,
-                'body': return_msg + f"\n{self.attachment} is unavailable at {realpath(filename='')}.\n"
-                                     f"Email was sent without an attachment."
+                'body': return_msg + f"\n{self.attachment} is unavailable at {path.realpath(filename='')}.\n"
+                                     "Email was sent without an attachment."
             })
         else:
             return Response(dictionary={

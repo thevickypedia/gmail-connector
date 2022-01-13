@@ -7,7 +7,7 @@
 [![Pypi-format](https://img.shields.io/pypi/format/gmail-connector)](https://pypi.org/project/gmail-connector/#files)
 [![Pypi-status](https://img.shields.io/pypi/status/gmail-connector)](https://pypi.org/project/gmail-connector)
 
-![Maintained](https://img.shields.io/maintenance/yes/2021)
+![Maintained](https://img.shields.io/maintenance/yes/2022)
 [![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/gmail-connector)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
 [![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
@@ -72,6 +72,8 @@ if response.ok:
 ###### Additional args:
 - **body:** Body of the email. Defaults to blank.
 - **attachment:** Filename that has to be attached.
+- **filename:** Custom name for the attachment. Defaults to the attachment name itself.
+- **sender:** Name that has to be used in the email.
 - **cc:** Email address of the recipient to whom the email has to be CC'd.
 - **bcc:** Email address of the recipient to whom the email has to be BCC'd.
 

@@ -1,13 +1,24 @@
 Change Log
 ==========
 
-0.4.6 (1/8/2021)
+0.4.8 (01/12/2022)
+------------------
+- Take a custom filename for the attachment
+- Default to attachment name without the path
+- Remove unnecessary variables
+
+0.4.7 (01/09/2022)
+------------------
+- Check for `phone` and `recipient` in env var
+- Take gmail username instead of email address
+
+0.4.6 (01/08/2022)
 ------------------
 - Load env vars from a .env file
 - Reformat docstrings
 - Fix sent item after sending an SMS
 
-0.4.5 (1/1/2021)
+0.4.5 (01/01/2022)
 ------------------
 - Add SMTP port number to send email
 

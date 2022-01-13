@@ -13,3 +13,6 @@ gmail_connector.egg-info
 
 # Env
 .env
+
+# Test
+test.py
