@@ -1,31 +1,51 @@
-from datetime import datetime, timedelta
-from email import message_from_bytes, message_from_string
+import os
+from datetime import datetime, timedelta, timezone
+from email import message_from_bytes
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
-from os import environ, path
 
+import pytz
 from dotenv import load_dotenv
 
 from gmailconnector.responder import Response
 
-if path.isfile('.env'):
+if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env', verbose=True, override=True)
 
 
 class ReadEmail:
-    """Initiates Emailer object to authenticate and print the unread emails.
+    """Initiates Emailer object to authenticate and yield the unread emails.
 
     >>> ReadEmail
 
     """
 
-    def __init__(self, gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass')):
+    FOLDERS = ['inbox', '"[Gmail]/Important"', '"[Gmail]/Starred"', '"[Gmail]/All Mail"', '"[Gmail]/Sent Mail"',
+               '"[Gmail]/Drafts"', '"[Gmail]/Spam"', '"[Gmail]/Trash"']
+    CATEGORIES = ['ALL', 'SEEN', 'UNSEEN']
+    ADDITIONAL_CATEGORIES = ['SMALLER', 'TEXT', 'SINCE']
+    LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
+
+    def __init__(self, gmail_user: str = os.environ.get('gmail_user'), gmail_pass: str = os.environ.get('gmail_pass'),
+                 folder: str = 'inbox'):
         """Initiates all the necessary args.
 
         Args:
             gmail_user: Login email address.
             gmail_pass: Login password.
+
+        References:
+            https://imapclient.readthedocs.io/en/2.1.0/_modules/imapclient/imapclient.html#IMAPClient.xlist_folders
+
+        See Also:
+            Uses broad ``Exception`` clause to catch login errors, since the same is raised by ``imaplib``
         """
+        if folder not in self.FOLDERS:
+            raise ValueError(
+                f"The chosen folder {folder} is not available.\n"
+                f"Available Options: {', '.join(self.FOLDERS)}"
+            )
+        self.folder = folder
         self.mail = None
         if not all([gmail_user, gmail_pass]):
             raise ValueError(
@@ -36,68 +56,31 @@ class ReadEmail:
         try:
             self.mail.login(user=gmail_user, password=gmail_pass)  # login to your gmail account using the env variables
             self.mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
-            self.mail.select('inbox')  # selects inbox from the list
+            self.mail.select(folder)
         except Exception:
             self.mail = None
         self.gmail_user = gmail_user
 
-    def __del__(self):
-        """Destructor called to close the mailbox and logout."""
-        if self.mail:
-            self.mail.close()
-            self.mail.logout()
+    def instantiate(self, category: str = 'UNSEEN') -> Response:
+        """Searches the number of emails for the category received and forms.
 
-    def _instantiate(self) -> Response:
-        """Prints the number of emails and gets user confirmation before proceeding, press N/n to quit.
+        Args:
+            category: Search criteria to be performed.
 
-        Returns:
-            Response:
-            A tuple containing number of email messages, return code and the messages itself.
-        """
-        return_code, messages = self.mail.search(None, 'UNSEEN')  # looks for unread emails
-        n = len(messages[0].split())
+        References:
+            - Categories, ``SMALLER``, ``TEXT``, and ``SINCE`` take additional values.
 
-        if return_code != 'OK':
-            return Response(dictionary={
-                'ok': False,
-                'status': 404,
-                'body': 'Unable to read messages.'
-            })
+        Examples:
+            ``'SMALLER 500'``
+            ``'TEXT "foo-bar"'``
+            ``'SINCE 17-Feb-2022'`` [OR] ``'SINCE 1645300995.231752'``
 
-        if not n:
-            return Response(dictionary={
-                'ok': False,
-                'status': 204,
-                'body': f'You have no unread emails. Account username: {self.gmail_user}'
-            })
-
-        if return_code == 'OK':
-            user_ip = input(f'You have {n} unread emails. Press Y/y to continue:\n')
-            if user_ip.upper() == 'Y':
-                return Response(dictionary={
-                    'ok': True,
-                    'status': 200,
-                    'body': messages
-                })
-            else:
-                return Response(dictionary={
-                    'ok': False,
-                    'status': 202,
-                    'body': 'User declined to read the email.'
-                })
-        else:
-            return Response(dictionary={
-                'ok': False,
-                'status': 401,
-                'body': "Unable access your email account."
-            })
-
-    def read_email(self) -> Response:
-        """Prints unread emails one by one after getting user confirmation.
+        References:
+            https://imapclient.readthedocs.io/en/2.1.0/api.html#imapclient.IMAPClient.search
 
         Returns:
             Response:
-            A custom response class with properties: ok, status and body to the user.
+            A Response class containing number of email messages, return code and the encoded messages itself.
         """
         if not self.mail:
             return Response(dictionary={
@@ -109,76 +92,101 @@ class ReadEmail:
                         '\t3. If you have enabled 2 factor authentication, use thee App Password generated.'
             })
 
-        initiator = self._instantiate()
-        if initiator.ok:
-            messages = initiator.body
-        else:
-            return initiator
+        if category not in self.CATEGORIES and not any(cat in category for cat in self.ADDITIONAL_CATEGORIES):
+            raise ValueError(
+                f"The chosen search criteria {category} is not available.\n"
+                f"Available Options: {', '.join(self.CATEGORIES)}"
+            )
 
-        n = len(messages[0].split())
-        i = 0
+        return_code, messages = self.mail.search(None, category)
+        if return_code != 'OK':
+            return Response(dictionary={
+                'ok': False,
+                'status': 404,
+                'body': 'Unable to read emails.'
+            })
+
+        num = len(messages[0].split())
+        if not num:
+            return Response(dictionary={
+                'ok': False,
+                'status': 204,
+                'body': f'No {category.lower()} emails found for {self.gmail_user} in {self.folder}',
+                'count': num
+            })
+
+        if return_code == 'OK':
+            return Response(dictionary={
+                'ok': True,
+                'status': 200,
+                'body': messages,
+                'count': num
+            })
+
+    def _get_info(self, response_part: tuple) -> dict:
+        """Extracts sender, subject and time received from response part.
+
+        Args:
+            response_part: Encoded tuple of the response part in the email.
+
+        Returns:
+            dict:
+            A dictionary of sender, subject and received time.
+        """
+        original_email = message_from_bytes(response_part[1])
+        if received := original_email.get('Received'):
+            date = received.split(';')[-1].strip()
+        else:
+            date = original_email.get('Date')
+        if '(PDT)' in date:
+            datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0700 (PDT)")
+        elif '(PST)' in date:
+            datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0800 (PST)")
+        else:
+            datetime_obj = datetime.now()
+        sender = make_header(decode_header((original_email['From']).split(' <')[0]))
+        sub = make_header(decode_header(original_email['Subject'])) \
+            if original_email['Subject'] else None
+        # Converts pacific time to local timezone as the default is pacific
+        local_time = datetime_obj.replace(tzinfo=pytz.timezone('US/Pacific')).astimezone(tz=self.LOCAL_TIMEZONE)
+        received_date = local_time.strftime("%Y-%m-%d")
+        current_date_ = datetime.today().date()
+        # Replaces current date with today or yesterday to make it simpler
+        if received_date == str(current_date_):
+            receive = local_time.strftime("Today, at %I:%M %p")
+        elif received_date == str(current_date_ - timedelta(days=1)):
+            receive = local_time.strftime("Yesterday, at %I:%M %p")
+        else:
+            receive = local_time.strftime("on %A, %B %d, at %I:%M %p")
+        return {'sender': str(sender), 'subject': str(sub), 'datetime': receive}
+
+    def read_email(self, messages: list or str) -> str:
+        """Prints unread emails one by one after getting user confirmation.
+
+        Args:
+            Takes the encoded message list as an argument. This is the body of the ``instantiate`` method.
+
+        Returns:
+            Response:
+            A custom response class with properties: ok, status and body to the user.
+        """
         for nm in messages[0].split():
-            i += 1
             dummy, data = self.mail.fetch(nm, '(RFC822)')
-            for response_part in data:
-                if isinstance(response_part, tuple):
-                    original_email = message_from_bytes(response_part[1])  # gets the rawest content
-                    date = (original_email['Received'].split(';')[-1]).strip()  # gets raw received time
-                    if '(PDT)' in date:
-                        datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") + timedelta(hours=2)
-                    elif '(PST)' in date:
-                        datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0800 (PST)") + timedelta(hours=2)
-                    else:
-                        datetime_obj = datetime.now()
-                    receive = (datetime_obj.strftime("on %A, %B %d, %Y at %I:%M %p CT"))  # formats datetime
-                    # noinspection PyUnresolvedReferences
-                    raw_email = data[0][1]
-                    raw_email_string = raw_email.decode('utf-8')  # decodes the raw email
-                    email_message = message_from_string(raw_email_string)  # extracts message from string
-                    # generates the file names in a directory tree by walking the tree bottom-up
-                    # it yields a 3-tuple (body, sender, subject).
-                    for part in email_message.walk():
-                        """The 'if' condition below is important as parts of an email may include
-                        text/html, multipart/alternative, text/plain and other attachments.
-                        We choose only text/plain as it is the only code-friendly part of a multipart email.
-                        Choosing text/html can make the output look messed up with unnecessary html tags
-                        Choosing multipart/alternative leaves us with decoding errors.
-                        Though I have an exception handler to handle the decoding exceptions,
-                        if the condition below is removed the loop will keep running through all the parts
-                        within a single email"""
-                        if part.get_content_type() == "text/plain":  # ignore attachments/html/multipart
-                            # returns message's entire payload, a string or a message instance.
-                            # decode=true decodes the payload received.
-                            body = part.get_payload(decode=True)
-                            # gets sender email and subject and removes unnecessary white spaces
-                            sender = make_header(decode_header((original_email['From']).split(' <')[0]))
-                            sub = make_header(decode_header(original_email['Subject'])) \
-                                if original_email['Subject'] else None
-                            print(f"You have an email from {sender} with subject '{sub}' {receive}")
-                            #  gets user confirmation before printing the decoded body of the email
-                            try:
-                                msg = (body.decode('utf-8')).strip()  # decodes body of the email
-                                get_user_input = input('Enter Y/N to read the email:\n')
-                                if get_user_input == 'Y' or get_user_input == 'y':
-                                    print(f'{msg}\n')
-                            except (UnicodeDecodeError, AttributeError):  # catches both the decoding errors
-                                continue
-                            if i < n:  # proceeds only if loop count is less than the number of unread emails
-                                continue_confirmation = input('Enter N/n to quit, any other key to continue:\n')
-                                if continue_confirmation == 'N' or continue_confirmation == 'n':
-                                    return Response(dictionary={
-                                        'ok': False,
-                                        'status': 202,
-                                        'body': 'User declined to continue reading emails.'
-                                    })
-                            else:
-                                return Response(dictionary={
-                                    'ok': True,
-                                    'status': 200,
-                                    'body': 'All messages have been read.'
-                                })
+            for each_response in data:
+                if isinstance(each_response, tuple):
+                    yield self._get_info(response_part=each_response)
+        else:  # Executes when there is no break statement in the loop above
+            if self.mail:
+                self.mail.close()
+                self.mail.logout()
 
 
 if __name__ == '__main__':
-    response = ReadEmail().read_email()
-    print(response.json())
+    reader = ReadEmail(folder='"[Gmail]/All Mail"')
+    response = reader.instantiate(category='SMALLER 500')
+    if response.ok:
+        unread_emails = reader.read_email(response.body)
+        for each_mail in list(unread_emails):
+            print(each_mail)
+    else:
+        print(response.body)

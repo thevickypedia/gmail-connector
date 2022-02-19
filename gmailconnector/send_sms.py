@@ -1,4 +1,4 @@
-from os import environ, path
+import os
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 from threading import Thread
 
@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from gmailconnector.responder import Response
 from gmailconnector.sms_deleter import DeleteSent
 
-if path.isfile('.env'):
+if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env', verbose=True, override=True)
 
 
@@ -27,8 +27,8 @@ class Messenger:
         "us-cellular": "email.uscc.net",
     }
 
-    def __init__(self, message: str, phone: str = environ.get('phone'),
-                 gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass'),
+    def __init__(self, message: str, phone: str = os.environ.get('phone'),
+                 gmail_user: str = os.environ.get('gmail_user'), gmail_pass: str = os.environ.get('gmail_pass'),
                  subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None, delete_sent: bool = True):
         """Initiates all the necessary args.
 
@@ -161,7 +161,7 @@ if __name__ == '__main__':
     from datetime import datetime
 
     response = Messenger(
-        phone=environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
+        phone=os.environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
     ).send_sms()
 
     if response.ok and response.status == 200:

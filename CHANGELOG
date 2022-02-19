@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+0.4.9 (01/19/2022)
+------------------
+- Read mails in all folders with different status
+- Convert email receive time into local timezone
+- Remove print statements and use yield instead
+- Yield email information as a dictionary
+- Upload to pypi when committed to master
+- Update docs, README.md and CHANGELOG
+
 0.4.8 (01/12/2022)
 ------------------
 - Take a custom filename for the attachment

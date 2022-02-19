@@ -1,13 +1,13 @@
+import os
 from email.mime import multipart, text
 from email.mime.application import MIMEApplication
-from os import environ, path
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
 from dotenv import load_dotenv
 
 from gmailconnector.responder import Response
 
-if path.isfile('.env'):
+if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env', verbose=True, override=True)
 
 
@@ -18,8 +18,8 @@ class SendEmail:
 
     """
 
-    def __init__(self, subject: str, recipient: str or list = environ.get('recipient'),
-                 gmail_user: str = environ.get('gmail_user'), gmail_pass: str = environ.get('gmail_pass'),
+    def __init__(self, subject: str, recipient: str or list = os.environ.get('recipient'),
+                 gmail_user: str = os.environ.get('gmail_user'), gmail_pass: str = os.environ.get('gmail_pass'),
                  sender: str = 'GmailConnector', body: str = None, attachment: str = None, filename: str = None,
                  cc: str or list = None, bcc: str or list = None):
         """Initiates all the necessary args.
@@ -79,7 +79,7 @@ class SendEmail:
         if body := self.body:
             msg.attach(payload=text.MIMEText(body))
 
-        if self.attachment and (path.isfile(self.attachment)):
+        if self.attachment and (os.path.isfile(self.attachment)):
             file_type = self.attachment.split('.')[-1]
             if self.filename and '.' in self.filename:  # filename is passed with an extn
                 pass
@@ -88,7 +88,7 @@ class SendEmail:
             elif self.filename:  # filename is passed without an extn so proceeding with the same
                 pass
             else:
-                self.filename = self.attachment.split(path.sep)[-1].strip()  # rips path from attachment as filename
+                self.filename = self.attachment.split(os.path.sep)[-1].strip()  # rips path from attachment as filename
             with open(self.attachment, 'rb') as attachment:
                 attribute = MIMEApplication(attachment.read(), _subtype=file_type)
             attribute.add_header('Content-Disposition', 'attachment', filename=self.filename)
@@ -139,11 +139,11 @@ class SendEmail:
 
         return_msg = f'Email has been sent to {self.recipient}'
 
-        if self.attachment and not path.isfile(self.attachment):
+        if self.attachment and not os.path.isfile(self.attachment):
             return Response(dictionary={
                 'ok': True,
                 'status': 206,
-                'body': return_msg + f"\n{self.attachment} is unavailable at {path.realpath(filename='')}.\n"
+                'body': return_msg + f"\n{self.attachment} is unavailable at {os.path.realpath(filename='')}.\n"
                                      "Email was sent without an attachment."
             })
         else:
@@ -158,7 +158,7 @@ if __name__ == '__main__':
     from datetime import datetime
 
     response = SendEmail(
-        recipient=environ.get('recipient'), subject=datetime.now().strftime("%B %d, %Y %I:%M %p")
+        recipient=os.environ.get('recipient'), subject=datetime.now().strftime("%B %d, %Y %I:%M %p")
     ).send_email()
 
     if response.ok and response.status == 200:

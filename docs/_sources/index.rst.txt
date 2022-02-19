@@ -39,7 +39,7 @@ Read Email
 
 .. automodule:: read_email
    :members:
-   :undoc-members:
+   :exclude-members: LOCAL_TIMEZONE
 
 Indices and tables
 ==================

@@ -15,6 +15,7 @@ class Response:
         self._ok: bool = dictionary.get('ok')
         self._status: int = dictionary.get('status')
         self._body: str = dictionary.get('body')
+        self._count: int or None = dictionary.get('count')
 
     @property
     def ok(self) -> bool:
@@ -54,3 +55,13 @@ class Response:
             Returns the dictionary received as arg.
         """
         return self.raw
+
+    @property
+    def count(self) -> int:
+        """Takes the number of un-read emails and returns it in a class. Only works for read email.
+
+        Returns:
+            int:
+            Returns the number of unread emails.
+        """
+        return self._count

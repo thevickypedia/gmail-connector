@@ -7,7 +7,6 @@
 [![Pypi-format](https://img.shields.io/pypi/format/gmail-connector)](https://pypi.org/project/gmail-connector/#files)
 [![Pypi-status](https://img.shields.io/pypi/status/gmail-connector)](https://pypi.org/project/gmail-connector)
 
-![Maintained](https://img.shields.io/maintenance/yes/2022)
 [![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/gmail-connector)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
 [![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
@@ -86,7 +85,14 @@ if response.ok:
 ```python
 from gmailconnector.read_email import ReadEmail
 
-ReadEmail().read_email()
+reader = ReadEmail(folder='"[Gmail]/All Mail"')  # Folder defaults to inbox
+response = reader.instantiate(category='SMALLER 500')  # Search criteria defaults to UNSEEN
+if response.ok:
+    unread_emails = reader.read_email(response.body)
+    for each_mail in list(unread_emails):
+        print(each_mail)
+else:
+    print(response.body)
 ```
 
 ### Linting

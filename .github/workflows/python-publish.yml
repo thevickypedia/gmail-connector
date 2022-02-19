@@ -6,8 +6,8 @@
 name: pypi-publish
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ master ]
 
 jobs:
   deploy:
