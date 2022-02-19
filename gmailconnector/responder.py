@@ -1,3 +1,6 @@
+import warnings
+
+
 class Response:
     """Class to format the response, so that it can be accessed as an object variable.
 
@@ -64,4 +67,6 @@ class Response:
             int:
             Returns the number of unread emails.
         """
+        if not isinstance(self._count, int):
+            warnings.warn('count property is valid only for the class ReadEmail')
         return self._count

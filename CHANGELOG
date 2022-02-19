@@ -1,7 +1,12 @@
 Change Log
 ==========
 
-0.4.9 (01/19/2022)
+0.5.0 (02/19/2022)
+------------------
+- Add a warning if count is called outside ReadEmail
+- Strip string converted email info in the yielded dict
+
+0.4.9 (02/19/2022)
 ------------------
 - Read mails in all folders with different status
 - Convert email receive time into local timezone

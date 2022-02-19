@@ -158,7 +158,7 @@ class ReadEmail:
             receive = local_time.strftime("Yesterday, at %I:%M %p")
         else:
             receive = local_time.strftime("on %A, %B %d, at %I:%M %p")
-        return {'sender': str(sender), 'subject': str(sub), 'datetime': receive}
+        return {'sender': str(sender).strip(), 'subject': str(sub).strip(), 'datetime': receive.strip()}
 
     def read_email(self, messages: list or str) -> str:
         """Prints unread emails one by one after getting user confirmation.
