@@ -7,7 +7,7 @@ from imaplib import IMAP4_SSL
 import pytz
 from dotenv import load_dotenv
 
-from gmailconnector.responder import Response
+from .responder import Response
 
 if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env', verbose=True, override=True)

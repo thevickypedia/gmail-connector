@@ -55,89 +55,8 @@
 </ul>
 </div>
 </section>
-<section id="module-send_sms">
-<span id="send-sms"></span><h1>Send SMS<a class="headerlink" href="#module-send_sms" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="send_sms.Messenger">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">send_sms.</span></span><span class="sig-name descname"><span class="pre">Messenger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">carrier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'t-mobile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sms_gateway</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_sent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Messenger object to send an SMS to a phone number using SMS gateway provided by the mobile carrier.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Messenger</span>
-</pre></div>
-</div>
-<p>Initiates all the necessary args.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>gmail_user</strong> – Gmail username to authenticate SMTP lib.</p></li>
-<li><p><strong>gmail_pass</strong> – Gmail password to authenticate SMTP lib.</p></li>
-<li><p><strong>phone</strong> – Phone number stored as env var.</p></li>
-<li><p><strong>message</strong> – Content of the message.</p></li>
-<li><p><strong>subject</strong> – Subject line for the message. Defaults to “Message from GmailConnector”</p></li>
-<li><p><strong>carrier</strong> – Takes any of <code class="docutils literal notranslate"><span class="pre">at&amp;t</span></code>, <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">verizon</span></code>, <code class="docutils literal notranslate"><span class="pre">boost</span></code>, <code class="docutils literal notranslate"><span class="pre">cricket</span></code>, <code class="docutils literal notranslate"><span class="pre">us-cellular</span></code></p></li>
-<li><p><strong>sms_gateway</strong> – Takes the SMS gateway of the carrier as an argument.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Carrier defaults to <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code> which uses <code class="docutils literal notranslate"><span class="pre">tmomail.net</span></code> as the SMS gateway.</p>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="send_sms.Messenger._generate_address">
-<span class="sig-name descname"><span class="pre">_generate_address</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#send_sms.Messenger._generate_address" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Returns the formed endpoint. <cite>Example: ``+11234567890&#64;tmomail.net``</cite></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="send_sms.Messenger._validate_phone">
-<span class="sig-name descname"><span class="pre">_validate_phone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#send_sms.Messenger._validate_phone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates all the arguments passed during object initialization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – If any arg is missing or malformed.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="send_sms.Messenger.send_sms">
-<span class="sig-name descname"><span class="pre">send_sms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#send_sms.Messenger.send_sms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates a TLS connection and sends a text message through SMS gateway of destination number.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>UnicodeEncodeError</strong> – </p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Encodes body of the message to <cite>ascii</cite> with <cite>ignore</cite> flag and then decodes it.</p></li>
-<li><p>This is done to ignore special characters (like °) without raising <cite>UnicodeEncodeError</cite></p></li>
-<li><p>Validates the endpoint <code class="docutils literal notranslate"><span class="pre">phone-number&#64;sms-gateway</span></code> before trying to send the SMS.</p></li>
-</ul>
-</div>
-<p class="rubric">Notes</p>
-<p>Other flags that can be set includes <cite>replace</cite> and <cite>xmlcharrefreplace</cite></p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A custom response class with properties: ok, status and body to the user.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<section id="send-sms">
+<h1>Send SMS<a class="headerlink" href="#send-sms" title="Permalink to this headline">¶</a></h1>
 </section>
 <section id="module-sms_deleter">
 <span id="delete-sent-sms"></span><h1>Delete Sent SMS<a class="headerlink" href="#module-sms_deleter" title="Permalink to this headline">¶</a></h1>
@@ -172,168 +91,11 @@
 </dd></dl>
 
 </section>
-<section id="module-send_email">
-<span id="send-email"></span><h1>Send Email<a class="headerlink" href="#module-send_email" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="send_email.SendEmail">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">send_email.</span></span><span class="sig-name descname"><span class="pre">SendEmail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'GmailConnector'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bcc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#send_email.SendEmail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Emailer object to email defined recipient from a defined sender with or without attachments.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SendEmail</span>
-</pre></div>
-</div>
-<p>Initiates all the necessary args.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>gmail_user</strong> – Login email address.</p></li>
-<li><p><strong>gmail_pass</strong> – Login password.</p></li>
-<li><p><strong>recipient</strong> – Email address of the recipient to whom the email has to be sent.</p></li>
-<li><p><strong>subject</strong> – Subject line of the email.</p></li>
-<li><p><strong>body</strong> – Body of the email. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>attachment</strong> – Name of the file that has to be attached.</p></li>
-<li><p><strong>filename</strong> – Custom name of the attachment.</p></li>
-<li><p><strong>cc</strong> – Email address of the recipient to whom the email has to be CC’d.</p></li>
-<li><p><strong>bcc</strong> – Email address of the recipient to whom the email has to be BCC’d.</p></li>
-<li><p><strong>sender</strong> – Add sender name to the email.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="send_email.SendEmail._multipart_message">
-<span class="sig-name descname"><span class="pre">_multipart_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">email.mime.multipart.MIMEMultipart</span></span></span><a class="headerlink" href="#send_email.SendEmail._multipart_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.</p>
-<p>Returns a message if a filename is given for attachment but not available at the given path.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>MIMEMultipart version of the created message.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><cite>multipart.MIMEMultipart</cite></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="send_email.SendEmail.send_email">
-<span class="sig-name descname"><span class="pre">send_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#send_email.SendEmail.send_email" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates a TLS connection and sends the email.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A custom response class with properties: ok, status and body to the user.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<section id="send-email">
+<h1>Send Email<a class="headerlink" href="#send-email" title="Permalink to this headline">¶</a></h1>
 </section>
-<section id="module-read_email">
-<span id="read-email"></span><h1>Read Email<a class="headerlink" href="#module-read_email" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="read_email.ReadEmail">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">read_email.</span></span><span class="sig-name descname"><span class="pre">ReadEmail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'inbox'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#read_email.ReadEmail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Emailer object to authenticate and yield the unread emails.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ReadEmail</span>
-</pre></div>
-</div>
-<p>Initiates all the necessary args.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>gmail_user</strong> – Login email address.</p></li>
-<li><p><strong>gmail_pass</strong> – Login password.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://imapclient.readthedocs.io/en/2.1.0/_modules/imapclient/imapclient.html#IMAPClient.xlist_folders">https://imapclient.readthedocs.io/en/2.1.0/_modules/imapclient/imapclient.html#IMAPClient.xlist_folders</a></p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Uses broad <code class="docutils literal notranslate"><span class="pre">Exception</span></code> clause to catch login errors, since the same is raised by <code class="docutils literal notranslate"><span class="pre">imaplib</span></code></p>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="read_email.ReadEmail.ADDITIONAL_CATEGORIES">
-<span class="sig-name descname"><span class="pre">ADDITIONAL_CATEGORIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['SMALLER',</span> <span class="pre">'TEXT',</span> <span class="pre">'SINCE']</span></em><a class="headerlink" href="#read_email.ReadEmail.ADDITIONAL_CATEGORIES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="read_email.ReadEmail.CATEGORIES">
-<span class="sig-name descname"><span class="pre">CATEGORIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['ALL',</span> <span class="pre">'SEEN',</span> <span class="pre">'UNSEEN']</span></em><a class="headerlink" href="#read_email.ReadEmail.CATEGORIES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="read_email.ReadEmail.FOLDERS">
-<span class="sig-name descname"><span class="pre">FOLDERS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['inbox',</span> <span class="pre">'&quot;[Gmail]/Important&quot;',</span> <span class="pre">'&quot;[Gmail]/Starred&quot;',</span> <span class="pre">'&quot;[Gmail]/All</span> <span class="pre">Mail&quot;',</span> <span class="pre">'&quot;[Gmail]/Sent</span> <span class="pre">Mail&quot;',</span> <span class="pre">'&quot;[Gmail]/Drafts&quot;',</span> <span class="pre">'&quot;[Gmail]/Spam&quot;',</span> <span class="pre">'&quot;[Gmail]/Trash&quot;']</span></em><a class="headerlink" href="#read_email.ReadEmail.FOLDERS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="read_email.ReadEmail._get_info">
-<span class="sig-name descname"><span class="pre">_get_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_part</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#read_email.ReadEmail._get_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extracts sender, subject and time received from response part.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>response_part</strong> – Encoded tuple of the response part in the email.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dictionary of sender, subject and received time.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="read_email.ReadEmail.instantiate">
-<span class="sig-name descname"><span class="pre">instantiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UNSEEN'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#read_email.ReadEmail.instantiate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Searches the number of emails for the category received and forms.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>category</strong> – Search criteria to be performed.</p>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<ul class="simple">
-<li><p>Categories, <code class="docutils literal notranslate"><span class="pre">SMALLER</span></code>, <code class="docutils literal notranslate"><span class="pre">TEXT</span></code>, and <code class="docutils literal notranslate"><span class="pre">SINCE</span></code> take additional values.</p></li>
-</ul>
-<p class="rubric">Examples</p>
-<p><code class="docutils literal notranslate"><span class="pre">'SMALLER</span> <span class="pre">500'</span></code>
-<code class="docutils literal notranslate"><span class="pre">'TEXT</span> <span class="pre">&quot;foo-bar&quot;'</span></code>
-<code class="docutils literal notranslate"><span class="pre">'SINCE</span> <span class="pre">17-Feb-2022'</span></code> [OR] <code class="docutils literal notranslate"><span class="pre">'SINCE</span> <span class="pre">1645300995.231752'</span></code></p>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://imapclient.readthedocs.io/en/2.1.0/api.html#imapclient.IMAPClient.search">https://imapclient.readthedocs.io/en/2.1.0/api.html#imapclient.IMAPClient.search</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A Response class containing number of email messages, return code and the encoded messages itself.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="read_email.ReadEmail.read_email">
-<span class="sig-name descname"><span class="pre">read_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#read_email.ReadEmail.read_email" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints unread emails one by one after getting user confirmation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Takes the encoded message list as an argument. This is the body of the ``instantiate`` method.</strong></p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A custom response class with properties: ok, status and body to the user.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<section id="read-email">
+<h1>Read Email<a class="headerlink" href="#read-email" title="Permalink to this headline">¶</a></h1>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -351,19 +113,23 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Welcome to Gmail Connector’s documentation!</a></li>
-<li><a class="reference internal" href="#module-send_sms">Send SMS</a></li>
+<li><a class="reference internal" href="#send-sms">Send SMS</a></li>
 <li><a class="reference internal" href="#module-sms_deleter">Delete Sent SMS</a></li>
-<li><a class="reference internal" href="#module-send_email">Send Email</a></li>
-<li><a class="reference internal" href="#module-read_email">Read Email</a></li>
+<li><a class="reference internal" href="#send-email">Send Email</a></li>
+<li><a class="reference internal" href="#read-email">Read Email</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
-  <h4>Next topic</h4>
-  <p class="topless"><a href="README.html"
-                        title="next chapter">Gmail Connector</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="README.html"
+                          title="next chapter">Gmail Connector</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -403,7 +169,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
     </div>
   </body>
 </html>

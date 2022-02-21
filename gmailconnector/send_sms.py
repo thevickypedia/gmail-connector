@@ -4,8 +4,8 @@ from threading import Thread
 
 from dotenv import load_dotenv
 
-from gmailconnector.responder import Response
-from gmailconnector.sms_deleter import DeleteSent
+from .responder import Response
+from .sms_deleter import DeleteSent
 
 if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env', verbose=True, override=True)

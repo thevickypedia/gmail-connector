@@ -5,7 +5,7 @@ from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 
 from dotenv import load_dotenv
 
-from gmailconnector.responder import Response
+from .responder import Response
 
 if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env', verbose=True, override=True)
