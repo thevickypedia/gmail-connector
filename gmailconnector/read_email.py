@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from .responder import Response
 
 if os.path.isfile('.env'):
-    load_dotenv(dotenv_path='.env', verbose=True, override=True)
+    load_dotenv(dotenv_path='.env')
 
 
 class ReadEmail:
