@@ -27,8 +27,9 @@ class Messenger:
         "us-cellular": "email.uscc.net",
     }
 
-    def __init__(self, message: str, phone: str = os.environ.get('phone'),
-                 gmail_user: str = os.environ.get('gmail_user'), gmail_pass: str = os.environ.get('gmail_pass'),
+    def __init__(self, message: str, phone: str = os.environ.get('phone') or os.environ.get('PHONE'),
+                 gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
+                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS'),
                  subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None, delete_sent: bool = True):
         """Initiates all the necessary args.
 
@@ -148,7 +149,7 @@ class Messenger:
 
         if self.delete_sent:
             delete = DeleteSent(username=self.gmail_user, password=self.gmail_pass, subject=self.subject)
-            Thread(target=delete.delete_sent(), daemon=True).start()
+            Thread(target=delete.delete_sent, daemon=True).start()
 
         return Response(dictionary={
             'ok': True,
@@ -161,7 +162,7 @@ if __name__ == '__main__':
     from datetime import datetime
 
     response = Messenger(
-        phone=os.environ.get('phone'), message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
+        message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
     ).send_sms()
 
     if response.ok and response.status == 200:

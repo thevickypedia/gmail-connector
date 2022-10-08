@@ -15,7 +15,7 @@ Welcome to Gmail Connector's documentation!
 Send SMS
 ========
 
-.. automodule:: send_sms
+.. automodule:: gmailconnector.send_sms
    :members:
    :undoc-members:
    :exclude-members: SMS_GATEWAY
@@ -23,21 +23,21 @@ Send SMS
 Delete Sent SMS
 ===============
 
-.. automodule:: sms_deleter
+.. automodule:: gmailconnector.sms_deleter
    :members:
    :undoc-members:
 
 Send Email
 ==========
 
-.. automodule:: send_email
+.. automodule:: gmailconnector.send_email
    :members:
    :undoc-members:
 
 Read Email
 ==========
 
-.. automodule:: read_email
+.. automodule:: gmailconnector.read_email
    :members:
    :exclude-members: LOCAL_TIMEZONE
 

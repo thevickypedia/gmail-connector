@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+0.5.3 (10/08/2022)
+------------------
+- Add an option to format email body as HTML
+- Fix a bug when calling thread to delete sent email after sms
+- Fix a bug in sphinx doc creation
+- Update docstrings
+
 0.5.2 (06/08/2022)
 ------------------
 - Remove verbose and override flags when loading .env

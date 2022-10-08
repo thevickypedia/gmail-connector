@@ -18,9 +18,12 @@ class SendEmail:
 
     """
 
-    def __init__(self, subject: str, recipient: str or list = os.environ.get('recipient'),
-                 gmail_user: str = os.environ.get('gmail_user'), gmail_pass: str = os.environ.get('gmail_pass'),
-                 sender: str = 'GmailConnector', body: str = None, attachment: str = None, filename: str = None,
+    def __init__(self, subject: str,
+                 gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
+                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS'),
+                 recipient: str or list = os.environ.get('recipient') or os.environ.get('RECIPIENT'),
+                 sender: str = 'GmailConnector', body: str = None, html_body: str = None,
+                 attachment: str = None, filename: str = None,
                  cc: str or list = None, bcc: str or list = None):
         """Initiates all the necessary args.
 
@@ -30,6 +33,7 @@ class SendEmail:
             recipient: Email address of the recipient to whom the email has to be sent.
             subject: Subject line of the email.
             body: Body of the email. Defaults to ``None``.
+            html_body: Body of the email. Defaults to ``None``.
             attachment: Name of the file that has to be attached.
             filename: Custom name of the attachment.
             cc: Email address of the recipient to whom the email has to be CC'd.
@@ -48,6 +52,7 @@ class SendEmail:
         self.cc = cc
         self.bcc = bcc
         self.body = body
+        self.html_body = html_body
 
         self.sender = f"{sender} <{gmail_user}>"
         self.attachment = attachment
@@ -76,8 +81,10 @@ class SendEmail:
         if cc := self.cc:
             msg['Cc'] = cc
 
-        if body := self.body:
-            msg.attach(payload=text.MIMEText(body))
+        if self.body:
+            msg.attach(payload=text.MIMEText(self.body, 'plain'))
+        if self.html_body:
+            msg.attach(payload=text.MIMEText(self.html_body, 'html'))
 
         if self.attachment and (os.path.isfile(self.attachment)):
             file_type = self.attachment.split('.')[-1]
@@ -157,9 +164,7 @@ class SendEmail:
 if __name__ == '__main__':
     from datetime import datetime
 
-    response = SendEmail(
-        recipient=os.environ.get('recipient'), subject=datetime.now().strftime("%B %d, %Y %I:%M %p")
-    ).send_email()
+    response = SendEmail(subject=datetime.now().strftime("%B %d, %Y %I:%M %p")).send_email()
 
     if response.ok and response.status == 200:
         print('SUCCESS')

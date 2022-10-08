@@ -26,13 +26,15 @@ class ReadEmail:
     ADDITIONAL_CATEGORIES = ['SMALLER', 'TEXT', 'SINCE']
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
-    def __init__(self, gmail_user: str = os.environ.get('gmail_user'), gmail_pass: str = os.environ.get('gmail_pass'),
+    def __init__(self, gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
+                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS'),
                  folder: str = 'inbox'):
         """Initiates all the necessary args.
 
         Args:
             gmail_user: Login email address.
             gmail_pass: Login password.
+            folder: Folder where the unread emails have to be read from.
 
         References:
             https://imapclient.readthedocs.io/en/2.1.0/_modules/imapclient/imapclient.html#IMAPClient.xlist_folders
