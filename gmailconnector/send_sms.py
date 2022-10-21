@@ -27,80 +27,103 @@ class Messenger:
         "us-cellular": "email.uscc.net",
     }
 
-    def __init__(self, message: str, phone: str = os.environ.get('phone') or os.environ.get('PHONE'),
-                 gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
-                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS'),
-                 subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None, delete_sent: bool = True):
+    def __init__(self, gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
+                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')):
         """Initiates all the necessary args.
 
         Args:
             gmail_user: Gmail username to authenticate SMTP lib.
             gmail_pass: Gmail password to authenticate SMTP lib.
-            phone: Phone number stored as env var.
-            message: Content of the message.
-            subject: Subject line for the message. Defaults to "Message from GmailConnector"
-            carrier: Takes any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``
-            sms_gateway: Takes the SMS gateway of the carrier as an argument.
 
         See Also:
             Carrier defaults to ``t-mobile`` which uses ``tmomail.net`` as the SMS gateway.
         """
         self.server, self.mail = None, None
-        if not all([gmail_user, gmail_pass, phone, message]):
+        if not all([gmail_user, gmail_pass]):
             raise ValueError(
-                'Cannot proceed without the args: `gmail_user`, `gmail_pass`, `phone` and `message`'
+                'Cannot proceed without the args: `gmail_user` and `gmail_pass`'
             )
         if not gmail_user.endswith('@gmail.com'):
             gmail_user = gmail_user + '@gmail.com'
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
-        self.message = message
-        self.phone = phone
-        self._validate_phone()
-
-        self.body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
-        self.subject = subject or f"Message from {gmail_user.replace('@gmail.com', '')}"
-        self.delete_sent = delete_sent
-
-        carrier = carrier.lower()
-        if carrier not in list(self.SMS_GATEWAY.keys()):
-            carrier = 't-mobile'
-        self.gateway = sms_gateway or self.SMS_GATEWAY.get(carrier)
-
-        self.to = self._generate_address()
         self.server = SMTP(host="smtp.gmail.com", port=587)
+        self._authenticated = False
+
+    @property
+    def authenticate(self) -> Response:
+        """Starts the TLS server and authenticates the user.
+
+        Returns:
+            Response:
+            A custom response class with properties: ok, status and body to the user.
+        """
+        self.server.starttls()
+        try:
+            self.server.login(user=self.gmail_user, password=self.gmail_pass)
+            self._authenticated = True
+            return Response(dictionary={
+                'ok': True,
+                'status': 200,
+                'body': "Authentication was successful."
+            })
+        except SMTPAuthenticationError:
+            return Response(dictionary={
+                'ok': False,
+                'status': 401,
+                'body': "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
+                        "Ensure the credentials stored in env vars are set correct.\n"
+            })
+        except SMTPConnectError:
+            return Response(dictionary={
+                'ok': False,
+                'status': 503,
+                'body': "Error during connection establishment with GMAIL server."
+            })
 
     def __del__(self):
         """Destructor has been called to close the TLS connection and logout."""
         if self.server:
             self.server.close()
 
-    def _validate_phone(self):
+    @staticmethod
+    def _validate_phone(phone):
         """Validates all the arguments passed during object initialization.
 
         Raises:
             ValueError: If any arg is missing or malformed.
         """
-        if len(self.phone) != 10 and len(self.phone) != 12:
+        if len(phone) != 10 and len(phone) != 12:
             raise ValueError('Phone number should either be 10 or 12 digits (if includes country code)')
-        if self.phone.startswith('+') and not self.phone.startswith('+1'):
+        if phone.startswith('+') and not phone.startswith('+1'):
             raise ValueError('Unsupported country code. Module works only for US based contact numbers.')
 
-    def _generate_address(self) -> str:
+    @staticmethod
+    def _generate_address(phone, gateway) -> str:
         """Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.
 
         Returns:
             str:
             Returns the formed endpoint. `Example: ``+11234567890@tmomail.net```
         """
-        if len(self.phone) == 11 and self.phone.startswith('1'):
-            self.phone = f'+{self.phone}'
-        if not self.phone.startswith('+'):
-            self.phone = f'+1{self.phone}'
-        return self.phone + '@' + self.gateway
+        if len(phone) == 11 and phone.startswith('1'):
+            phone = f'+{phone}'
+        if not phone.startswith('+'):
+            phone = f'+1{phone}'
+        return phone + '@' + gateway
 
-    def send_sms(self) -> Response:
+    def send_sms(self, message: str, phone: str = os.environ.get('phone') or os.environ.get('PHONE'),
+                 subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None,
+                 delete_sent: bool = True) -> Response:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
+
+        Args:
+            phone: Phone number stored as env var.
+            message: Content of the message.
+            subject: Subject line for the message. Defaults to "Message from GmailConnector"
+            carrier: Takes any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``
+            sms_gateway: Takes the SMS gateway of the carrier as an argument.
+            delete_sent: Boolean flag to delete the message from GMAIL's sent items. Defaults to ``True``.
 
         Raises:
             UnicodeEncodeError
@@ -117,56 +140,36 @@ class Messenger:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        message = (f"From: {self.gmail_user}\n" + f"To: {self.to}\n" + f"Subject: {self.subject}\n" + self.body)
+        carrier = carrier.lower()
+        if carrier not in list(self.SMS_GATEWAY.keys()):
+            carrier = 't-mobile'
+        gateway = sms_gateway or self.SMS_GATEWAY.get(carrier)
 
+        self._validate_phone(phone=phone)
+        body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
+        subject = subject or f"Message from {self.gmail_user.replace('@gmail.com', '')}"
+        to = self._generate_address(phone=phone, gateway=gateway)
+        if not self._authenticated:
+            status = self.authenticate
+            if not status.ok:
+                return status
+        message = (f"From: {self.gmail_user}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + body)
         if len(message) > 428:
             return Response(dictionary={
                 'ok': False,
                 'status': 413,
                 'body': f'Payload length: {len(message):,}, which is more than the optimal size: 428. '
-                        f'Message length: {len(self.body):,}'
+                        f'Message length: {len(body):,}'
             })
 
-        self.server.starttls()
+        self.server.sendmail(self.gmail_user, to, message)
 
-        try:
-            self.server.login(user=self.gmail_user, password=self.gmail_pass)
-        except SMTPAuthenticationError:
-            return Response(dictionary={
-                'ok': False,
-                'status': 401,
-                'body': "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
-                        "Ensure the credentials stored in env vars are set correct.\n"
-            })
-        except SMTPConnectError:
-            return Response(dictionary={
-                'ok': False,
-                'status': 503,
-                'body': "Error during connection establishment with GMAIL server."
-            })
-
-        self.server.sendmail(self.gmail_user, self.to, message)
-
-        if self.delete_sent:
-            delete = DeleteSent(username=self.gmail_user, password=self.gmail_pass, subject=self.subject)
+        if delete_sent:
+            delete = DeleteSent(username=self.gmail_user, password=self.gmail_pass, subject=subject)
             Thread(target=delete.delete_sent, daemon=True).start()
 
         return Response(dictionary={
             'ok': True,
             'status': 200,
-            'body': f'SMS has been sent to {self.to}'
+            'body': f'SMS has been sent to {to}'
         })
-
-
-if __name__ == '__main__':
-    from datetime import datetime
-
-    response = Messenger(
-        message=f'Hello on {datetime.now().strftime("%B %d, %Y at %I:%M %p")}'
-    ).send_sms()
-
-    if response.ok and response.status == 200:
-        print('SUCCESS')
-    else:
-        print('FAILED')
-    print(response.json())

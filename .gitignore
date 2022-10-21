@@ -5,6 +5,7 @@ __pycache__
 
 # sphinx documentation generator
 _build
+_static
 
 # pypi package
 build

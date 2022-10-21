@@ -28,15 +28,21 @@ Store a `.env` file with the args:
 gmail_user = 'username@gmail.com',
 gmail_pass = '<ACCOUNT_PASSWORD>'
 ```
+Optionally include,
+```bash
+recipient='username@gmail.com'
+phone='1234567890'
+```
 
 [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
 ```python
 from gmailconnector.send_sms import Messenger
 
-response = Messenger(
-    phone='+11234567890',
-    message='Test SMS using gmail-connector'
-).send_sms()
+sms_object = Messenger()
+auth = sms_object.authenticate  # Authentication happens in send_sms if not instantiated beforehand
+if not auth.ok:
+    exit(auth.body)
+response = sms_object.send_sms(phone='+11234567890', message='Test SMS using gmail-connector')
 if response.ok:
     print(response.json())
 ```
@@ -58,10 +64,11 @@ if response.ok:
 ```python
 from gmailconnector.send_email import SendEmail
 
-response = SendEmail(
-        recipient='another_username@gmail.com',
-        subject='Howdy!'
-    ).send_email()
+mail_object = SendEmail()
+auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
+if not auth.ok:
+    exit(auth.body)
+response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!')
 if response.ok:
     print(response.json())
 ```
@@ -70,6 +77,7 @@ if response.ok:
 
 ###### Additional args:
 - **body:** Body of the email. Defaults to blank.
+- **html_body:** Body of the email formatted as HTML. Supports inline images with a public `src`.
 - **attachment:** Filename that has to be attached.
 - **filename:** Custom name for the attachment. Defaults to the attachment name itself.
 - **sender:** Name that has to be used in the email.

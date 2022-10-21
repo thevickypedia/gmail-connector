@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+0.5.4 (10/21/2022)
+------------------
+- Instantiate the object before sending SMS or email
+- Add an authenticate property
+- Update README.md and docstrings
+
 0.5.3 (10/08/2022)
 ------------------
 - Add an option to format email body as HTML
