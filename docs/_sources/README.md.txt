@@ -62,24 +62,73 @@ if response.ok:
 
 [Send Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py)
 ```python
+import os
+
 from gmailconnector.send_email import SendEmail
 
 mail_object = SendEmail()
 auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
 if not auth.ok:
     exit(auth.body)
+
+# Send an email without any attachments
 response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!')
-if response.ok:
-    print(response.json())
+print(response.json())
+
+# Different use cases to add attachments with/without custom filenames to an email
+images = [os.path.join(os.getcwd(), 'images', image) for image in os.listdir('images')]
+names = ['Apple', 'Flower', 'Balloon']
+
+# Use case 1 - Send an email with attachments but no custom attachment name
+response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+                                  attachment=images)
+print(response.json())
+
+# Use case 2 - Use a dictionary of attachments and custom attachment names
+response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+                                  custom_attachment=dict(zip(images, names)))
+print(response.json())
+
+# Use case 3 - Use list of attachments and list of custom attachment names
+response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+                                  attachment=[images], filename=[names])
+print(response.json())
+
+# Use case 4 - Use a single attachment and a custom attachment name for it
+response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+                                  attachment=os.path.join('images', 'random_apple_xroamutiypa.jpeg'), filename='Apple')
+print(response.json())
 ```
+
+To verify recipient email before sending.
+```python
+from gmailconnector.send_email import SendEmail
+from gmailconnector.verify_email import validate
+
+recipient = 'another_username@gmail.com'
+validation_result = validate(email=recipient)
+if validation_result.ok is False:
+    print(validation_result.body)
+    exit(1)
+
+mail_object = SendEmail()
+auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
+if not auth.ok:
+    print(auth.body)
+    exit(1)
+# Send an email without any attachments
+response = mail_object.send_email(recipient=recipient, subject='Howdy!')
+print(response.json())
+```
+
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></strong></summary>
 
 ###### Additional args:
 - **body:** Body of the email. Defaults to blank.
 - **html_body:** Body of the email formatted as HTML. Supports inline images with a public `src`.
-- **attachment:** Filename that has to be attached.
-- **filename:** Custom name for the attachment. Defaults to the attachment name itself.
+- **attachment:** Filename(s) that has to be attached.
+- **filename:** Custom name(s) for the attachment(s). Defaults to the attachment name itself.
 - **sender:** Name that has to be used in the email.
 - **cc:** Email address of the recipient to whom the email has to be CC'd.
 - **bcc:** Email address of the recipient to whom the email has to be BCC'd.

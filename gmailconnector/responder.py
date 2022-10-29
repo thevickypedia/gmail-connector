@@ -1,4 +1,5 @@
 import warnings
+from typing import Any
 
 
 class Response:
@@ -17,7 +18,7 @@ class Response:
         self.raw: dict = dictionary
         self._ok: bool = dictionary.get('ok')
         self._status: int = dictionary.get('status')
-        self._body: str = dictionary.get('body')
+        self._body: Any = dictionary.get('body')
         self._count: int or None = dictionary.get('count')
 
     @property

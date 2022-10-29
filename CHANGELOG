@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+0.5.5 (10/29/2022)
+------------------
+- Feature improvements on send_email.py
+- Add a feature to support multiple attachments in an email
+- Create an arg to fail email if attachment fails
+- Create a module to validate email using SMTP port
+- Add usage examples in README.md
+
 0.5.4 (10/21/2022)
 ------------------
 - Instantiate the object before sending SMS or email

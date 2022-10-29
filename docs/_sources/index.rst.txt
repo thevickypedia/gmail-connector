@@ -41,6 +41,13 @@ Read Email
    :members:
    :exclude-members: LOCAL_TIMEZONE
 
+Verify Email
+============
+
+.. automodule:: gmailconnector.verify_email
+   :members:
+   :undoc-members:
+
 Indices and tables
 ==================
 
