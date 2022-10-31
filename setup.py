@@ -32,6 +32,7 @@ setup(
     classifiers=classifiers,
     keywords='gmail, smtp, imap, tls',
     packages=['.gmailconnector'],
+    include_package_data=True,
     python_requires=">=3.8",
     install_requires=['idna>=3.3', 'setuptools>=58.2.0', 'python-dotenv>=0.21.0', 'pytz>=2021.3'],
     project_urls={
