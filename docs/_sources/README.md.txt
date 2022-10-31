@@ -100,25 +100,15 @@ response = mail_object.send_email(recipient='another_username@gmail.com', subjec
 print(response.json())
 ```
 
-To verify recipient email before sending.
+**To verify recipient email before sending.**
 ```python
-from gmailconnector.send_email import SendEmail
-from gmailconnector.verify_email import validate
+from gmailconnector.validator import validate_email
 
 recipient = 'another_username@gmail.com'
-validation_result = validate(email=recipient)
+validation_result = validate_email(email_address=recipient)
 if validation_result.ok is False:
     print(validation_result.body)
     exit(1)
-
-mail_object = SendEmail()
-auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
-if not auth.ok:
-    print(auth.body)
-    exit(1)
-# Send an email without any attachments
-response = mail_object.send_email(recipient=recipient, subject='Howdy!')
-print(response.json())
 ```
 
 <details>

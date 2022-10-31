@@ -390,117 +390,29 @@
 </dd></dl>
 
 </section>
-<section id="module-gmailconnector.verify_email">
-<span id="verify-email"></span><h1>Verify Email<a class="headerlink" href="#module-gmailconnector.verify_email" title="Permalink to this headline">¶</a></h1>
+<section id="module-gmailconnector.validator.validate_email">
+<span id="validator"></span><h1>Validator<a class="headerlink" href="#module-gmailconnector.validator.validate_email" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="gmailconnector.verify_email.get_mx_records">
-<span class="sig-prename descclassname"><span class="pre">gmailconnector.verify_email.</span></span><span class="sig-name descname"><span class="pre">get_mx_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#gmailconnector.verify_email.get_mx_records" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get MX (Mail Exchange server) records for the given domain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>domain</strong> – FQDN (Fully Qualified Domain Name) extracted from the email address.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of IP addresses of all the mail exchange servers from authoritative/non-authoritative answer section.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="gmailconnector.verify_email.hostname_to_ip">
-<span class="sig-prename descclassname"><span class="pre">gmailconnector.verify_email.</span></span><span class="sig-name descname"><span class="pre">hostname_to_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.verify_email.hostname_to_ip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket.gethostbyname_ex</span></code> to translate a host name to IPv4 address format, extended interface.</p>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex">https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>hostname</strong> – Takes the hostname of a device as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="gmailconnector.verify_email.is_port_allowed">
-<span class="sig-prename descclassname"><span class="pre">gmailconnector.verify_email.</span></span><span class="sig-name descname"><span class="pre">is_port_allowed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gmail.com'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.verify_email.is_port_allowed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replicates <code class="docutils literal notranslate"><span class="pre">telnet</span></code> command by trying to create a socket connection on a particular host and port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>host</strong> – Host that has to be tried. Defaults to ‘gmail.com’</p></li>
-<li><p><strong>port</strong> – Port number that has to be checked. Defaults to SMTP port 25.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean flag to indicate whether the port is allowed.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="gmailconnector.verify_email.matrix_to_flat_list">
-<span class="sig-prename descclassname"><span class="pre">gmailconnector.verify_email.</span></span><span class="sig-name descname"><span class="pre">matrix_to_flat_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#gmailconnector.verify_email.matrix_to_flat_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a matrix into flat list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_</strong> – Takes a list of list as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Flat list.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="gmailconnector.verify_email.remove_duplicates">
-<span class="sig-prename descclassname"><span class="pre">gmailconnector.verify_email.</span></span><span class="sig-name descname"><span class="pre">remove_duplicates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.verify_email.remove_duplicates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove duplicate values from a list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_</strong> – Takes a list as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns a cleaned up list.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="gmailconnector.verify_email.validate">
-<span class="sig-prename descclassname"><span class="pre">gmailconnector.verify_email.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#gmailconnector.verify_email.validate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="gmailconnector.validator.validate_email.validate_email">
+<span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.validate_email.</span></span><span class="sig-name descname"><span class="pre">validate_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smtp_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gmailconnector.responder.Response</span></span></span><a class="headerlink" href="#gmailconnector.validator.validate_email.validate_email" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates email address deliver-ability using SMTP.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>email</strong> – Email address.</p></li>
-<li><p><strong>timeout</strong> – Time in seconds to wait for a result.</p></li>
+<li><p><strong>email_address</strong> – Email address.</p></li>
+<li><p><strong>smtp_timeout</strong> – Time in seconds to wait for a result.</p></li>
+<li><p><strong>sender</strong> – Sender’s email address.</p></li>
 </ul>
 </dd>
 </dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>Timeout specified is to create a socket connection with each mail exchange server.</p></li>
-<li><p>If a mail server has 10 mx records and timeout is set to 3, the total wait time will be 30 seconds.</p></li>
-</ul>
-</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <ul class="simple">
 <li><p>This is not a perfect solution for validating email address.</p></li>
 <li><p>Works perfect for gmail, but yahoo and related mail servers always returns OK even with garbage email address.</p></li>
 <li><p>Works only if port 25 is not blocked by ISP.</p></li>
+<li><p>SMTP Timeout <code class="docutils literal notranslate"><span class="pre">(smtp_timeout)</span></code> specified is to create a socket connection with each mail exchange server.</p></li>
+<li><p>If a mail server has 10 mx records and timeout is set to 3, the total wait time will be 30 seconds.</p></li>
 </ul>
 </div>
 <div class="admonition seealso">
@@ -528,6 +440,151 @@
 </dd></dl>
 
 </section>
+<section id="module-gmailconnector.validator.address">
+<span id="email-address-validation"></span><h1>Email Address Validation<a class="headerlink" href="#module-gmailconnector.validator.address" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="gmailconnector.validator.address.ValidateAddress">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.address.</span></span><span class="sig-name descname"><span class="pre">ValidateAddress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.validator.address.ValidateAddress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates ValidateAddress object to split the address into user and domin to further validate.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ValidateAddress</span>
+</pre></div>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="gmailconnector.validator.address.ValidateAddress.domain">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ipaddress.IPv4Address</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ipaddress.IPv6Address</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#gmailconnector.validator.address.ValidateAddress.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns only the domain part of the address.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gmailconnector.validator.address.ValidateAddress.email">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#gmailconnector.validator.address.ValidateAddress.email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the email address.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gmailconnector.validator.address.ValidateAddress.user">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#gmailconnector.validator.address.ValidateAddress.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns only the user part of the address.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gmailconnector.validator.domain">
+<span id="domain-validation"></span><h1>Domain Validation<a class="headerlink" href="#module-gmailconnector.validator.domain" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="gmailconnector.validator.domain.get_mx_records">
+<span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.domain.</span></span><span class="sig-name descname"><span class="pre">get_mx_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#gmailconnector.validator.domain.get_mx_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get MX (Mail Exchange server) records for the given domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>domain</strong> – FQDN (Fully Qualified Domain Name) extracted from the email address.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of IP addresses of all the mail exchange servers from authoritative/non-authoritative answer section.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gmailconnector.validator.port">
+<span id="port-validation"></span><h1>Port Validation<a class="headerlink" href="#module-gmailconnector.validator.port" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="gmailconnector.validator.port.is_port_allowed">
+<span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.port.</span></span><span class="sig-name descname"><span class="pre">is_port_allowed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gmail.com'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.validator.port.is_port_allowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replicates <code class="docutils literal notranslate"><span class="pre">telnet</span></code> command by trying to create a socket connection on a particular host and port.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> – Host that has to be tried. Defaults to ‘gmail.com’</p></li>
+<li><p><strong>port</strong> – Port number that has to be checked. Defaults to SMTP port 25.</p></li>
+<li><p><strong>timeout</strong> – Timeout for socket connection.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean flag to indicate whether the port is allowed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gmailconnector.validator.support">
+<span id="support-functions"></span><h1>Support Functions<a class="headerlink" href="#module-gmailconnector.validator.support" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="gmailconnector.validator.support.hostname_to_ip">
+<span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.support.</span></span><span class="sig-name descname"><span class="pre">hostname_to_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.validator.support.hostname_to_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket.gethostbyname_ex</span></code> to translate a host name to IPv4 address format, extended interface.</p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex">https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hostname</strong> – Takes the hostname of a device as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gmailconnector.validator.support.matrix_to_flat_list">
+<span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.support.</span></span><span class="sig-name descname"><span class="pre">matrix_to_flat_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#gmailconnector.validator.support.matrix_to_flat_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a matrix into flat list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes a list of list as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Flat list.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gmailconnector.validator.support.remove_duplicates">
+<span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.support.</span></span><span class="sig-name descname"><span class="pre">remove_duplicates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.validator.support.remove_duplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove duplicate values from a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes a list as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a cleaned up list.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gmailconnector.validator.exceptions">
+<span id="custom-exceptions"></span><h1>Custom Exceptions<a class="headerlink" href="#module-gmailconnector.validator.exceptions" title="Permalink to this headline">¶</a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="gmailconnector.validator.exceptions.AddressFormatError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.exceptions.</span></span><span class="sig-name descname"><span class="pre">AddressFormatError</span></span><a class="headerlink" href="#gmailconnector.validator.exceptions.AddressFormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom error object for invalid address format.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="gmailconnector.validator.exceptions.InvalidDomain">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidDomain</span></span><a class="headerlink" href="#gmailconnector.validator.exceptions.InvalidDomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom error object for invalid domain.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="gmailconnector.validator.exceptions.NotMailServer">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.exceptions.</span></span><span class="sig-name descname"><span class="pre">NotMailServer</span></span><a class="headerlink" href="#gmailconnector.validator.exceptions.NotMailServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom error object for domain that is not a mail server.</p>
+</dd></dl>
+
+</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
@@ -552,7 +609,12 @@
 <li><a class="reference internal" href="#module-gmailconnector.sms_deleter">Delete Sent SMS</a></li>
 <li><a class="reference internal" href="#module-gmailconnector.send_email">Send Email</a></li>
 <li><a class="reference internal" href="#module-gmailconnector.read_email">Read Email</a></li>
-<li><a class="reference internal" href="#module-gmailconnector.verify_email">Verify Email</a></li>
+<li><a class="reference internal" href="#module-gmailconnector.validator.validate_email">Validator</a></li>
+<li><a class="reference internal" href="#module-gmailconnector.validator.address">Email Address Validation</a></li>
+<li><a class="reference internal" href="#module-gmailconnector.validator.domain">Domain Validation</a></li>
+<li><a class="reference internal" href="#module-gmailconnector.validator.port">Port Validation</a></li>
+<li><a class="reference internal" href="#module-gmailconnector.validator.support">Support Functions</a></li>
+<li><a class="reference internal" href="#module-gmailconnector.validator.exceptions">Custom Exceptions</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

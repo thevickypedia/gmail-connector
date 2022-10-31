@@ -41,10 +41,45 @@ Read Email
    :members:
    :exclude-members: LOCAL_TIMEZONE
 
-Verify Email
-============
+Validator
+=========
 
-.. automodule:: gmailconnector.verify_email
+.. automodule:: gmailconnector.validator.validate_email
+   :members:
+   :undoc-members:
+
+Email Address Validation
+========================
+
+.. automodule:: gmailconnector.validator.address
+   :members:
+   :undoc-members:
+
+Domain Validation
+=================
+
+.. automodule:: gmailconnector.validator.domain
+   :members:
+   :undoc-members:
+
+Port Validation
+===============
+
+.. automodule:: gmailconnector.validator.port
+   :members:
+   :undoc-members:
+
+Support Functions
+=================
+
+.. automodule:: gmailconnector.validator.support
+   :members:
+   :undoc-members:
+
+Custom Exceptions
+=================
+
+.. automodule:: gmailconnector.validator.exceptions
    :members:
    :undoc-members:
 
