@@ -72,7 +72,7 @@ if not auth.ok:
     exit(auth.body)
 
 # Send an email without any attachments
-response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!')
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!')
 print(response.json())
 
 # Different use cases to add attachments with/without custom filenames to an email
@@ -80,35 +80,38 @@ images = [os.path.join(os.getcwd(), 'images', image) for image in os.listdir('im
 names = ['Apple', 'Flower', 'Balloon']
 
 # Use case 1 - Send an email with attachments but no custom attachment name
-response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
                                   attachment=images)
 print(response.json())
 
 # Use case 2 - Use a dictionary of attachments and custom attachment names
-response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
                                   custom_attachment=dict(zip(images, names)))
 print(response.json())
 
 # Use case 3 - Use list of attachments and list of custom attachment names
-response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
                                   attachment=[images], filename=[names])
 print(response.json())
 
 # Use case 4 - Use a single attachment and a custom attachment name for it
-response = mail_object.send_email(recipient='another_username@gmail.com', subject='Howdy!',
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
                                   attachment=os.path.join('images', 'random_apple_xroamutiypa.jpeg'), filename='Apple')
 print(response.json())
 ```
 
-**To verify recipient email before sending.**
+**To verify recipient email before sending. Authentication not required, uses SMTP port `25`**
 ```python
 from gmailconnector.validator import validate_email
 
-recipient = 'another_username@gmail.com'
-validation_result = validate_email(email_address=recipient)
-if validation_result.ok is False:
-    print(validation_result.body)
-    exit(1)
+email_addr = 'someone@example.com'
+validation_result = validate_email(email_address=email_addr)
+if validation_result.ok is True:
+    print('valid')  # Validated and found the recipient address to be valid
+elif validation_result.ok is False:
+    print('invalid')  # Validated and found the recipient address to be invalid
+else:
+    print('validation incomplete')  # Couldn't validate (mostly because port 25 is blocked by ISP)
 ```
 
 <details>

@@ -1,3 +1,4 @@
+import logging
 import re
 import smtplib
 import socket
@@ -8,23 +9,26 @@ from gmailconnector.responder import Response
 from .address import ValidateAddress
 from .domain import get_mx_records
 from .exceptions import AddressFormatError, InvalidDomain, NotMailServer
-from .port import is_port_allowed
+
+formatter = logging.Formatter(fmt='%(levelname)s\t %(message)s')
+
+handler = logging.StreamHandler()
+handler.setFormatter(fmt=formatter)
+
+logger = logging.getLogger('validator')
+logger.addHandler(hdlr=handler)
+logger.setLevel(level=logging.DEBUG)
 
 
-def validate_email(email_address: str, smtp_timeout: Union[int, float] = 5, sender: str = None) -> Response:
+def validate_email(email_address: str, timeout: Union[int, float] = 5,
+                   sender: str = None, debug: bool = False) -> Response:
     """Validates email address deliver-ability using SMTP.
 
     Args:
         email_address: Email address.
-        smtp_timeout: Time in seconds to wait for a result.
+        timeout: Time in seconds to wait for a result.
         sender: Sender's email address.
-
-    Warnings:
-        - This is not a perfect solution for validating email address.
-        - Works perfect for gmail, but yahoo and related mail servers always returns OK even with garbage email address.
-        - Works only if port 25 is not blocked by ISP.
-        - SMTP Timeout ``(smtp_timeout)`` specified is to create a socket connection with each mail exchange server.
-        - If a mail server has 10 mx records and timeout is set to 3, the total wait time will be 30 seconds.
+        debug: Debug flag enable logging.
 
     See Also:
         - Sets the ``ok`` flag in Response class to
@@ -36,6 +40,8 @@ def validate_email(email_address: str, smtp_timeout: Union[int, float] = 5, send
         bool:
         Boolean flag to indicate if the email address is valid.
     """
+    if debug is False:
+        logger.disabled = True
     try:
         address = ValidateAddress(address=email_address)
     except AddressFormatError as error:
@@ -46,53 +52,45 @@ def validate_email(email_address: str, smtp_timeout: Union[int, float] = 5, send
             f"Invalid address: {email_address!r}."
         })
 
+    server = smtplib.SMTP(timeout=timeout)
     try:
-        mx_records = get_mx_records(domain=address.domain)
-    except InvalidDomain as error:
-        return Response(dictionary={
-            'ok': False,
-            'status': 422,
-            'body': error.__str__()
-        })
-    except NotMailServer as error:
-        return Response(dictionary={
-            'ok': False,
-            'status': 422,
-            'body': error.__str__()
-        })
-
-    if not is_port_allowed():
+        for record in get_mx_records(domain=address.domain):
+            logger.info(f'Trying {record}...')
+            try:
+                server.connect(host=record)
+            except socket.error as error:
+                logger.error(error)
+                continue
+            server.ehlo_or_helo_if_needed()
+            server.mail(sender=sender or address.email)
+            code, msg = server.rcpt(recip=address.email)
+            msg = re.sub(r"\d+.\d+.\d+", '', msg.decode(encoding='utf-8')).strip()
+            msg = ' '.join(msg.splitlines()).replace('  ', ' ').strip() if msg else "Unknown error"
+            if code == 550:  # Definitely invalid email address
+                logger.info(f'Invalid email address: {address.email}')
+                return Response(dictionary={
+                    'ok': False,
+                    'status': 550,
+                    'body': msg
+                })
+            if code < 400:  # Valid email address
+                logger.info(f'Valid email address: {address.email}')
+                return Response(dictionary={
+                    'ok': True,
+                    'status': 200,
+                    'body': f"'{msg}' at MX:{record}"
+                })
+            logger.info(f'Temporary error: {code} - {msg}')
+        logger.error('Received multiple temporary errors. Could not finish validation.')
         return Response(dictionary={
             'ok': None,
-            'status': 305,
-            'body': 'Cannot verify SMTP since port 25 has been blocked.'
+            'status': 207,
+            'body': 'Received multiple temporary errors. Could not finish validation.'
         })
-
-    server = smtplib.SMTP(timeout=smtp_timeout)
-    for record in mx_records:
-        try:
-            server.connect(host=record)
-        except socket.error:
-            continue
-        server.ehlo_or_helo_if_needed()
-        server.mail(sender=sender)
-        code, msg = server.rcpt(recip=address.email)
-        msg = re.sub(r"\d+.\d+.\d+", '', msg.decode(encoding='utf-8')).strip()
-        msg = ' '.join(msg.splitlines()).replace('  ', ' ').strip() if msg else "Unknown error"
-        if code == 550:  # Definitely invalid email address
-            return Response({
-                'ok': False,
-                'status': 550,
-                'body': msg
-            })
-        if code < 400:  # Valid email address
-            return Response({
-                'ok': True,
-                'status': 200,
-                'body': msg
-            })
-    return Response({
-        'ok': None,
-        'status': 207,
-        'body': 'Received multiple temporary errors. Could not finish validation.'
-    })
+    except (InvalidDomain, NotMailServer) as error:
+        logger.error(error)
+        return Response(dictionary={
+            'ok': False,
+            'status': 422,
+            'body': error.__str__()
+        })

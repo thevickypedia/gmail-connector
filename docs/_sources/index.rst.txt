@@ -62,20 +62,6 @@ Domain Validation
    :members:
    :undoc-members:
 
-Port Validation
-===============
-
-.. automodule:: gmailconnector.validator.port
-   :members:
-   :undoc-members:
-
-Support Functions
-=================
-
-.. automodule:: gmailconnector.validator.support
-   :members:
-   :undoc-members:
-
 Custom Exceptions
 =================
 

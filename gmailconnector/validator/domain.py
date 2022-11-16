@@ -1,27 +1,36 @@
-import subprocess
-from typing import List
+import logging
+import socket
+from ipaddress import IPv4Address, IPv6Address
+from typing import Iterable, Union
+
+from dns.rdtypes.ANY.MX import MX
+from dns.resolver import NXDOMAIN, Answer, NoAnswer, resolve
 
 from .exceptions import InvalidDomain, NotMailServer
-from .support import hostname_to_ip, matrix_to_flat_list, remove_duplicates
+
+logger = logging.getLogger('validator')
 
 
-def get_mx_records(domain: str) -> List:
+def get_mx_records(domain: str) -> Iterable[Union[str, IPv4Address, IPv6Address]]:
     """Get MX (Mail Exchange server) records for the given domain.
 
     Args:
         domain: FQDN (Fully Qualified Domain Name) extracted from the email address.
 
-    Returns:
-        list:
-        List of IP addresses of all the mail exchange servers from authoritative/non-authoritative answer section.
+    Yields:
+        IPv4Address:
+        IP addresses of the mail exchange servers from authoritative/non-authoritative answer section.
     """
     try:
-        output = subprocess.check_output(f'nslookup -q=mx {domain}', shell=True)
-        result = [hostname_to_ip(hostname=line.split()[-1]) for line in output.decode().splitlines()
-                  if line.startswith(domain)]
-        cleaned = remove_duplicates(input_=matrix_to_flat_list(input_=result))
-        if not cleaned:
-            raise NotMailServer(f"Domain {domain!r} is not a mail server.")
-        return cleaned
-    except subprocess.CalledProcessError:
-        raise InvalidDomain(f"Domain {domain!r} is invalid.")
+        resolved: Iterable[Answer] = resolve(domain, 'MX')
+    except NXDOMAIN as error:
+        raise InvalidDomain(error)
+    except NoAnswer as error:
+        raise NotMailServer(error)
+    if not resolved:
+        raise NotMailServer(f"Domain {domain!r} is not a mail server.")
+    for x in resolved:
+        x: MX = x
+        ip = socket.gethostbyname(x.exchange.to_text())
+        logger.info(f"{x.preference}\t{x.exchange}\t{ip}")
+        yield ip

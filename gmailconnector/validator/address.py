@@ -1,9 +1,12 @@
+import logging
 from ipaddress import IPv4Address, IPv6Address
 from typing import Union
 
 import idna.core
 
 from .exceptions import AddressFormatError
+
+logger = logging.getLogger('validator')
 
 
 class ValidateAddress:
@@ -25,6 +28,7 @@ class ValidateAddress:
             self._domain = idna.core.encode(self._domain).decode('ascii')
         except idna.core.IDNAError as error:
             raise AddressFormatError(error)
+        logger.info(f'Validation passed on {address}')
 
     @property
     def user(self) -> str:

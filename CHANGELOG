@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+0.5.8 (11/15/2022)
+------------------
+- Remove OS restriction to get MX records
+- Remove unreliable port number access check
+- Switch python publish to run on release
+- Update README.md
+
 0.5.7 (10/30/2022)
 ------------------
 - Include package data to upload validators to pypi
