@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+0.5.9 (12/08/2022)
+------------------
+- Add a flag to make smtp check optional
+- Upgrade sphinx
+
 0.5.8 (11/15/2022)
 ------------------
 - Remove OS restriction to get MX records

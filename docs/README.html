@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Gmail Connector &#8212; Gmail Connector  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -13,6 +13,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -51,10 +52,10 @@
 <a class="reference external" href="https://api.github.com/repos/thevickypedia/gmail-connector"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/thevickypedia/gmail-connector" /></a>
 <a class="reference external" href="https://api.github.com/repos/thevickypedia/gmail-connector"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/thevickypedia/gmail-connector" /></a></p>
 <section id="gmail-connector">
-<h1>Gmail Connector<a class="headerlink" href="#gmail-connector" title="Permalink to this headline">¶</a></h1>
+<h1>Gmail Connector<a class="headerlink" href="#gmail-connector" title="Permalink to this heading">¶</a></h1>
 <p>Python module to, send SMS, emails and read <code class="docutils literal notranslate"><span class="pre">unread</span></code> emails in <code class="docutils literal notranslate"><span class="pre">inbox</span></code> folder.</p>
 <section id="modules-and-protocols">
-<h2>Modules and Protocols<a class="headerlink" href="#modules-and-protocols" title="Permalink to this headline">¶</a></h2>
+<h2>Modules and Protocols<a class="headerlink" href="#modules-and-protocols" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">email</span></code> - Format emails as <code class="docutils literal notranslate"><span class="pre">MIMEMultipart</span></code> object, read emails from <code class="docutils literal notranslate"><span class="pre">bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">str</span></code> and decode headers.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">smtplib</span></code> - <code class="docutils literal notranslate"><span class="pre">SMTP</span></code> Simple Mail Transfer Protocol to connect to <code class="docutils literal notranslate"><span class="pre">gmail</span></code> server, do <code class="docutils literal notranslate"><span class="pre">auth</span></code> and perform outgoing tasks.</p></li>
@@ -62,10 +63,10 @@
 </ul>
 </section>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gmail-connector</span></code></p>
 <section id="env-vars">
-<h3>Env Vars<a class="headerlink" href="#env-vars" title="Permalink to this headline">¶</a></h3>
+<h3>Env Vars<a class="headerlink" href="#env-vars" title="Permalink to this heading">¶</a></h3>
 <p>Store a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with the args:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">gmail_user</span> <span class="o">=</span> <span class="s1">&#39;username@gmail.com&#39;</span>,
 <span class="nv">gmail_pass</span> <span class="o">=</span> <span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span>
@@ -91,7 +92,7 @@
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></strong></summary><p>:warning: Gmail’s SMS Gateway has a payload limit. So, it is recommended to break larger messages into multiple SMS.</p>
 <section id="additional-args">
-<h4>Additional args:<a class="headerlink" href="#additional-args" title="Permalink to this headline">¶</a></h4>
+<h4>Additional args:<a class="headerlink" href="#additional-args" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p><strong>subject:</strong> Subject of the message. Defaults to <code class="docutils literal notranslate"><span class="pre">Message</span> <span class="pre">from</span> <span class="pre">GmailConnector</span></code></p></li>
 <li><p><strong>carrier:</strong> Use any of <code class="docutils literal notranslate"><span class="pre">at&amp;t</span></code>, <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">verizon</span></code>, <code class="docutils literal notranslate"><span class="pre">boost</span></code>, <code class="docutils literal notranslate"><span class="pre">cricket</span></code>, <code class="docutils literal notranslate"><span class="pre">us-cellular</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>.</p></li>
@@ -156,7 +157,7 @@
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></strong></summary></section>
 <section id="id1">
-<h4>Additional args:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<h4>Additional args:<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p><strong>body:</strong> Body of the email. Defaults to blank.</p></li>
 <li><p><strong>html_body:</strong> Body of the email formatted as HTML. Supports inline images with a public <code class="docutils literal notranslate"><span class="pre">src</span></code>.</p></li>
@@ -186,7 +187,7 @@
 </section>
 </section>
 <section id="linting">
-<h3>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h3>
+<h3>Linting<a class="headerlink" href="#linting" title="Permalink to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">PreCommit</span></code> will ensure linting, and the doc creation are run on every commit.</p>
 <p><strong>Requirement</strong>
 <br>
@@ -196,27 +197,27 @@
 <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code></p>
 </section>
 <section id="change-log">
-<h3>Change Log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h3>
+<h3>Change Log<a class="headerlink" href="#change-log" title="Permalink to this heading">¶</a></h3>
 <p><strong>Requirement</strong>
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--no-cache</span> <span class="pre">--upgrade</span> <span class="pre">changelog-generator</span></code></p>
 <p><strong>Usage</strong>
 <code class="docutils literal notranslate"><span class="pre">changelog</span></code></p>
 </section>
 <section id="pypi-module">
-<h3>Pypi Module<a class="headerlink" href="#pypi-module" title="Permalink to this headline">¶</a></h3>
+<h3>Pypi Module<a class="headerlink" href="#pypi-module" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference external" href="https://pypi.org/project/gmail-connector/">https://pypi.org/project/gmail-connector/</a></p>
 </section>
 <section id="runbook">
-<h3>Runbook<a class="headerlink" href="#runbook" title="Permalink to this headline">¶</a></h3>
+<h3>Runbook<a class="headerlink" href="#runbook" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference external" href="https://thevickypedia.github.io/gmail-connector/">https://thevickypedia.github.io/gmail-connector/</a></p>
 </section>
 <section id="repository">
-<h3>Repository<a class="headerlink" href="#repository" title="Permalink to this headline">¶</a></h3>
+<h3>Repository<a class="headerlink" href="#repository" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector">https://github.com/thevickypedia/gmail-connector</a></p>
 </section>
 </section>
 <section id="license-copyright">
-<h2>License &amp; copyright<a class="headerlink" href="#license-copyright" title="Permalink to this headline">¶</a></h2>
+<h2>License &amp; copyright<a class="headerlink" href="#license-copyright" title="Permalink to this heading">¶</a></h2>
 <p>© Vignesh Sivanandha Rao, Gmail Connector</p>
 <p>Licensed under the <a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/LICENSE">MIT License</a></p>
 </section>
@@ -274,7 +275,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -297,7 +298,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
   </body>
 </html>

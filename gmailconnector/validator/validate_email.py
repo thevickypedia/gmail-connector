@@ -20,8 +20,8 @@ logger.addHandler(hdlr=handler)
 logger.setLevel(level=logging.DEBUG)
 
 
-def validate_email(email_address: str, timeout: Union[int, float] = 5,
-                   sender: str = None, debug: bool = False) -> Response:
+def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: str = None,
+                   debug: bool = False, smtp_check: bool = True) -> Response:
     """Validates email address deliver-ability using SMTP.
 
     Args:
@@ -29,6 +29,7 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5,
         timeout: Time in seconds to wait for a result.
         sender: Sender's email address.
         debug: Debug flag enable logging.
+        smtp_check: Flag to check SMTP.
 
     See Also:
         - Sets the ``ok`` flag in Response class to
@@ -50,6 +51,22 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5,
             'status': 422,
             'body': f"Invalid address: {email_address!r}. {error}" if str(error).strip() else
             f"Invalid address: {email_address!r}."
+        })
+
+    if not smtp_check:
+        try:
+            list(get_mx_records(domain=address.domain))
+        except (InvalidDomain, NotMailServer) as error:
+            logger.error(error)
+            return Response(dictionary={
+                'ok': False,
+                'status': 422,
+                'body': error.__str__()
+            })
+        return Response(dictionary={
+            'ok': True,
+            'status': 200,
+            'body': f'{address.email!r} is valid'
         })
 
     server = smtplib.SMTP(timeout=timeout)
