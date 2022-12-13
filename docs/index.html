@@ -163,14 +163,14 @@
 <span id="delete-sent-sms"></span><h1>Delete Sent SMS<a class="headerlink" href="#module-gmailconnector.sms_deleter" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="gmailconnector.sms_deleter.DeleteSent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.sms_deleter.</span></span><span class="sig-name descname"><span class="pre">DeleteSent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.sms_deleter.</span></span><span class="sig-name descname"><span class="pre">DeleteSent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates DeleteSent object to delete a particular email from SentItems.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DeleteSent</span>
 </pre></div>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="gmailconnector.sms_deleter.DeleteSent._thread_executor">
-<span class="sig-name descname"><span class="pre">_thread_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent._thread_executor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_thread_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent._thread_executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets invoked in multiple threads, to set the flag as <code class="docutils literal notranslate"><span class="pre">Deleted</span></code> for the message which was just sent.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -181,11 +181,15 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="gmailconnector.sms_deleter.DeleteSent.delete_sent">
-<span class="sig-name descname"><span class="pre">delete_sent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent.delete_sent" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">delete_sent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent.delete_sent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes the email from GMAIL’s sent items right after sending the message.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Invokes <code class="docutils literal notranslate"><span class="pre">thread_executor</span></code> with 20 workers to sweep through sent items to delete the email.</p>
+<p>Invokes <code class="docutils literal notranslate"><span class="pre">thread_executor</span></code> to sweep through sent items to delete the email.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Deletion time depends on the number of existing emails in the <code class="docutils literal notranslate"><span class="pre">Sent</span></code> folder.</p>
 </div>
 </dd></dl>
 

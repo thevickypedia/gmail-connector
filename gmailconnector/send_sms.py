@@ -1,6 +1,5 @@
 import os
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
-from threading import Thread
 
 from dotenv import load_dotenv
 
@@ -165,8 +164,21 @@ class Messenger:
         self.server.sendmail(self.gmail_user, to, message)
 
         if delete_sent:
-            delete = DeleteSent(username=self.gmail_user, password=self.gmail_pass, subject=subject)
-            Thread(target=delete.delete_sent, daemon=True).start()
+            if delete_response := DeleteSent(username=self.gmail_user, password=self.gmail_pass,
+                                             subject=subject, body=body).delete_sent():
+                return Response(dictionary={
+                    'ok': True,
+                    'status': 200,
+                    'body': f'SMS has been sent to {to}',
+                    'extra': delete_response
+                })
+            else:
+                return Response(dictionary={
+                    'ok': True,
+                    'status': 206,
+                    'body': f'SMS has been sent to {to}',
+                    'extra': 'Failed to locate and delete sent SMS.'
+                })
 
         return Response(dictionary={
             'ok': True,

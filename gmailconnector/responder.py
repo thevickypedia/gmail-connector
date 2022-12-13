@@ -1,4 +1,3 @@
-import warnings
 from typing import Any
 
 
@@ -16,10 +15,6 @@ class Response:
             dictionary: Takes a dictionary of key-value pairs as an argument.
         """
         self.raw: dict = dictionary
-        self._ok: bool = dictionary.get('ok')
-        self._status: int = dictionary.get('status')
-        self._body: Any = dictionary.get('body')
-        self._count: int or None = dictionary.get('count')
 
     @property
     def ok(self) -> bool:
@@ -29,7 +24,7 @@ class Response:
             bool:
             ``True`` or ``False`` based on the arg value received.
         """
-        return self._ok
+        return self.raw.get('ok')
 
     @property
     def status(self) -> int:
@@ -39,7 +34,7 @@ class Response:
             int:
             ``HTTP`` status code as received.
         """
-        return self._status
+        return self.raw.get('status')
 
     @property
     def body(self) -> str:
@@ -49,7 +44,7 @@ class Response:
             str:
             Returns the message as received.
         """
-        return self._body
+        return self.raw.get('body')
 
     def json(self) -> dict:
         """Returns a dictionary of the argument that was received during class initialization.
@@ -62,12 +57,20 @@ class Response:
 
     @property
     def count(self) -> int:
-        """Takes the number of un-read emails and returns it in a class. Only works for read email.
+        """Takes the number of un-read emails and returns it in a class.
 
         Returns:
             int:
             Returns the number of unread emails.
         """
-        if not isinstance(self._count, int):
-            warnings.warn('count property is valid only for the class ReadEmail')
-        return self._count
+        return self.raw.get('count')
+
+    @property
+    def extra(self) -> Any:
+        """Returns the extra information as a member of the class.
+
+        Returns:
+            Any:
+            Returns information as received.
+        """
+        return self.raw.get('extra')

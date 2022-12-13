@@ -150,7 +150,7 @@ else:
 
 **Requirement**
 <br>
-`pip install --no-cache --upgrade sphinx pre-commit recommonmark`
+`pip install sphinx==5.1.1 pre-commit==2.20.0 recommonmark==0.7.1`
 
 **Usage**
 <br>
