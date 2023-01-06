@@ -6,7 +6,7 @@ from typing import Iterable, Union
 from dns.rdtypes.ANY.MX import MX
 from dns.resolver import NXDOMAIN, Answer, NoAnswer, resolve
 
-from .exceptions import InvalidDomain, NotMailServer
+from .exceptions import InvalidDomain, NotMailServer, UnresponsiveMailServer
 
 logger = logging.getLogger('validator')
 
@@ -29,8 +29,17 @@ def get_mx_records(domain: str) -> Iterable[Union[str, IPv4Address, IPv6Address]
         raise NotMailServer(error)
     if not resolved:
         raise NotMailServer(f"Domain {domain!r} is not a mail server.")
-    for x in resolved:
-        x: MX = x
-        ip = socket.gethostbyname(x.exchange.to_text())
-        logger.info(f"{x.preference}\t{x.exchange}\t{ip}")
+    for record in resolved:
+        record: MX = record
+        if record.exchange.to_text().strip() == '.':
+            raise UnresponsiveMailServer(f"Domain {domain!r} appears to be valid, but failed to resolve IP addresses.")
+        try:
+            ip = socket.gethostbyname(record.exchange.to_text())
+        except socket.error as error:
+            logger.error(error)
+            raise UnresponsiveMailServer(error)
+        except UnicodeError as error:
+            logger.error(error)
+            raise UnresponsiveMailServer(f"Domain {domain!r} appears to be valid, but failed to resolve IP addresses.")
+        logger.info(f"{record.preference}\t{record.exchange}\t{ip}")
         yield ip

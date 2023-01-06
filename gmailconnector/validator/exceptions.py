@@ -8,3 +8,7 @@ class NotMailServer(ValueError):
 
 class InvalidDomain(ValueError):
     """Custom error object for invalid domain."""
+
+
+class UnresponsiveMailServer(ValueError):
+    """Custom error object for unresponsive mail server."""

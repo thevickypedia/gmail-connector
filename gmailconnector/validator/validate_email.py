@@ -8,7 +8,8 @@ from gmailconnector.responder import Response
 
 from .address import ValidateAddress
 from .domain import get_mx_records
-from .exceptions import AddressFormatError, InvalidDomain, NotMailServer
+from .exceptions import (AddressFormatError, InvalidDomain, NotMailServer,
+                         UnresponsiveMailServer)
 
 formatter = logging.Formatter(fmt='%(levelname)s\t %(message)s')
 
@@ -61,6 +62,13 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: s
             return Response(dictionary={
                 'ok': False,
                 'status': 422,
+                'body': error.__str__()
+            })
+        except UnresponsiveMailServer as error:
+            logger.error(error)
+            return Response(dictionary={
+                'ok': None,
+                'status': 207,
                 'body': error.__str__()
             })
         return Response(dictionary={

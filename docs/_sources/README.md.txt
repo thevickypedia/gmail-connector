@@ -149,19 +149,25 @@ else:
 `PreCommit` will ensure linting, and the doc creation are run on every commit.
 
 **Requirement**
-<br>
-`pip install sphinx==5.1.1 pre-commit==2.20.0 recommonmark==0.7.1`
+```shell
+pip install sphinx==5.1.1 pre-commit==2.20.0 recommonmark==0.7.1
+```
 
 **Usage**
-<br>
-`pre-commit run --all-files`
+```shell
+pre-commit run --all-files
+```
 
 ### Change Log
 **Requirement**
-`pip install --no-cache --upgrade changelog-generator`
+```shell
+pip install --no-cache --upgrade changelog-generator
+```
 
 **Usage**
-`changelog`
+```shell
+changelog reverse -f release_notes.rst -t 'Release Notes'
+```
 
 ### Pypi Module
 [https://pypi.org/project/gmail-connector/](https://pypi.org/project/gmail-connector/)

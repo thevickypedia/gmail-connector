@@ -1,5 +1,11 @@
-Change Log
-==========
+Release Notes
+=============
+
+0.6.1 (01/05/2023)
+------------------
+- Catch edge case scenario in validation emails
+- CHANGELOG -> release_notes.rst
+- Update setup.py and README.md
 
 0.6.0 (12/13/2022)
 ------------------
