@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.6.2 (01/05/2023)
+------------------
+- Classify `UnresponsiveMailServer` is invalid destination
+
 0.6.1 (01/05/2023)
 ------------------
 - Catch edge case scenario in validation emails

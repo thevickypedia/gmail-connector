@@ -57,18 +57,11 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: s
     if not smtp_check:
         try:
             list(get_mx_records(domain=address.domain))
-        except (InvalidDomain, NotMailServer) as error:
+        except (InvalidDomain, NotMailServer, UnresponsiveMailServer) as error:
             logger.error(error)
             return Response(dictionary={
                 'ok': False,
                 'status': 422,
-                'body': error.__str__()
-            })
-        except UnresponsiveMailServer as error:
-            logger.error(error)
-            return Response(dictionary={
-                'ok': None,
-                'status': 207,
                 'body': error.__str__()
             })
         return Response(dictionary={
@@ -112,7 +105,7 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: s
             'status': 207,
             'body': 'Received multiple temporary errors. Could not finish validation.'
         })
-    except (InvalidDomain, NotMailServer) as error:
+    except (InvalidDomain, NotMailServer, UnresponsiveMailServer) as error:
         logger.error(error)
         return Response(dictionary={
             'ok': False,
