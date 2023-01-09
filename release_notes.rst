@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.6.4 (01/08/2023)
+------------------
+- Change type hint from `object` to type method to support docker
+
 0.6.3 (01/08/2023)
 ------------------
 - Raise `ValueError`s when `recipient` or `phone` arg is missing

@@ -2,7 +2,7 @@ import os
 from email.mime import multipart, text
 from email.mime.application import MIMEApplication
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
-from typing import Union
+from typing import Dict, Union
 
 from dotenv import load_dotenv
 
@@ -144,7 +144,7 @@ class SendEmail:
                    recipient: Union[str, list] = os.environ.get('recipient') or os.environ.get('RECIPIENT'),
                    sender: str = 'GmailConnector', body: str = None, html_body: str = None,
                    attachment: Union[str, list] = None, filename: Union[str, list] = None,
-                   custom_attachment: dict[str, str] = None, cc: Union[str, list] = None, bcc: Union[str, list] = None,
+                   custom_attachment: Dict[str, str] = None, cc: Union[str, list] = None, bcc: Union[str, list] = None,
                    fail_if_attach_fails: bool = True) -> Response:
         """Initiates a TLS connection and sends the email.
 
