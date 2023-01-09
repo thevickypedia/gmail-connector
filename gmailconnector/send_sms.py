@@ -139,6 +139,12 @@ class Messenger:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
+        if phone:
+            phone = str(phone)
+        else:
+            raise ValueError(
+                'Cannot proceed without the arg: `phone`'
+            )
         carrier = carrier.lower()
         if carrier not in list(self.SMS_GATEWAY.keys()):
             carrier = 't-mobile'
@@ -177,7 +183,7 @@ class Messenger:
                     'ok': True,
                     'status': 206,
                     'body': f'SMS has been sent to {to}',
-                    'extra': 'Failed to locate and delete sent SMS.'
+                    'extra': 'Failed to locate and delete the SMS from Sent Mail.'
                 })
 
         return Response(dictionary={

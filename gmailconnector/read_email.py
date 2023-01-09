@@ -90,8 +90,7 @@ class ReadEmail:
                 'status': 401,
                 'body': 'BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n'
                         '\t1. Make sure your username and password are correct.\n'
-                        '\t2. Logon to https://myaccount.google.com/lesssecureapps and turn ON less secure apps.\n'
-                        '\t3. If you have enabled 2 factor authentication, use thee App Password generated.'
+                        '\t2. Enable 2 factor authentication and use thee App Specific Password generated.'
             })
 
         if category not in self.CATEGORIES and not any(cat in category for cat in self.ADDITIONAL_CATEGORIES):

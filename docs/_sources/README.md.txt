@@ -12,15 +12,21 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
 
 # Gmail Connector
-Python module to, send SMS, emails and read `unread` emails in `inbox` folder.
+Python module to, send SMS, emails and read `unread` emails in any folder.
 
-###### Modules and Protocols
-- `email` - Format emails as `MIMEMultipart` object, read emails from `bytes` and `str` and decode headers.
-- `smtplib` - `SMTP` Simple Mail Transfer Protocol to connect to `gmail` server, do `auth` and perform outgoing tasks.
-- `imaplib` - `IMAP` Internet Message Access Protocol to access messages in an email mailbox.
+> As of May 30, 2022, Google no longer supports third party applications accessing Google accounts only using username and password (which was originally available through [lesssecureapps](https://myaccount.google.com/lesssecureapps))<br>
+> An alternate approach is to generate [apppasswords](https://myaccount.google.com/apppasswords) passwords instead.<br>
+> **Reference:** https://support.google.com/accounts/answer/6010255
 
-## Usage
-`pip install gmail-connector`
+[//]: # (###### Modules and Protocols)
+[//]: # (- `email` - Format emails as `MIMEMultipart` object, read emails from `bytes` and `str` and decode headers.)
+[//]: # (- `smtplib` - `SMTP` Simple Mail Transfer Protocol to connect to `gmail` server, do `auth` and perform outgoing tasks.)
+[//]: # (- `imaplib` - `IMAP` Internet Message Access Protocol to access messages in an email mailbox.)
+
+## Installation
+```shell
+pip install gmail-connector
+```
 
 ### Env Vars
 Store a `.env` file with the args:

@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.6.3 (01/08/2023)
+------------------
+- Raise `ValueError`s when `recipient` or `phone` arg is missing
+- Update README.md
+
 0.6.2 (01/05/2023)
 ------------------
 - Classify `UnresponsiveMailServer` is invalid destination

@@ -53,18 +53,17 @@
 <a class="reference external" href="https://api.github.com/repos/thevickypedia/gmail-connector"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/thevickypedia/gmail-connector" /></a></p>
 <section id="gmail-connector">
 <h1>Gmail Connector<a class="headerlink" href="#gmail-connector" title="Permalink to this heading">¶</a></h1>
-<p>Python module to, send SMS, emails and read <code class="docutils literal notranslate"><span class="pre">unread</span></code> emails in <code class="docutils literal notranslate"><span class="pre">inbox</span></code> folder.</p>
-<section id="modules-and-protocols">
-<h2>Modules and Protocols<a class="headerlink" href="#modules-and-protocols" title="Permalink to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">email</span></code> - Format emails as <code class="docutils literal notranslate"><span class="pre">MIMEMultipart</span></code> object, read emails from <code class="docutils literal notranslate"><span class="pre">bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">str</span></code> and decode headers.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">smtplib</span></code> - <code class="docutils literal notranslate"><span class="pre">SMTP</span></code> Simple Mail Transfer Protocol to connect to <code class="docutils literal notranslate"><span class="pre">gmail</span></code> server, do <code class="docutils literal notranslate"><span class="pre">auth</span></code> and perform outgoing tasks.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">imaplib</span></code> - <code class="docutils literal notranslate"><span class="pre">IMAP</span></code> Internet Message Access Protocol to access messages in an email mailbox.</p></li>
-</ul>
-</section>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gmail-connector</span></code></p>
+<p>Python module to, send SMS, emails and read <code class="docutils literal notranslate"><span class="pre">unread</span></code> emails in any folder.</p>
+<blockquote>
+<div><p>As of May 30, 2022, Google no longer supports third party applications accessing Google accounts only using username and password (which was originally available through <a class="reference external" href="https://myaccount.google.com/lesssecureapps">lesssecureapps</a>)<br>
+An alternate approach is to generate <a class="reference external" href="https://myaccount.google.com/apppasswords">apppasswords</a> passwords instead.<br>
+<strong>Reference:</strong> https://support.google.com/accounts/answer/6010255</p>
+</div></blockquote>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>gmail-connector
+</pre></div>
+</div>
 <section id="env-vars">
 <h3>Env Vars<a class="headerlink" href="#env-vars" title="Permalink to this heading">¶</a></h3>
 <p>Store a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with the args:</p>
@@ -240,8 +239,7 @@
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Gmail Connector</a><ul>
-<li><a class="reference internal" href="#modules-and-protocols">Modules and Protocols</a></li>
-<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
 <li><a class="reference internal" href="#env-vars">Env Vars</a><ul>
 <li><a class="reference internal" href="#additional-args">Additional args:</a></li>
 <li><a class="reference internal" href="#id1">Additional args:</a></li>

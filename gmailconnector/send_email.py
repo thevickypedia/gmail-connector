@@ -169,7 +169,10 @@ class SendEmail:
             status = self.authenticate
             if not status.ok:
                 return status
-
+        if not recipient:
+            raise ValueError(
+                'Cannot proceed without the arg: `recipient`'
+            )
         if custom_attachment:
             attachments = list(custom_attachment.keys())
             filenames = list(custom_attachment.values())
