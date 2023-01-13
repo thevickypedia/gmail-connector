@@ -144,7 +144,8 @@ class SendEmail:
                    recipient: Union[str, list] = os.environ.get('recipient') or os.environ.get('RECIPIENT'),
                    sender: str = 'GmailConnector', body: str = None, html_body: str = None,
                    attachment: Union[str, list] = None, filename: Union[str, list] = None,
-                   custom_attachment: Dict[str, str] = None, cc: Union[str, list] = None, bcc: Union[str, list] = None,
+                   custom_attachment: Dict[Union[str, os.PathLike], str] = None,
+                   cc: Union[str, list] = None, bcc: Union[str, list] = None,
                    fail_if_attach_fails: bool = True) -> Response:
         """Initiates a TLS connection and sends the email.
 
@@ -155,7 +156,7 @@ class SendEmail:
             html_body: Body of the email. Defaults to ``None``.
             attachment: Name of the file that has to be attached.
             filename: Custom name of the attachment.
-            custom_attachment: Dictionary of custom name for the attachment as key and the relative filepath as value.
+            custom_attachment: Dictionary of the filepath as key and the custom name for the attachment as value.
             cc: Email address of the recipient to whom the email has to be CC'd.
             bcc: Email address of the recipient to whom the email has to be BCC'd.
             sender: Add sender name to the email.

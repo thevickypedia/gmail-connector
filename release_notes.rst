@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.6.5 (01/12/2023)
+------------------
+- Add more insight `custom_attachment` type hinting
+- Update docstring
+
 0.6.4 (01/08/2023)
 ------------------
 - Change type hint from `object` to type method to support docker
