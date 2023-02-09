@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.6.7 (02/09/2023)
+------------------
+- Update README.md
+
 0.6.6 (02/09/2023)
 ------------------
 - Add a feature to get body of the email when reading

@@ -6,6 +6,7 @@
 
 [![Pypi-format](https://img.shields.io/pypi/format/gmail-connector)](https://pypi.org/project/gmail-connector/#files)
 [![Pypi-status](https://img.shields.io/pypi/status/gmail-connector)](https://pypi.org/project/gmail-connector)
+[![dependents](https://img.shields.io/librariesio/dependents/pypi/gmail-connector)](https://github.com/thevickypedia/gmail-connector/network/dependents)
 
 [![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/gmail-connector)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
@@ -48,9 +49,10 @@ sms_object = SendSMS()
 auth = sms_object.authenticate  # Authentication happens in send_sms if not instantiated beforehand
 if not auth.ok:
     exit(auth.body)
-response = sms_object.send_sms(phone='+11234567890', message='Test SMS using gmail-connector')
+response = sms_object.send_sms(phone='+11234567890', message='Test SMS using gmail-connector',
+                               carrier='verizon', delete_sent=False)  # Stores the SMS in email's sent items
 if response.ok:
-    print(response.json())
+    print(response.body)
 ```
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></strong></summary>
@@ -151,6 +153,8 @@ response = reader.instantiate(filters=(filter1, filter2, filter3))  # Apply mult
 if response.ok:
     for each_mail in reader.read_mail(messages=response.body, humanize_datetime=False):  # False to get datetime object
         print(each_mail.date_time.date())
+        print("[%s] %s" % (each_mail.sender_email, each_mail.sender))
+        print("[%s] - %s" % (each_mail.subject, each_mail.body))
 else:
     print(response.body)
 ```
