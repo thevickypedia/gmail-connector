@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+0.6.6 (02/09/2023)
+------------------
+- Add a feature to get body of the email when reading
+- Add a feature to inject multiple filters when reading
+- Convert response from read email as an object
+- Change Messenger to SendSMS to keep it consistent
+- Convert build to pyrpoject.toml and update README.md
+
 0.6.5 (01/12/2023)
 ------------------
 - Add more insight `custom_attachment` type hinting

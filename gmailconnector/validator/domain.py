@@ -1,5 +1,6 @@
 import logging
 import socket
+from collections.abc import Generator
 from ipaddress import IPv4Address, IPv6Address
 from typing import Iterable, Union
 
@@ -11,7 +12,7 @@ from .exceptions import InvalidDomain, NotMailServer, UnresponsiveMailServer
 logger = logging.getLogger('validator')
 
 
-def get_mx_records(domain: str) -> Iterable[Union[str, IPv4Address, IPv6Address]]:
+def get_mx_records(domain: str) -> Generator[Union[str, IPv4Address, IPv6Address]]:
     """Get MX (Mail Exchange server) records for the given domain.
 
     Args:

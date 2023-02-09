@@ -77,9 +77,9 @@ An alternate approach is to generate <a class="reference external" href="https:/
 </pre></div>
 </div>
 <p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector.send_sms</span> <span class="kn">import</span> <span class="n">Messenger</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector</span> <span class="kn">import</span> <span class="n">SendSMS</span>
 
-<span class="n">sms_object</span> <span class="o">=</span> <span class="n">Messenger</span><span class="p">()</span>
+<span class="n">sms_object</span> <span class="o">=</span> <span class="n">SendSMS</span><span class="p">()</span>
 <span class="n">auth</span> <span class="o">=</span> <span class="n">sms_object</span><span class="o">.</span><span class="n">authenticate</span>  <span class="c1"># Authentication happens in send_sms if not instantiated beforehand</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">auth</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
     <span class="n">exit</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
@@ -104,7 +104,7 @@ An alternate approach is to generate <a class="reference external" href="https:/
 </details><p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">gmailconnector.send_email</span> <span class="kn">import</span> <span class="n">SendEmail</span>
+<span class="kn">from</span> <span class="nn">gmailconnector</span> <span class="kn">import</span> <span class="n">SendEmail</span>
 
 <span class="n">mail_object</span> <span class="o">=</span> <span class="n">SendEmail</span><span class="p">()</span>
 <span class="n">auth</span> <span class="o">=</span> <span class="n">mail_object</span><span class="o">.</span><span class="n">authenticate</span>  <span class="c1"># Authentication happens in send_email if not instantiated beforehand</span>
@@ -171,14 +171,18 @@ An alternate approach is to generate <a class="reference external" href="https:/
 <p><code class="docutils literal notranslate"><span class="pre">recipient=['username1&#64;gmail.com',</span> <span class="pre">'username2&#64;gmail.com']</span></code></p>
 </div></blockquote>
 </details><p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py">Read Email</a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gmailconnector.read_email</span> <span class="kn">import</span> <span class="n">ReadEmail</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
 
-<span class="n">reader</span> <span class="o">=</span> <span class="n">ReadEmail</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="s1">&#39;&quot;[Gmail]/All Mail&quot;&#39;</span><span class="p">)</span>  <span class="c1"># Folder defaults to inbox</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s1">&#39;SMALLER 500&#39;</span><span class="p">)</span>  <span class="c1"># Search criteria defaults to UNSEEN</span>
+<span class="kn">from</span> <span class="nn">gmailconnector</span> <span class="kn">import</span> <span class="n">ReadEmail</span><span class="p">,</span> <span class="n">Folder</span><span class="p">,</span> <span class="n">Condition</span><span class="p">,</span> <span class="n">Category</span>
+
+<span class="n">reader</span> <span class="o">=</span> <span class="n">ReadEmail</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="n">Folder</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
+<span class="n">filter1</span> <span class="o">=</span> <span class="n">Condition</span><span class="o">.</span><span class="n">since</span><span class="p">(</span><span class="n">since</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2010</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">filter2</span> <span class="o">=</span> <span class="n">Condition</span><span class="o">.</span><span class="n">subject</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="s2">&quot;Security Alert&quot;</span><span class="p">)</span>
+<span class="n">filter3</span> <span class="o">=</span> <span class="n">Category</span><span class="o">.</span><span class="n">not_deleted</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="p">(</span><span class="n">filter1</span><span class="p">,</span> <span class="n">filter2</span><span class="p">,</span> <span class="n">filter3</span><span class="p">))</span>  <span class="c1"># Apply multiple filters at the same time</span>
 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-    <span class="n">unread_emails</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_email</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">each_mail</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">unread_emails</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">each_mail</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">each_mail</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_mail</span><span class="p">(</span><span class="n">messages</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">humanize_datetime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>  <span class="c1"># False to get datetime object</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">each_mail</span><span class="o">.</span><span class="n">date_time</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
 </pre></div>

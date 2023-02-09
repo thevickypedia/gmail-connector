@@ -42,9 +42,9 @@ phone='1234567890'
 
 [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
 ```python
-from gmailconnector.send_sms import Messenger
+from gmailconnector import SendSMS
 
-sms_object = Messenger()
+sms_object = SendSMS()
 auth = sms_object.authenticate  # Authentication happens in send_sms if not instantiated beforehand
 if not auth.ok:
     exit(auth.body)
@@ -70,7 +70,7 @@ if response.ok:
 ```python
 import os
 
-from gmailconnector.send_email import SendEmail
+from gmailconnector import SendEmail
 
 mail_object = SendEmail()
 auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
@@ -139,14 +139,18 @@ else:
 
 [Read Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py)
 ```python
-from gmailconnector.read_email import ReadEmail
+from datetime import date
 
-reader = ReadEmail(folder='"[Gmail]/All Mail"')  # Folder defaults to inbox
-response = reader.instantiate(category='SMALLER 500')  # Search criteria defaults to UNSEEN
+from gmailconnector import ReadEmail, Folder, Condition, Category
+
+reader = ReadEmail(folder=Folder.all)
+filter1 = Condition.since(since=date(year=2010, month=5, day=1))
+filter2 = Condition.subject(subject="Security Alert")
+filter3 = Category.not_deleted
+response = reader.instantiate(filters=(filter1, filter2, filter3))  # Apply multiple filters at the same time
 if response.ok:
-    unread_emails = reader.read_email(response.body)
-    for each_mail in list(unread_emails):
-        print(each_mail)
+    for each_mail in reader.read_mail(messages=response.body, humanize_datetime=False):  # False to get datetime object
+        print(each_mail.date_time.date())
 else:
     print(response.body)
 ```

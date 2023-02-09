@@ -10,10 +10,10 @@ if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env')
 
 
-class Messenger:
+class SendSMS:
     """Initiates Messenger object to send an SMS to a phone number using SMS gateway provided by the mobile carrier.
 
-    >>> Messenger
+    >>> SendSMS
 
     """
 

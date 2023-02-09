@@ -1,4 +1,5 @@
-from typing import Any
+from datetime import datetime
+from typing import Any, Union
 
 
 class Response:
@@ -74,3 +75,19 @@ class Response:
             Returns information as received.
         """
         return self.raw.get('extra')
+
+
+class Email:
+    """Turns a dictionary into an Email object."""
+
+    def __init__(self, dictionary: dict):
+        """Creates an object and inserts the key value pairs as members of the class.
+
+        Args:
+            dictionary: Takes the dictionary to be converted as an argument.
+        """
+        self.sender: str = dictionary['sender']
+        self.sender_email: str = dictionary['sender_email']
+        self.subject: str = dictionary['subject']
+        self.date_time: Union[str, 'datetime'] = dictionary['date_time']
+        self.body: str = dictionary['body']

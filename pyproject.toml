@@ -1,0 +1,40 @@
+[project]
+name = "gmail-connector"
+dynamic = ["version"]
+description = "Python module to, send SMS, emails and read unread emails"
+readme = "README.md"
+authors = [{ name = "Vignesh Sivanandha Rao", email = "svignesh1793@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Telecommunications Industry",
+    "Operating System :: MacOS :: MacOS X",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Communications :: Email :: Post-Office :: IMAP"
+]
+keywords = ["gmail", "smtp", "imap", "tls", "ssl"]
+requires-python = ">=3"
+dependencies = [
+    "idna>=3.3", "python-dotenv>=0.21.0", "pytz>=2021.3", "dnspython==2.2.1"
+]
+
+[tool.setuptools]
+packages = ["gmailconnector"]
+
+[tool.setuptools.dynamic]
+version = {attr = "gmailconnector.version"}
+
+[build-system]
+requires      = ["setuptools", "wheel", "idna>=3.3", "python-dotenv>=0.21.0", "pytz>=2021.3", "dnspython==2.2.1"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+dev = ["pre-commit"]
+
+[project.urls]
+Homepage = "https://github.com/thevickypedia/gmail-connector"
+Docs = "https://thevickypedia.github.io/gmail-connector/"
+Source = "https://github.com/thevickypedia/gmail-connector"
+"Bug Tracker" = "https://github.com/thevickypedia/gmail-connector/issues"
+"Release Notes" = "https://github.com/thevickypedia/gmail-connector/blob/main/release_notes.rst"

@@ -1,13 +1,15 @@
+import email.header
 import os
+from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
-from email import message_from_bytes
-from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
+from typing import Iterable, Union
 
 import pytz
 from dotenv import load_dotenv
 
-from .responder import Response
+from .options import Category, Condition, Folder
+from .responder import Email, Response
 
 if os.path.isfile('.env'):
     load_dotenv(dotenv_path='.env')
@@ -20,15 +22,13 @@ class ReadEmail:
 
     """
 
-    FOLDERS = ['inbox', '"[Gmail]/Important"', '"[Gmail]/Starred"', '"[Gmail]/All Mail"', '"[Gmail]/Sent Mail"',
-               '"[Gmail]/Drafts"', '"[Gmail]/Spam"', '"[Gmail]/Trash"']
-    CATEGORIES = ['ALL', 'SEEN', 'UNSEEN']
-    ADDITIONAL_CATEGORIES = ['SMALLER', 'TEXT', 'SINCE']
+    FOLDERS = vars(Folder).get('_member_names_')
+    CATEGORIES = vars(Category).get('_member_names_')
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
     def __init__(self, gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
                  gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS'),
-                 folder: str = 'inbox'):
+                 folder: Folder.__str__ = 'inbox'):
         """Initiates all the necessary args.
 
         Args:
@@ -63,11 +63,11 @@ class ReadEmail:
             self.mail = None
         self.gmail_user = gmail_user
 
-    def instantiate(self, category: str = 'UNSEEN') -> Response:
+    def instantiate(self, filters: Iterable[Union[Category.__str__, Condition.__str__]] = 'UNSEEN') -> Response:
         """Searches the number of emails for the category received and forms.
 
         Args:
-            category: Search criteria to be performed.
+            filters: Category or search criteria.
 
         References:
             - Categories, ``SMALLER``, ``TEXT``, and ``SINCE`` take additional values.
@@ -93,13 +93,9 @@ class ReadEmail:
                         '\t2. Enable 2 factor authentication and use thee App Specific Password generated.'
             })
 
-        if category not in self.CATEGORIES and not any(cat in category for cat in self.ADDITIONAL_CATEGORIES):
-            raise ValueError(
-                f"The chosen search criteria {category} is not available.\n"
-                f"Available Options: {', '.join(self.CATEGORIES)}"
-            )
-
-        return_code, messages = self.mail.search(None, category)
+        if isinstance(filters, list) or isinstance(filters, tuple):
+            filters = ' '.join(filters)
+        return_code, messages = self.mail.search(None, filters)
         if return_code != 'OK':
             return Response(dictionary={
                 'ok': False,
@@ -112,7 +108,7 @@ class ReadEmail:
             return Response(dictionary={
                 'ok': False,
                 'status': 204,
-                'body': f'No {category.lower()} emails found for {self.gmail_user} in {self.folder}',
+                'body': f'No {filters.lower()!r} emails found for {self.gmail_user} in {self.folder}',
                 'count': num
             })
 
@@ -124,17 +120,18 @@ class ReadEmail:
                 'count': num
             })
 
-    def _get_info(self, response_part: tuple) -> dict:
-        """Extracts sender, subject and time received from response part.
+    def _get_info(self, response_part: tuple, dt_flag: bool) -> Email:
+        """Extracts sender, subject, body and time received from response part.
 
         Args:
             response_part: Encoded tuple of the response part in the email.
+            dt_flag: Boolean flag whether to convert datetime as human-readable format.
 
         Returns:
-            dict:
-            A dictionary of sender, subject and received time.
+            Email:
+            Email object with information.
         """
-        original_email = message_from_bytes(response_part[1])
+        original_email = email.message_from_bytes(response_part[1])
         if received := original_email.get('Received'):
             date = received.split(';')[-1].strip()
         else:
@@ -145,49 +142,47 @@ class ReadEmail:
             datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0800 (PST)")
         else:
             datetime_obj = datetime.now()
-        sender = make_header(decode_header((original_email['From']).split(' <')[0]))
-        sub = make_header(decode_header(original_email['Subject'])) \
+        from_ = original_email['From'].split(' <')
+        sub = email.header.make_header(email.header.decode_header(original_email['Subject'])) \
             if original_email['Subject'] else None
         # Converts pacific time to local timezone as the default is pacific
         local_time = datetime_obj.replace(tzinfo=pytz.timezone('US/Pacific')).astimezone(tz=self.LOCAL_TIMEZONE)
-        received_date = local_time.strftime("%Y-%m-%d")
-        current_date_ = datetime.today().date()
-        # Replaces current date with today or yesterday to make it simpler
-        if received_date == str(current_date_):
-            receive = local_time.strftime("Today, at %I:%M %p")
-        elif received_date == str(current_date_ - timedelta(days=1)):
-            receive = local_time.strftime("Yesterday, at %I:%M %p")
+        if dt_flag:
+            received_date = local_time.strftime("%Y-%m-%d")
+            current_date_ = datetime.today().date()
+            # Replaces current date with today or yesterday to make it simpler
+            if received_date == str(current_date_):
+                receive = local_time.strftime("Today, at %I:%M %p")
+            elif received_date == str(current_date_ - timedelta(days=1)):
+                receive = local_time.strftime("Yesterday, at %I:%M %p")
+            else:
+                receive = local_time.strftime("on %A, %B %d, at %I:%M %p")
         else:
-            receive = local_time.strftime("on %A, %B %d, at %I:%M %p")
-        return {'sender': str(sender).strip(), 'subject': str(sub).strip(), 'datetime': receive.strip()}
+            receive = local_time
+        body = None
+        if original_email.get_content_type() == "text/plain":  # ignore attachments and html
+            body = original_email.get_payload(decode=True)
+            body = body.decode('utf-8')
+        return Email(dictionary=dict(sender=from_[0], sender_email=from_[1].rstrip('>'), subject=sub,
+                                     date_time=receive, body=body))
 
-    def read_email(self, messages: list or str) -> str:
+    def read_mail(self, messages: list or str, humanize_datetime: bool = False) -> Generator[Email]:
         """Prints unread emails one by one after getting user confirmation.
 
         Args:
-            Takes the encoded message list as an argument. This is the body of the ``instantiate`` method.
+            messages: Takes the encoded message list as an argument. This is the body of the ``instantiate`` method.
+            humanize_datetime: Converts received time to human-readable format.
 
-        Returns:
-            Response:
+        Yields:
+            dict:
             A custom response class with properties: ok, status and body to the user.
         """
         for nm in messages[0].split():
             dummy, data = self.mail.fetch(nm, '(RFC822)')
             for each_response in data:
                 if isinstance(each_response, tuple):
-                    yield self._get_info(response_part=each_response)
+                    yield self._get_info(response_part=each_response, dt_flag=humanize_datetime)
         else:  # Executes when there is no break statement in the loop above
             if self.mail:
                 self.mail.close()
                 self.mail.logout()
-
-
-if __name__ == '__main__':
-    reader = ReadEmail(folder='"[Gmail]/All Mail"')
-    response = reader.instantiate(category='SMALLER 500')
-    if response.ok:
-        unread_emails = reader.read_email(response.body)
-        for each_mail in list(unread_emails):
-            print(each_mail)
-    else:
-        print(response.body)
