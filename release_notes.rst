@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+0.6.8 (02/11/2023)
+------------------
+- Fix date filter bug on conditions
+- Remove enum on object types
+- Remove validation of folder argument
+
 0.6.7 (02/09/2023)
 ------------------
 - Update README.md

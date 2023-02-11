@@ -1,7 +1,6 @@
 """Options that can be included while reading emails."""
 
 from datetime import date
-from enum import Enum
 from typing import Union
 
 
@@ -22,7 +21,7 @@ class Condition:
     def since(since: Union[str, float, 'date']):
         """Condition to retrieve emails since a given date."""
         if isinstance(since, date):
-            return 'SINCE "%s"' % since.strftime('%d-%B-%Y')
+            return 'SINCE "%s"' % since.strftime('%d-%b-%Y')
         return 'SINCE "%s"' % since
 
     @staticmethod
@@ -31,7 +30,7 @@ class Condition:
         return 'SUBJECT "%s"' % subject
 
 
-class Folder(str, Enum):
+class Folder:
     """Wrapper for folders to choose emails from."""
 
     inbox: str = "inbox"
@@ -44,7 +43,7 @@ class Folder(str, Enum):
     trash: str = '"[Gmail]/Trash"'
 
 
-class Category(str, Enum):
+class Category:
     """Wrapper for email category."""
 
     all: str = "ALL"

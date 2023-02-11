@@ -22,8 +22,6 @@ class ReadEmail:
 
     """
 
-    FOLDERS = vars(Folder).get('_member_names_')
-    CATEGORIES = vars(Category).get('_member_names_')
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
     def __init__(self, gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
@@ -42,11 +40,6 @@ class ReadEmail:
         See Also:
             Uses broad ``Exception`` clause to catch login errors, since the same is raised by ``imaplib``
         """
-        if folder not in self.FOLDERS:
-            raise ValueError(
-                f"The chosen folder {folder} is not available.\n"
-                f"Available Options: {', '.join(self.FOLDERS)}"
-            )
         self.folder = folder
         self.mail = None
         if not all([gmail_user, gmail_pass]):
