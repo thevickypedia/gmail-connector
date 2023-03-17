@@ -53,15 +53,14 @@ class SendEmail:
             return Response(dictionary={
                 'ok': True,
                 'status': 200,
-                'body': "Authentication was successful."
+                'body': 'authentication success'
             })
         except SMTPAuthenticationError:
             self.server = None
             return Response(dictionary={
                 'ok': False,
                 'status': 401,
-                'body': "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
-                        "Ensure the credentials stored in env vars are set correct.\n"
+                'body': 'authentication failed'
             })
         except SMTPConnectError:
             self.server = None

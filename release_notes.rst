@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.6.9 (03/16/2023)
+------------------
+- Simplify samples in README.md and update responses
+- Update pypi classifiers
+
 0.6.8 (02/11/2023)
 ------------------
 - Fix date filter bug on conditions

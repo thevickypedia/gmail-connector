@@ -64,20 +64,19 @@ class SendSMS:
             return Response(dictionary={
                 'ok': True,
                 'status': 200,
-                'body': "Authentication was successful."
+                'body': 'authentication success'
             })
         except SMTPAuthenticationError:
             return Response(dictionary={
                 'ok': False,
                 'status': 401,
-                'body': "GMAIL login failed with SMTPAuthenticationError: Username and Password not accepted.\n"
-                        "Ensure the credentials stored in env vars are set correct.\n"
+                'body': 'authentication failed'
             })
         except SMTPConnectError:
             return Response(dictionary={
                 'ok': False,
                 'status': 503,
-                'body': "Error during connection establishment with GMAIL server."
+                'body': 'failed to establish connection with gmail server'
             })
 
     def __del__(self):

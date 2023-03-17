@@ -13,46 +13,42 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
 
 # Gmail Connector
-Python module to, send SMS, emails and read `unread` emails in any folder.
+Python module to send SMS, emails and read emails in any folder.
 
 > As of May 30, 2022, Google no longer supports third party applications accessing Google accounts only using username and password (which was originally available through [lesssecureapps](https://myaccount.google.com/lesssecureapps))<br>
-> An alternate approach is to generate [apppasswords](https://myaccount.google.com/apppasswords) passwords instead.<br>
+> An alternate approach is to generate [apppasswords](https://myaccount.google.com/apppasswords) instead.<br>
 > **Reference:** https://support.google.com/accounts/answer/6010255
-
-[//]: # (###### Modules and Protocols)
-[//]: # (- `email` - Format emails as `MIMEMultipart` object, read emails from `bytes` and `str` and decode headers.)
-[//]: # (- `smtplib` - `SMTP` Simple Mail Transfer Protocol to connect to `gmail` server, do `auth` and perform outgoing tasks.)
-[//]: # (- `imaplib` - `IMAP` Internet Message Access Protocol to access messages in an email mailbox.)
 
 ## Installation
 ```shell
 pip install gmail-connector
 ```
 
-### Env Vars
-Store a `.env` file with the args:
+## Env Vars
+Environment variables can be loaded from a `.env` file.
 ```bash
-gmail_user = 'username@gmail.com',
-gmail_pass = '<ACCOUNT_PASSWORD>'
-```
-Optionally include,
-```bash
-recipient='username@gmail.com'
-phone='1234567890'
+# For authentication
+GMAIL_USER='username@gmail.com',
+GMAIL_PASS='<ACCOUNT_PASSWORD>'
+
+# For outbound emails
+RECIPIENT='username@gmail.com'
+
+# For outbound SMS
+PHONE='1234567890'
 ```
 
-[Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
+### [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
 ```python
-from gmailconnector import SendSMS
+import gmailconnector as gc
 
-sms_object = SendSMS()
-auth = sms_object.authenticate  # Authentication happens in send_sms if not instantiated beforehand
-if not auth.ok:
-    exit(auth.body)
+sms_object = gc.SendSMS()
+auth = sms_object.authenticate  # Authentication happens before sending SMS if not instantiated separately
+assert auth.ok, auth.body
 response = sms_object.send_sms(phone='+11234567890', message='Test SMS using gmail-connector',
                                carrier='verizon', delete_sent=False)  # Stores the SMS in email's sent items
-if response.ok:
-    print(response.body)
+assert response.ok, response.json()
+print(response.body)
 ```
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></strong></summary>
@@ -68,52 +64,26 @@ if response.ok:
 > Note: If known, using the `sms_gateway` will ensure proper delivery of the SMS.
 </details>
 
-[Send Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py)
+### [Send Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py)
 ```python
-import os
+import gmailconnector as gc
 
-from gmailconnector import SendEmail
-
-mail_object = SendEmail()
+mail_object = gc.SendEmail()
 auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
-if not auth.ok:
-    exit(auth.body)
+assert auth.ok, auth.body
 
-# Send an email without any attachments
+# Send a basic email
 response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!')
-print(response.json())
-
-# Different use cases to add attachments with/without custom filenames to an email
-images = [os.path.join(os.getcwd(), 'images', image) for image in os.listdir('images')]
-names = ['Apple', 'Flower', 'Balloon']
-
-# Use case 1 - Send an email with attachments but no custom attachment name
-response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
-                                  attachment=images)
-print(response.json())
-
-# Use case 2 - Use a dictionary of attachments and custom attachment names
-response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
-                                  custom_attachment=dict(zip(images, names)))
-print(response.json())
-
-# Use case 3 - Use list of attachments and list of custom attachment names
-response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
-                                  attachment=[images], filename=[names])
-print(response.json())
-
-# Use case 4 - Use a single attachment and a custom attachment name for it
-response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
-                                  attachment=os.path.join('images', 'random_apple_xroamutiypa.jpeg'), filename='Apple')
-print(response.json())
+assert response.ok, response.json()
+print(response.body)
 ```
 
 **To verify recipient email before sending. Authentication not required, uses SMTP port `25`**
 ```python
-from gmailconnector.validator import validate_email
+from gmailconnector import validator
 
 email_addr = 'someone@example.com'
-validation_result = validate_email(email_address=email_addr)
+validation_result = validator.validate_email(email_address=email_addr)
 if validation_result.ok is True:
     print('valid')  # Validated and found the recipient address to be valid
 elif validation_result.ok is False:
@@ -124,6 +94,43 @@ else:
 
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></strong></summary>
+
+```python
+import os
+import gmailconnector as gc
+
+mail_object = gc.SendEmail()
+auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
+assert auth.ok, auth.body
+
+# Different use cases to add attachments with/without custom filenames to an email
+images = [os.path.join(os.getcwd(), 'images', image) for image in os.listdir('images')]
+names = ['Apple', 'Flower', 'Balloon']
+
+# Use case 1 - Send an email with attachments but no custom attachment name
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
+                                  attachment=images)
+assert response.ok, response.body
+print(response.json())
+
+# Use case 2 - Use a dictionary of attachments and custom attachment names
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
+                                  custom_attachment=dict(zip(images, names)))
+assert response.ok, response.body
+print(response.json())
+
+# Use case 3 - Use list of attachments and list of custom attachment names
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
+                                  attachment=[images], filename=[names])
+assert response.ok, response.body
+print(response.json())
+
+# Use case 4 - Use a single attachment and a custom attachment name for it
+response = mail_object.send_email(recipient='username@gmail.com', subject='Howdy!',
+                                  attachment=os.path.join('images', 'random_apple_xroamutiypa.jpeg'), filename='Apple')
+assert response.ok, response.body
+print(response.json())
+```
 
 ###### Additional args:
 - **body:** Body of the email. Defaults to blank.
@@ -139,24 +146,22 @@ else:
 > `recipient=['username1@gmail.com', 'username2@gmail.com']`
 </details>
 
-[Read Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py)
+### [Read Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py)
 ```python
-from datetime import date
+import datetime
 
-from gmailconnector import ReadEmail, Folder, Condition, Category
+import gmailconnector as gc
 
-reader = ReadEmail(folder=Folder.all)
-filter1 = Condition.since(since=date(year=2010, month=5, day=1))
-filter2 = Condition.subject(subject="Security Alert")
-filter3 = Category.not_deleted
+reader = gc.ReadEmail(folder=gc.Folder.all)
+filter1 = gc.Condition.since(since=datetime.date(year=2010, month=5, day=1))
+filter2 = gc.Condition.subject(subject="Security Alert")
+filter3 = gc.Category.not_deleted
 response = reader.instantiate(filters=(filter1, filter2, filter3))  # Apply multiple filters at the same time
-if response.ok:
-    for each_mail in reader.read_mail(messages=response.body, humanize_datetime=False):  # False to get datetime object
-        print(each_mail.date_time.date())
-        print("[%s] %s" % (each_mail.sender_email, each_mail.sender))
-        print("[%s] - %s" % (each_mail.subject, each_mail.body))
-else:
-    print(response.body)
+assert response.ok, response.body
+for each_mail in reader.read_mail(messages=response.body, humanize_datetime=False):  # False to get datetime object
+    print(each_mail.date_time.date())
+    print("[%s] %s" % (each_mail.sender_email, each_mail.sender))
+    print("[%s] - %s" % (each_mail.subject, each_mail.body))
 ```
 
 ### Linting
@@ -175,7 +180,7 @@ pre-commit run --all-files
 ### Change Log
 **Requirement**
 ```shell
-pip install --no-cache --upgrade changelog-generator
+pip install changelog-generator
 ```
 
 **Usage**
@@ -194,6 +199,6 @@ changelog reverse -f release_notes.rst -t 'Release Notes'
 
 ## License & copyright
 
-&copy; Vignesh Sivanandha Rao, Gmail Connector
+&copy; Vignesh Sivanandha Rao
 
 Licensed under the [MIT License](https://github.com/thevickypedia/gmail-connector/blob/master/LICENSE)
