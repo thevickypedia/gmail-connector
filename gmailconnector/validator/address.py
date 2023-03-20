@@ -6,17 +6,17 @@ import idna.core
 
 from .exceptions import AddressFormatError
 
-logger = logging.getLogger('validator')
+default_logger = logging.getLogger('validator')
 
 
-class ValidateAddress:
+class EmailAddress:
     """Initiates ValidateAddress object to split the address into user and domin to further validate.
 
-    >>> ValidateAddress
+    >>> EmailAddress
 
     """
 
-    def __init__(self, address: str):
+    def __init__(self, address: str, logger: logging.Logger = default_logger):
         self._address = address
         try:
             self._user, self._domain = self._address.rsplit('@', 1)

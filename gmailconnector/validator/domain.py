@@ -9,14 +9,16 @@ from dns.resolver import NXDOMAIN, Answer, NoAnswer, resolve
 
 from .exceptions import InvalidDomain, NotMailServer, UnresponsiveMailServer
 
-logger = logging.getLogger('validator')
+default_logger = logging.getLogger('validator')
 
 
-def get_mx_records(domain: str) -> Generator[Union[str, IPv4Address, IPv6Address]]:
+def get_mx_records(domain: str,
+                   logger: logging.Logger = default_logger) -> Generator[Union[str, IPv4Address, IPv6Address]]:
     """Get MX (Mail Exchange server) records for the given domain.
 
     Args:
         domain: FQDN (Fully Qualified Domain Name) extracted from the email address.
+        logger: Bring your own logger.
 
     Yields:
         IPv4Address:

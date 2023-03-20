@@ -6,7 +6,7 @@ from typing import Union
 
 from gmailconnector.responder import Response
 
-from .address import ValidateAddress
+from .address import EmailAddress
 from .domain import get_mx_records
 from .exceptions import (AddressFormatError, InvalidDomain, NotMailServer,
                          UnresponsiveMailServer)
@@ -16,13 +16,13 @@ formatter = logging.Formatter(fmt='%(levelname)s\t %(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(fmt=formatter)
 
-logger = logging.getLogger('validator')
-logger.addHandler(hdlr=handler)
-logger.setLevel(level=logging.DEBUG)
+default_logger = logging.getLogger('validator')
+default_logger.addHandler(hdlr=handler)
+default_logger.setLevel(level=logging.DEBUG)
 
 
 def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: str = None,
-                   debug: bool = False, smtp_check: bool = True) -> Response:
+                   debug: bool = False, smtp_check: bool = True, logger: logging.Logger = default_logger) -> Response:
     """Validates email address deliver-ability using SMTP.
 
     Args:
@@ -31,6 +31,7 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: s
         sender: Sender's email address.
         debug: Debug flag enable logging.
         smtp_check: Flag to check SMTP.
+        logger: Bring your own logger.
 
     See Also:
         - Sets the ``ok`` flag in Response class to
@@ -45,7 +46,7 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: s
     if debug is False:
         logger.disabled = True
     try:
-        address = ValidateAddress(address=email_address)
+        address = EmailAddress(address=email_address)
     except AddressFormatError as error:
         return Response(dictionary={
             'ok': False,

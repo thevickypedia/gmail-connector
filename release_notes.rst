@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.7.0 (03/20/2023)
+------------------
+- Add bring your own logger to multipart validators
+- Change object name for email address
+
 0.6.9 (03/16/2023)
 ------------------
 - Simplify samples in README.md and update responses
