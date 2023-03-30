@@ -6,13 +6,9 @@ from imaplib import IMAP4_SSL
 from typing import Iterable, Union
 
 import pytz
-from dotenv import load_dotenv
 
 from .options import Category, Condition, Folder
 from .responder import Email, Response
-
-if os.path.isfile('.env'):
-    load_dotenv(dotenv_path='.env')
 
 
 class ReadEmail:
@@ -24,14 +20,12 @@ class ReadEmail:
 
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
-    def __init__(self, gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
-                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS'),
-                 folder: Folder.__str__ = 'inbox'):
+    def __init__(self, gmail_user: str = None, gmail_pass: str = None, folder: Folder.__str__ = Folder.inbox):
         """Initiates all the necessary args.
 
         Args:
-            gmail_user: Login email address.
-            gmail_pass: Login password.
+            gmail_user: Gmail username to authenticate IMAP lib.
+            gmail_pass: Gmail password to authenticate IMAP lib.
             folder: Folder where the unread emails have to be read from.
 
         References:
@@ -40,6 +34,8 @@ class ReadEmail:
         See Also:
             Uses broad ``Exception`` clause to catch login errors, since the same is raised by ``imaplib``
         """
+        gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
+        gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
         self.folder = folder
         self.mail = None
         if not all([gmail_user, gmail_pass]):

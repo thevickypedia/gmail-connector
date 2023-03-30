@@ -4,8 +4,7 @@ import smtplib
 import socket
 from typing import Union
 
-from gmailconnector.responder import Response
-
+from ..responder import Response
 from .address import EmailAddress
 from .domain import get_mx_records
 from .exceptions import (AddressFormatError, InvalidDomain, NotMailServer,

@@ -4,12 +4,7 @@ from email.mime.application import MIMEApplication
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
 from typing import Dict, Union
 
-from dotenv import load_dotenv
-
 from .responder import Response
-
-if os.path.isfile('.env'):
-    load_dotenv(dotenv_path='.env')
 
 
 class SendEmail:
@@ -19,14 +14,16 @@ class SendEmail:
 
     """
 
-    def __init__(self, gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
-                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')):
+    def __init__(self, gmail_user: str = None, gmail_pass: str = None, timeout: Union[int, float] = 10):
         """Initiates necessary args, creates a connection with Gmail's SMTP on port 587.
 
         Args:
-            gmail_user: Login email address.
-            gmail_pass: Login password.
+            gmail_user: Gmail username to authenticate SMTP lib.
+            gmail_pass: Gmail password to authenticate SMTP lib.
+            timeout: Connection timeout for SMTP lib.
         """
+        gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
+        gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
         self.server = None
         if not all([gmail_user, gmail_pass]):
             raise ValueError(
@@ -34,7 +31,7 @@ class SendEmail:
             )
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
-        self.server = SMTP(host='smtp.gmail.com', port=587)
+        self.server = SMTP(host="smtp.gmail.com", port=587, timeout=timeout)
         self._authenticated = False
         self._failed_attachments = {"FILE NOT FOUND": [], "FILE SIZE OVER 25 MB": []}
 
@@ -139,8 +136,7 @@ class SendEmail:
 
         return msg
 
-    def send_email(self, subject: str,
-                   recipient: Union[str, list] = os.environ.get('recipient') or os.environ.get('RECIPIENT'),
+    def send_email(self, subject: str, recipient: Union[str, list] = None,
                    sender: str = 'GmailConnector', body: str = None, html_body: str = None,
                    attachment: Union[str, list] = None, filename: Union[str, list] = None,
                    custom_attachment: Dict[Union[str, os.PathLike], str] = None,
@@ -165,14 +161,15 @@ class SendEmail:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        if not self._authenticated:
-            status = self.authenticate
-            if not status.ok:
-                return status
+        recipient = recipient or os.environ.get('recipient') or os.environ.get('RECIPIENT')
         if not recipient:
             raise ValueError(
                 'Cannot proceed without the arg: `recipient`'
             )
+        if not self._authenticated:
+            status = self.authenticate
+            if not status.ok:
+                return status
         if custom_attachment:
             attachments = list(custom_attachment.keys())
             filenames = list(custom_attachment.values())

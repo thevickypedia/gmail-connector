@@ -1,13 +1,9 @@
 import os
 from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
-
-from dotenv import load_dotenv
+from typing import Union
 
 from .responder import Response
 from .sms_deleter import DeleteSent
-
-if os.path.isfile('.env'):
-    load_dotenv(dotenv_path='.env')
 
 
 class SendSMS:
@@ -26,17 +22,19 @@ class SendSMS:
         "us-cellular": "email.uscc.net",
     }
 
-    def __init__(self, gmail_user: str = os.environ.get('gmail_user') or os.environ.get('GMAIL_USER'),
-                 gmail_pass: str = os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')):
+    def __init__(self, gmail_user: str = None, gmail_pass: str = None, timeout: Union[int, float] = 10):
         """Initiates all the necessary args.
 
         Args:
             gmail_user: Gmail username to authenticate SMTP lib.
             gmail_pass: Gmail password to authenticate SMTP lib.
+            timeout: Connection timeout for SMTP lib.
 
         See Also:
             Carrier defaults to ``t-mobile`` which uses ``tmomail.net`` as the SMS gateway.
         """
+        gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
+        gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
         self.server, self.mail = None, None
         if not all([gmail_user, gmail_pass]):
             raise ValueError(
@@ -46,7 +44,7 @@ class SendSMS:
             gmail_user = gmail_user + '@gmail.com'
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
-        self.server = SMTP(host="smtp.gmail.com", port=587)
+        self.server = SMTP(host="smtp.gmail.com", port=587, timeout=timeout)
         self._authenticated = False
 
     @property

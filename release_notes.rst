@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.7.1 (03/30/2023)
+------------------
+- Support custom values for timeout and `.env` file
+
 0.7.0 (03/20/2023)
 ------------------
 - Add bring your own logger to multipart validators
