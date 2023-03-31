@@ -1,9 +1,13 @@
+import email.mime.application
+import email.mime.multipart
+import email.mime.text
 import os
-from email.mime import multipart, text
-from email.mime.application import MIMEApplication
-from smtplib import SMTP, SMTPAuthenticationError, SMTPConnectError
-from typing import Dict, Union
+import smtplib
+import socket
+import ssl
+from typing import Dict, NoReturn, Union
 
+from .encryption import Encryption
 from .responder import Response
 
 
@@ -14,36 +18,69 @@ class SendEmail:
 
     """
 
-    def __init__(self, gmail_user: str = None, gmail_pass: str = None, timeout: Union[int, float] = 10):
+    def __init__(self, gmail_user: str = None, gmail_pass: str = None, timeout: Union[int, float] = 10,
+                 gmail_host: str = "smtp.gmail.com", encryption: Encryption.__str__ = Encryption.TLS):
         """Initiates necessary args, creates a connection with Gmail's SMTP on port 587.
 
         Args:
             gmail_user: Gmail username to authenticate SMTP lib.
             gmail_pass: Gmail password to authenticate SMTP lib.
             timeout: Connection timeout for SMTP lib.
+            encryption: Type of encryption to be used.
+            gmail_host: Hostname for gmail's smtp server.
         """
         gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
         gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
-        self.server = None
+        self.server, self.error = None, None
         if not all([gmail_user, gmail_pass]):
+            raise ValueError("'gmail_user' and 'gmail_pass' are mandatory")
+        if encryption not in (Encryption.TLS, Encryption.SSL):
             raise ValueError(
-                'Cannot proceed without the args: `gmail_user` and `gmail_pass`'
+                'Encryption should either be TLS or SSL'
             )
-        self.gmail_user = gmail_user
+        if gmail_user.endswith('@gmail.com'):
+            self.gmail_user = gmail_user
+        else:
+            self.gmail_user = gmail_user + '@gmail.com'
         self.gmail_pass = gmail_pass
-        self.server = SMTP(host="smtp.gmail.com", port=587, timeout=timeout)
-        self._authenticated = False
         self._failed_attachments = {"FILE NOT FOUND": [], "FILE SIZE OVER 25 MB": []}
+        self._authenticated = False
+        if encryption == Encryption.TLS:
+            self.create_tls_connection(host=gmail_host, timeout=timeout)
+        else:
+            self.create_ssl_connection(host=gmail_host, timeout=timeout)
+
+    def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
+        """Create a connection using SSL encryption."""
+        try:
+            self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout,
+                                           context=ssl.create_default_context())
+        except (smtplib.SMTPException, socket.error) as error:
+            self.error = error.__str__()
+
+    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
+        """Create a connection using TLS encryption."""
+        try:
+            self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)
+            self.server.starttls(context=ssl.create_default_context())
+            self.server.ehlo()
+        except (smtplib.SMTPException, socket.error) as error:
+            self.error = error.__str__()
 
     @property
     def authenticate(self) -> Response:
-        """Starts the TLS server and authenticates the user.
+        """Initiates authentication.
 
         Returns:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        self.server.starttls()
+        if self.server is None:
+            return Response(dictionary={
+                'ok': False,
+                'status': 408,
+                'body': self.error or "failed to create a connection with gmail's SMTP server"
+            })
         try:
             self.server.login(user=self.gmail_user, password=self.gmail_pass)
             self._authenticated = True
@@ -52,28 +89,26 @@ class SendEmail:
                 'status': 200,
                 'body': 'authentication success'
             })
-        except SMTPAuthenticationError:
-            self.server = None
+        except smtplib.SMTPAuthenticationError:
             return Response(dictionary={
                 'ok': False,
                 'status': 401,
                 'body': 'authentication failed'
             })
-        except SMTPConnectError:
-            self.server = None
+        except smtplib.SMTPException as error:
             return Response(dictionary={
                 'ok': False,
                 'status': 503,
-                'body': "Error during connection establishment with GMAIL server."
+                'body': error.__str__()
             })
 
     def __del__(self):
-        """Destructor has been called to close the TLS connection and logout."""
+        """Destructor has been called to close the connection and logout."""
         if self.server:
             self.server.close()
 
-    def _multipart_message(self, subject: str, recipient: str or list, sender: str, body: str, html_body: str,
-                           attachments: list, filenames: list, cc: str or list) -> multipart.MIMEMultipart:
+    def multipart_message(self, subject: str, recipient: str or list, sender: str, body: str, html_body: str,
+                          attachments: list, filenames: list, cc: str or list) -> email.mime.multipart.MIMEMultipart:
         """Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.
 
         Args:
@@ -95,7 +130,7 @@ class SendEmail:
         recipient = [recipient] if isinstance(recipient, str) else recipient
         cc = [cc] if cc and isinstance(cc, str) else cc
 
-        msg = multipart.MIMEMultipart()
+        msg = email.mime.multipart.MIMEMultipart()
         msg['Subject'] = subject
         msg['From'] = f"{sender} <{self.gmail_user}>"
         msg['To'] = ','.join(recipient)
@@ -103,9 +138,9 @@ class SendEmail:
             msg['Cc'] = ','.join(cc)
 
         if body:
-            msg.attach(payload=text.MIMEText(body, 'plain'))
+            msg.attach(payload=email.mime.text.MIMEText(body, 'plain'))
         if html_body:
-            msg.attach(payload=text.MIMEText(html_body, 'html'))
+            msg.attach(payload=email.mime.text.MIMEText(html_body, 'html'))
 
         for index, attachment_ in enumerate(attachments):
             file_type = attachment_.split('.')[-1]
@@ -130,7 +165,7 @@ class SendEmail:
                 continue
 
             with open(attachment_, 'rb') as file:
-                attribute = MIMEApplication(file.read(), _subtype=file_type)
+                attribute = email.mime.application.MIMEApplication(file.read(), _subtype=file_type)
             attribute.add_header('Content-Disposition', 'attachment', filename=filename)
             msg.attach(payload=attribute)
 
@@ -177,8 +212,8 @@ class SendEmail:
             attachments = [attachment] if isinstance(attachment, str) else attachment if attachment else []
             filenames = [filename] if isinstance(filename, str) else filename if filename else []
 
-        msg = self._multipart_message(subject=subject, sender=sender, recipient=recipient, attachments=attachments,
-                                      body=body, html_body=html_body, cc=cc, filenames=filenames)
+        msg = self.multipart_message(subject=subject, sender=sender, recipient=recipient, attachments=attachments,
+                                     body=body, html_body=html_body, cc=cc, filenames=filenames)
 
         unattached = {k: ', '.join(v) for k, v in self._failed_attachments.items() if v}
         if fail_if_attach_fails and unattached:

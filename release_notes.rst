@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.7.2 (03/31/2023)
+------------------
+- Support both `TLS` and `SSL` encryption for egress
+- Optimize imports and update README.md
+
 0.7.1 (03/30/2023)
 ------------------
 - Support custom values for timeout and `.env` file

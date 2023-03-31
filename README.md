@@ -43,6 +43,7 @@ PHONE='1234567890'
 import gmailconnector as gc
 
 sms_object = gc.SendSMS()
+# sms_object = gc.SendSMS(encryption=gc.Encryption.SSL) to use SSL
 auth = sms_object.authenticate  # Authentication happens before sending SMS if not instantiated separately
 assert auth.ok, auth.body
 response = sms_object.send_sms(phone='+11234567890', message='Test SMS using gmail-connector',
@@ -69,6 +70,7 @@ print(response.body)
 import gmailconnector as gc
 
 mail_object = gc.SendEmail()
+# mail_object = gc.SendEmail(encryption=gc.Encryption.SSL) to use SSL
 auth = mail_object.authenticate  # Authentication happens in send_email if not instantiated beforehand
 assert auth.ok, auth.body
 
@@ -80,10 +82,10 @@ print(response.body)
 
 **To verify recipient email before sending. Authentication not required, uses SMTP port `25`**
 ```python
-from gmailconnector import validator
+import gmailconnector as gc
 
 email_addr = 'someone@example.com'
-validation_result = validator.validate_email(email_address=email_addr)
+validation_result = gc.validate_email(email_address=email_addr)
 if validation_result.ok is True:
     print('valid')  # Validated and found the recipient address to be valid
 elif validation_result.ok is False:

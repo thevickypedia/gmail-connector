@@ -1,12 +1,9 @@
-import logging
-from ipaddress import IPv4Address, IPv6Address
+import ipaddress
 from typing import Union
 
 import idna.core
 
 from .exceptions import AddressFormatError
-
-default_logger = logging.getLogger('validator')
 
 
 class EmailAddress:
@@ -16,7 +13,7 @@ class EmailAddress:
 
     """
 
-    def __init__(self, address: str, logger: logging.Logger = default_logger):
+    def __init__(self, address: str):
         self._address = address
         try:
             self._user, self._domain = self._address.rsplit('@', 1)
@@ -28,7 +25,6 @@ class EmailAddress:
             self._domain = idna.core.encode(self._domain).decode('ascii')
         except idna.core.IDNAError as error:
             raise AddressFormatError(error)
-        logger.info(f'Validation passed on {address}')
 
     @property
     def user(self) -> str:
@@ -36,7 +32,7 @@ class EmailAddress:
         return self._user
 
     @property
-    def domain(self) -> Union[str, IPv4Address, IPv6Address]:
+    def domain(self) -> Union[str, ipaddress.IPv4Address, ipaddress.IPv6Address]:
         """Returns only the domain part of the address."""
         return self._domain
 

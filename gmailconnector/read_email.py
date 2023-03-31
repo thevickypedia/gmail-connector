@@ -1,9 +1,11 @@
 import email.header
+import imaplib
 import os
+import socket
+import ssl
 from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
-from imaplib import IMAP4_SSL
-from typing import Iterable, Union
+from typing import Iterable, NoReturn, Union
 
 import pytz
 
@@ -20,7 +22,8 @@ class ReadEmail:
 
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
-    def __init__(self, gmail_user: str = None, gmail_pass: str = None, folder: Folder.__str__ = Folder.inbox):
+    def __init__(self, gmail_user: str = None, gmail_pass: str = None, folder: Folder.__str__ = Folder.inbox,
+                 gmail_host: str = "imap.gmail.com", timeout: Union[int, float] = 10):
         """Initiates all the necessary args.
 
         Args:
@@ -36,23 +39,58 @@ class ReadEmail:
         """
         gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
         gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
-        self.folder = folder
-        self.mail = None
         if not all([gmail_user, gmail_pass]):
-            raise ValueError(
-                'Cannot proceed without the args or env vars: `gmail_user` and `gmail_pass`'
-            )
-        self.mail = IMAP4_SSL('imap.gmail.com')  # connects to gmail using imaplib
-        # noinspection PyBroadException
-        try:
-            self.mail.login(user=gmail_user, password=gmail_pass)  # login to your gmail account using the env variables
-            self.mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
-            self.mail.select(folder)
-        except Exception:
-            self.mail = None
+            raise ValueError("'gmail_user' and 'gmail_pass' are mandatory")
+        self.folder = folder
         self.gmail_user = gmail_user
+        self.gmail_pass = gmail_pass
+        self.error = None
+        self.mail = None
+        self._authenticated = False
+        self.create_ssl_connection(gmail_host=gmail_host, timeout=timeout)
 
-    def instantiate(self, filters: Iterable[Union[Category.__str__, Condition.__str__]] = 'UNSEEN') -> Response:
+    def create_ssl_connection(self, gmail_host: str, timeout: Union[int, float]) -> NoReturn:
+        """Creates an SSL connection to gmail's SSL server."""
+        try:
+            self.mail = imaplib.IMAP4_SSL(host=gmail_host, port=993, timeout=timeout,
+                                          ssl_context=ssl.create_default_context())
+        except socket.error as error:
+            self.error = error.__str__()
+
+    @property
+    def authenticate(self):
+        """Initiates authentication.
+
+        Returns:
+            Response:
+            A custom response class with properties: ok, status and body to the user.
+        """
+        if self.mail is None:
+            return Response(dictionary={
+                'ok': False,
+                'status': 408,
+                'body': self.error or "failed to create a connection with gmail's SMTP server"
+            })
+        try:
+            self.mail.login(user=self.gmail_user, password=self.gmail_pass)
+            self.mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
+            self.mail.select(self.folder)
+            self._authenticated = True
+            return Response(dictionary={
+                'ok': True,
+                'status': 200,
+                'body': 'authentication success'
+            })
+        except Exception as error:
+            self.error = error.__str__()
+            return Response(dictionary={
+                'ok': False,
+                'status': 401,
+                'body': 'authentication failed'
+            })
+
+    def instantiate(self,
+                    filters: Union[Iterable[Category.__str__], Iterable[Condition.__str__]] = "UNSEEN") -> Response:
         """Searches the number of emails for the category received and forms.
 
         Args:
@@ -73,16 +111,11 @@ class ReadEmail:
             Response:
             A Response class containing number of email messages, return code and the encoded messages itself.
         """
-        if not self.mail:
-            return Response(dictionary={
-                'ok': False,
-                'status': 401,
-                'body': 'BUMMER! Unable to read your emails.\n\nTroubleshooting Steps:\n'
-                        '\t1. Make sure your username and password are correct.\n'
-                        '\t2. Enable 2 factor authentication and use thee App Specific Password generated.'
-            })
-
-        if isinstance(filters, list) or isinstance(filters, tuple):
+        if self._authenticated is False:
+            status = self.authenticate
+            if not status.ok:
+                return status
+        if type(filters) in (list, tuple):
             filters = ' '.join(filters)
         return_code, messages = self.mail.search(None, filters)
         if return_code != 'OK':
@@ -109,7 +142,7 @@ class ReadEmail:
                 'count': num
             })
 
-    def _get_info(self, response_part: tuple, dt_flag: bool) -> Email:
+    def get_info(self, response_part: tuple, dt_flag: bool) -> Email:
         """Extracts sender, subject, body and time received from response part.
 
         Args:
@@ -170,8 +203,8 @@ class ReadEmail:
             dummy, data = self.mail.fetch(nm, '(RFC822)')
             for each_response in data:
                 if isinstance(each_response, tuple):
-                    yield self._get_info(response_part=each_response, dt_flag=humanize_datetime)
-        else:  # Executes when there is no break statement in the loop above
+                    yield self.get_info(response_part=each_response, dt_flag=humanize_datetime)
+        else:
             if self.mail:
                 self.mail.close()
                 self.mail.logout()

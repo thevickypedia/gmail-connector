@@ -70,7 +70,14 @@ def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: s
             'body': f'{address.email!r} is valid'
         })
 
-    server = smtplib.SMTP(timeout=timeout)
+    try:
+        server = smtplib.SMTP(timeout=timeout)
+    except (smtplib.SMTPException, socket.error) as error:
+        return Response(dictionary={
+            'ok': False,
+            'status': 408,
+            'body': error.__str__() or "failed to create a connection with gmail's SMTP server"
+        })
     try:
         for record in get_mx_records(domain=address.domain):
             logger.info(f'Trying {record}...')

@@ -19,7 +19,7 @@ class DeleteSent:
         self.body = kwargs.get('body')
         self.mail.login(user=kwargs.get('username'), password=kwargs.get('password'))
 
-    def _thread_executor(self, item_id: bytes or str) -> Dict[str, str]:
+    def thread_executor(self, item_id: bytes or str) -> Dict[str, str]:
         """Gets invoked in multiple threads, to set the flag as ``Deleted`` for the message which was just sent.
 
         Args:
@@ -55,7 +55,7 @@ class DeleteSent:
         if return_code != 'OK':
             return
         with ThreadPoolExecutor(max_workers=1) as executor:
-            for deleted in executor.map(self._thread_executor, sorted(messages[0].split(), reverse=True)):
+            for deleted in executor.map(self.thread_executor, sorted(messages[0].split(), reverse=True)):
                 if deleted:  # Indicates the message sent has been deleted, so no need to loop through entire sent items
                     executor.shutdown(cancel_futures=True)
                     self.mail.close()
