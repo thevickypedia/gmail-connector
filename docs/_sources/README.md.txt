@@ -47,7 +47,7 @@ sms_object = gc.SendSMS()
 auth = sms_object.authenticate  # Authentication happens before sending SMS if not instantiated separately
 assert auth.ok, auth.body
 response = sms_object.send_sms(phone='+11234567890', message='Test SMS using gmail-connector',
-                               carrier='verizon', delete_sent=False)  # Stores the SMS in email's sent items
+                               sms_gateway=gc.SMSGateway.verizon, delete_sent=True)  # set as False to keep the SMS sent
 assert response.ok, response.json()
 print(response.body)
 ```

@@ -2,7 +2,6 @@ import email.header
 import imaplib
 import os
 import socket
-import ssl
 from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
 from typing import Iterable, NoReturn, Union
@@ -52,8 +51,7 @@ class ReadEmail:
     def create_ssl_connection(self, gmail_host: str, timeout: Union[int, float]) -> NoReturn:
         """Creates an SSL connection to gmail's SSL server."""
         try:
-            self.mail = imaplib.IMAP4_SSL(host=gmail_host, port=993, timeout=timeout,
-                                          ssl_context=ssl.create_default_context())
+            self.mail = imaplib.IMAP4_SSL(host=gmail_host, port=993, timeout=timeout)
         except socket.error as error:
             self.error = error.__str__()
 
@@ -94,15 +92,7 @@ class ReadEmail:
         """Searches the number of emails for the category received and forms.
 
         Args:
-            filters: Category or search criteria.
-
-        References:
-            - Categories, ``SMALLER``, ``TEXT``, and ``SINCE`` take additional values.
-
-        Examples:
-            ``'SMALLER 500'``
-            ``'TEXT "foo-bar"'``
-            ``'SINCE 17-Feb-2022'`` [OR] ``'SINCE 1645300995.231752'``
+            filters: Category or Condition
 
         References:
             https://imapclient.readthedocs.io/en/2.1.0/api.html#imapclient.IMAPClient.search

@@ -77,10 +77,6 @@
 </ul>
 </dd>
 </dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Carrier defaults to <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code> which uses <code class="docutils literal notranslate"><span class="pre">tmomail.net</span></code> as the SMS gateway.</p>
-</div>
 <dl class="py property">
 <dt class="sig sig-object py" id="gmailconnector.send_sms.SendSMS.authenticate">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">authenticate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Response</span></em><a class="headerlink" href="#gmailconnector.send_sms.SendSMS.authenticate" title="Permalink to this definition">¶</a></dt>
@@ -123,21 +119,17 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="gmailconnector.send_sms.SendSMS.send_sms">
-<span class="sig-name descname"><span class="pre">send_sms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">carrier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'t-mobile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sms_gateway</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_sent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#gmailconnector.send_sms.SendSMS.send_sms" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_sms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sms_gateway</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">__str__</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tmomail.net'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_sent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#gmailconnector.send_sms.SendSMS.send_sms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates a TLS connection and sends a text message through SMS gateway of destination number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phone</strong> – Phone number stored as env var.</p></li>
+<li><p><strong>phone</strong> – Phone number.</p></li>
 <li><p><strong>message</strong> – Content of the message.</p></li>
 <li><p><strong>subject</strong> – Subject line for the message. Defaults to “Message from GmailConnector”</p></li>
-<li><p><strong>carrier</strong> – Takes any of <code class="docutils literal notranslate"><span class="pre">at&amp;t</span></code>, <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">verizon</span></code>, <code class="docutils literal notranslate"><span class="pre">boost</span></code>, <code class="docutils literal notranslate"><span class="pre">cricket</span></code>, <code class="docutils literal notranslate"><span class="pre">us-cellular</span></code></p></li>
 <li><p><strong>sms_gateway</strong> – Takes the SMS gateway of the carrier as an argument.</p></li>
-<li><p><strong>delete_sent</strong> – Boolean flag to delete the message from GMAIL’s sent items. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>delete_sent</strong> – Boolean flag to delete the message from GMAIL’s sent items. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>UnicodeEncodeError</strong> – </p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -165,8 +157,8 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_phone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#gmailconnector.send_sms.SendSMS.validate_phone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates all the arguments passed during object initialization.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – If any arg is missing or malformed.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phone</strong> – Phone number.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -390,17 +382,9 @@
 <dd><p>Searches the number of emails for the category received and forms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filters</strong> – Category or search criteria.</p>
+<dd class="field-odd"><p><strong>filters</strong> – Category or Condition</p>
 </dd>
 </dl>
-<p class="rubric">References</p>
-<ul class="simple">
-<li><p>Categories, <code class="docutils literal notranslate"><span class="pre">SMALLER</span></code>, <code class="docutils literal notranslate"><span class="pre">TEXT</span></code>, and <code class="docutils literal notranslate"><span class="pre">SINCE</span></code> take additional values.</p></li>
-</ul>
-<p class="rubric">Examples</p>
-<p><code class="docutils literal notranslate"><span class="pre">'SMALLER</span> <span class="pre">500'</span></code>
-<code class="docutils literal notranslate"><span class="pre">'TEXT</span> <span class="pre">&quot;foo-bar&quot;'</span></code>
-<code class="docutils literal notranslate"><span class="pre">'SINCE</span> <span class="pre">17-Feb-2022'</span></code> [OR] <code class="docutils literal notranslate"><span class="pre">'SINCE</span> <span class="pre">1645300995.231752'</span></code></p>
 <p class="rubric">References</p>
 <p><a class="reference external" href="https://imapclient.readthedocs.io/en/2.1.0/api.html#imapclient.IMAPClient.search">https://imapclient.readthedocs.io/en/2.1.0/api.html#imapclient.IMAPClient.search</a></p>
 <dl class="field-list simple">

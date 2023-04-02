@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+0.7.3 (04/02/2023)
+------------------
+- Bug fix on context to TLS and SSL
+- Remove auth extension during encryption
+- Move SMSGateway to be an object
+- Onboard a test runner and Dockerfile
+- Upgrade dependencies and move it to requirements.txt
+- Update README.md
+
 0.7.2 (03/31/2023)
 ------------------
 - Support both `TLS` and `SSL` encryption for egress

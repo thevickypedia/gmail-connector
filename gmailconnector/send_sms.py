@@ -1,10 +1,9 @@
 import os
 import smtplib
 import socket
-import ssl
 from typing import NoReturn, Union
 
-from .encryption import Encryption
+from .models import Encryption, SMSGateway
 from .responder import Response
 from .sms_deleter import DeleteSent
 
@@ -16,15 +15,6 @@ class SendSMS:
 
     """
 
-    SMS_GATEWAY = {
-        "at&t": "mms.att.net",
-        "t-mobile": "tmomail.net",
-        "verizon": "vtext.com",
-        "boost": "smsmyboostmobile.com",
-        "cricket": "sms.cricketwireless.net",
-        "us-cellular": "email.uscc.net",
-    }
-
     def __init__(self, gmail_user: str = None, gmail_pass: str = None, timeout: Union[int, float] = 10,
                  gmail_host: str = "smtp.gmail.com", encryption: Encryption.__str__ = Encryption.TLS):
         """Initiates all the necessary args.
@@ -35,9 +25,6 @@ class SendSMS:
             timeout: Connection timeout for SMTP lib.
             encryption: Type of encryption to be used.
             gmail_host: Hostname for gmail's smtp server.
-
-        See Also:
-            Carrier defaults to ``t-mobile`` which uses ``tmomail.net`` as the SMS gateway.
         """
         gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
         gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
@@ -62,8 +49,7 @@ class SendSMS:
     def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
         """Create a connection using SSL encryption."""
         try:
-            self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout,
-                                           context=ssl.create_default_context())
+            self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout)
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
@@ -71,8 +57,7 @@ class SendSMS:
         """Create a connection using TLS encryption."""
         try:
             self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)
-            self.server.starttls(context=ssl.create_default_context())
-            self.server.ehlo()
+            self.server.starttls()
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
@@ -120,8 +105,8 @@ class SendSMS:
     def validate_phone(phone: str) -> NoReturn:
         """Validates all the arguments passed during object initialization.
 
-        Raises:
-            ValueError: If any arg is missing or malformed.
+        Args:
+            phone: Phone number.
         """
         if len(phone) != 10 and len(phone) != 12:
             raise ValueError('Phone number should either be 10 or 12 digits (if includes country code)')
@@ -142,21 +127,17 @@ class SendSMS:
             phone = f'+1{phone}'
         return phone + '@' + gateway
 
-    def send_sms(self, message: str, phone: str = os.environ.get('phone') or os.environ.get('PHONE'),
-                 subject: str = None, carrier: str = 't-mobile', sms_gateway: str = None,
-                 delete_sent: bool = True) -> Response:
+    def send_sms(self, message: str, phone: str = None, subject: str = None,
+                 sms_gateway: SMSGateway.__str__ = SMSGateway.tmobile,
+                 delete_sent: bool = False) -> Response:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
 
         Args:
-            phone: Phone number stored as env var.
+            phone: Phone number.
             message: Content of the message.
             subject: Subject line for the message. Defaults to "Message from GmailConnector"
-            carrier: Takes any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``
             sms_gateway: Takes the SMS gateway of the carrier as an argument.
-            delete_sent: Boolean flag to delete the message from GMAIL's sent items. Defaults to ``True``.
-
-        Raises:
-            UnicodeEncodeError
+            delete_sent: Boolean flag to delete the message from GMAIL's sent items. Defaults to ``False``.
 
         See Also:
             - Encodes body of the message to `ascii` with `ignore` flag and then decodes it.
@@ -170,21 +151,22 @@ class SendSMS:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
+        phone = phone or os.environ.get('phone') or os.environ.get('PHONE')
         if phone:
             phone = str(phone)
         else:
             raise ValueError(
                 'Cannot proceed without the arg: `phone`'
             )
-        carrier = carrier.lower()
-        if carrier not in list(self.SMS_GATEWAY.keys()):
-            carrier = 't-mobile'
-        gateway = sms_gateway or self.SMS_GATEWAY.get(carrier)
 
         self.validate_phone(phone=phone)
         body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
         subject = subject or f"Message from {self.gmail_user.replace('@gmail.com', '')}"
-        to = self.generate_address(phone=phone, gateway=gateway)
+        if sms_gateway not in SMSGateway.all:
+            raise ValueError(
+                f"SMS gateway should be any one of {', '.join(SMSGateway.all)!r}"
+            )
+        to = self.generate_address(phone=phone, gateway=sms_gateway)
         if not self._authenticated:
             status = self.authenticate
             if not status.ok:

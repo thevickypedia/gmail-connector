@@ -1,7 +1,7 @@
+import imaplib
 from concurrent.futures import ThreadPoolExecutor
 from email import message_from_bytes
 from email.header import decode_header, make_header
-from imaplib import IMAP4_SSL
 from typing import Dict, Union
 
 
@@ -13,7 +13,7 @@ class DeleteSent:
     """
 
     def __init__(self, **kwargs):
-        self.mail = IMAP4_SSL('imap.gmail.com')
+        self.mail = imaplib.IMAP4_SSL('imap.gmail.com')
         self.username = kwargs.get('username')
         self.subject = kwargs.get('subject')
         self.body = kwargs.get('body')

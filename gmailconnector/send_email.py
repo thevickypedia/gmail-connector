@@ -4,10 +4,9 @@ import email.mime.text
 import os
 import smtplib
 import socket
-import ssl
 from typing import Dict, NoReturn, Union
 
-from .encryption import Encryption
+from .models import Encryption
 from .responder import Response
 
 
@@ -53,8 +52,7 @@ class SendEmail:
     def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
         """Create a connection using SSL encryption."""
         try:
-            self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout,
-                                           context=ssl.create_default_context())
+            self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout)
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
@@ -62,8 +60,7 @@ class SendEmail:
         """Create a connection using TLS encryption."""
         try:
             self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)
-            self.server.starttls(context=ssl.create_default_context())
-            self.server.ehlo()
+            self.server.starttls()
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 

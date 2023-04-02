@@ -18,7 +18,6 @@ Send SMS
 .. automodule:: gmailconnector.send_sms
    :members:
    :undoc-members:
-   :exclude-members: SMS_GATEWAY
 
 Delete Sent SMS
 ===============
