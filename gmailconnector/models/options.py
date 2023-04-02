@@ -1,6 +1,6 @@
 """Options that can be included while reading emails."""
 
-from datetime import date
+import datetime
 from typing import Union
 
 
@@ -18,9 +18,9 @@ class Condition:
         return 'TEXT "%s"' % text
 
     @staticmethod
-    def since(since: Union[str, float, 'date']):
+    def since(since: Union[str, float, 'datetime.date']):
         """Condition to retrieve emails since a given date."""
-        if isinstance(since, date):
+        if isinstance(since, datetime.date):
             return 'SINCE "%s"' % since.strftime('%d-%b-%Y')
         return 'SINCE "%s"' % since
 

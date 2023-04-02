@@ -62,7 +62,7 @@ class Response:
 
         Returns:
             int:
-            Returns the number of unread emails.
+            Returns the number of emails.
         """
         return self.raw.get('count')
 

@@ -4,7 +4,7 @@ import smtplib
 import socket
 from typing import Union
 
-from ..responder import Response
+from ..models.responder import Response
 from .address import EmailAddress
 from .domain import get_mx_records
 from .exceptions import (AddressFormatError, InvalidDomain, NotMailServer,

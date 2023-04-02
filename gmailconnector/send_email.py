@@ -6,8 +6,8 @@ import smtplib
 import socket
 from typing import Dict, NoReturn, Union
 
-from .models import Encryption
-from .responder import Response
+from .models.config import Encryption
+from .models.responder import Response
 
 
 class SendEmail:

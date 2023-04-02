@@ -3,8 +3,8 @@ import smtplib
 import socket
 from typing import NoReturn, Union
 
-from .models import Encryption, SMSGateway
-from .responder import Response
+from .models.config import Encryption, SMSGateway
+from .models.responder import Response
 from .sms_deleter import DeleteSent
 
 

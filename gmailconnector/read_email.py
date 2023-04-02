@@ -8,12 +8,12 @@ from typing import Iterable, NoReturn, Union
 
 import pytz
 
-from .options import Category, Condition, Folder
-from .responder import Email, Response
+from .models.options import Category, Condition, Folder
+from .models.responder import Email, Response
 
 
 class ReadEmail:
-    """Initiates Emailer object to authenticate and yield the unread emails.
+    """Initiates Emailer object to authenticate and yield the emails according the conditions/filters.
 
     >>> ReadEmail
 
@@ -28,7 +28,7 @@ class ReadEmail:
         Args:
             gmail_user: Gmail username to authenticate IMAP lib.
             gmail_pass: Gmail password to authenticate IMAP lib.
-            folder: Folder where the unread emails have to be read from.
+            folder: Folder where the emails have to be read from.
 
         References:
             https://imapclient.readthedocs.io/en/2.1.0/_modules/imapclient/imapclient.html#IMAPClient.xlist_folders
@@ -179,7 +179,7 @@ class ReadEmail:
                                      date_time=receive, body=body))
 
     def read_mail(self, messages: list or str, humanize_datetime: bool = False) -> Generator[Email]:
-        """Prints unread emails one by one after getting user confirmation.
+        """Yield emails matching the filters' criteria.
 
         Args:
             messages: Takes the encoded message list as an argument. This is the body of the ``instantiate`` method.

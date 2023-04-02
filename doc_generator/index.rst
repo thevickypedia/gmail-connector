@@ -68,6 +68,27 @@ Custom Exceptions
    :members:
    :undoc-members:
 
+Models - Config
+===============
+
+.. automodule:: gmailconnector.models.config
+   :members:
+   :undoc-members:
+
+Models - Options
+================
+
+.. automodule:: gmailconnector.models.options
+   :members:
+   :undoc-members:
+
+Models - Responder
+==================
+
+.. automodule:: gmailconnector.models.responder
+   :members:
+   :undoc-members:
+
 Indices and tables
 ==================
 

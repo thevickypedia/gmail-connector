@@ -1,7 +1,7 @@
 [project]
 name = "gmail-connector"
 dynamic = ["version", "dependencies"]
-description = "Python module to, send SMS, emails and read unread emails"
+description = "Python module to, send SMS, emails and read emails"
 readme = "README.md"
 authors = [{ name = "Vignesh Sivanandha Rao", email = "svignesh1793@gmail.com" }]
 license = { file = "LICENSE" }
@@ -26,7 +26,7 @@ packages = ["gmailconnector"]
 
 [tool.setuptools.dynamic]
 version = {attr = "gmailconnector.version"}
-dependencies = {file = ["gmailconnector/requirements.txt"]}
+dependencies = {file = ["gmailconnector/lib/requirements.txt"]}
 
 [build-system]
 requires      = ["setuptools", "wheel"]

@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.7.4 (04/02/2023)
+------------------
+- Reformat and move objects to models dir
+- Update docs
+
 0.7.3 (04/02/2023)
 ------------------
 - Bug fix on context to TLS and SSL
