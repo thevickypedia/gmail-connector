@@ -106,9 +106,8 @@ An alternate approach is to generate <a class="reference external" href="https:/
 <h4>Additional args:<a class="headerlink" href="#additional-args" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p><strong>subject:</strong> Subject of the message. Defaults to <code class="docutils literal notranslate"><span class="pre">Message</span> <span class="pre">from</span> <span class="pre">GmailConnector</span></code></p></li>
-<li><p><strong>carrier:</strong> Use any of <code class="docutils literal notranslate"><span class="pre">at&amp;t</span></code>, <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">verizon</span></code>, <code class="docutils literal notranslate"><span class="pre">boost</span></code>, <code class="docutils literal notranslate"><span class="pre">cricket</span></code>, <code class="docutils literal notranslate"><span class="pre">us-cellular</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>.</p></li>
 <li><p><strong>sms_gateway:</strong> SMS gateway of the carrier. Defaults to <code class="docutils literal notranslate"><span class="pre">tmomail.net</span></code> since the default carrier is <code class="docutils literal notranslate"><span class="pre">t-mobile</span></code>.</p></li>
-<li><p><strong>delete_sent:</strong> Boolean flag to delete the outbound email from SentItems. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>delete_sent:</strong> Boolean flag to delete the outbound email from SentItems. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 <blockquote>
 <div><p>Note: If known, using the <code class="docutils literal notranslate"><span class="pre">sms_gateway</span></code> will ensure proper delivery of the SMS.</p>

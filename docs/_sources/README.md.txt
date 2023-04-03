@@ -65,9 +65,8 @@ print(response.body)
 
 ###### Additional args:
 - **subject:** Subject of the message. Defaults to `Message from GmailConnector`
-- **carrier:** Use any of ``at&t``, ``t-mobile``, ``verizon``, ``boost``, ``cricket``, ``us-cellular``. Defaults to `t-mobile`.
 - **sms_gateway:** SMS gateway of the carrier. Defaults to ``tmomail.net`` since the default carrier is ``t-mobile``.
-- **delete_sent:** Boolean flag to delete the outbound email from SentItems. Defaults to ``True``
+- **delete_sent:** Boolean flag to delete the outbound email from SentItems. Defaults to ``False``
 
 > Note: If known, using the `sms_gateway` will ensure proper delivery of the SMS.
 </details>

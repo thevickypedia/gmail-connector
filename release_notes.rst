@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.7.8 (04/03/2023)
+------------------
+- Update README.md and python version requirement
+
 0.7.7 (04/03/2023)
 ------------------
 - Make all objects available in __init__.py
