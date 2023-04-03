@@ -188,7 +188,7 @@ class SendSMS:
 
         if delete_sent:
             if delete_response := DeleteSent(username=self.gmail_user, password=self.gmail_pass,
-                                             subject=subject, body=body).delete_sent():
+                                             subject=subject, body=body, to=to).delete_sent():
                 return Response(dictionary={
                     'ok': True,
                     'status': 200,

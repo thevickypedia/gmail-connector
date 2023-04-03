@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.7.6 (04/02/2023)
+------------------
+- Add more exception handlers
+- Fix condition in delete sent for SMS
+
 0.7.5 (04/02/2023)
 ------------------
 - Remove unused namespace package

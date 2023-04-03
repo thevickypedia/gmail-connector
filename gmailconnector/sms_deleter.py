@@ -2,7 +2,7 @@ import email
 import imaplib
 from concurrent.futures import ThreadPoolExecutor
 from email.header import decode_header, make_header
-from typing import Dict, Union
+from typing import Dict, NoReturn, Union
 
 
 class DeleteSent:
@@ -13,11 +13,25 @@ class DeleteSent:
     """
 
     def __init__(self, **kwargs):
-        self.mail = imaplib.IMAP4_SSL('imap.gmail.com')
+        """Instantiate the members from kwargs."""
         self.username = kwargs.get('username')
+        self.password = kwargs.get('password')
         self.subject = kwargs.get('subject')
         self.body = kwargs.get('body')
-        self.mail.login(user=kwargs.get('username'), password=kwargs.get('password'))
+        self.to = kwargs.get('to')
+        self.mail = None
+        self.error = None
+        self.create_ssl_connection()
+
+    def create_ssl_connection(self) -> NoReturn:
+        """Create a connection using SSL encryption."""
+        try:
+            self.mail = imaplib.IMAP4_SSL('imap.gmail.com')
+            self.mail.login(user=self.username, password=self.password)
+            self.mail.list()
+            self.mail.select('"[Gmail]/Sent Mail"')
+        except Exception as error:
+            self.error = error.__str__()
 
     def thread_executor(self, item_id: bytes or str) -> Dict[str, str]:
         """Gets invoked in multiple threads, to set the flag as ``Deleted`` for the message which was just sent.
@@ -33,7 +47,7 @@ class DeleteSent:
             sender = str(make_header(decode_header((original_email['From']).split(' <')[0])))
             sub = str(make_header(decode_header(original_email['Subject'])))
             to = str(make_header(decode_header(original_email['To'])))
-            if to == to and sub == self.subject and sender == self.username and \
+            if to == self.to and sub == self.subject and sender == self.username and \
                     original_email.__dict__.get('_payload', '').strip() == self.body.strip():
                 self.mail.store(item_id.decode('UTF-8'), '+FLAGS', '\\Deleted')
                 self.mail.expunge()
@@ -49,8 +63,8 @@ class DeleteSent:
         Warnings:
             Deletion time depends on the number of existing emails in the ``Sent`` folder.
         """
-        self.mail.list()
-        self.mail.select('"[Gmail]/Sent Mail"')
+        if self.mail is None:
+            return
         return_code, messages = self.mail.search(None, 'ALL')  # Includes SEEN and UNSEEN, although sent is always SEEN
         if return_code != 'OK':
             return

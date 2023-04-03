@@ -57,8 +57,8 @@ def test_run_send_sms_tls():
     sender = gc.SendSMS(encryption=gc.Encryption.TLS)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_sms(subject="GmailConnector Test Runner - TLS - " + datetime.datetime.now().strftime('%c'),
-                               delete_sent=True, message="")
+    response = sender.send_sms(subject="GmailConnector Test Runner - TLS", delete_sent=True,
+                               message=datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send sms using TLS")
 
@@ -69,8 +69,8 @@ def test_run_send_sms_ssl():
     sender = gc.SendSMS(encryption=gc.Encryption.SSL)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_sms(subject="GmailConnector Test Runner - SSL - " + datetime.datetime.now().strftime('%c'),
-                               delete_sent=True, message="")
+    response = sender.send_sms(subject="GmailConnector Test Runner - SSL", delete_sent=True,
+                               message=datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send sms using SSL")
 
@@ -94,10 +94,10 @@ def test_run_validate_email_smtp_on():
 
 
 if __name__ == '__main__':
-    test_run_validate_email_smtp_off()
-    test_run_validate_email_smtp_on()
-    test_run_send_email_tls()
-    test_run_send_email_ssl()
+    # test_run_validate_email_smtp_off()
+    # test_run_validate_email_smtp_on()
+    # test_run_send_email_tls()
+    # test_run_send_email_ssl()
     test_run_send_sms_tls()
     test_run_send_sms_ssl()
-    test_run_read_email()
+    # test_run_read_email()
