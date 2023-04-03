@@ -68,7 +68,7 @@ An alternate approach is to generate <a class="reference external" href="https:/
 </section>
 <section id="env-vars">
 <h2>Env Vars<a class="headerlink" href="#env-vars" title="Permalink to this heading">¶</a></h2>
-<p>Environment variables can be loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
+<p>Environment variables can be loaded from any <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For authentication</span>
 <span class="nv">GMAIL_USER</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span>,
 <span class="nv">GMAIL_PASS</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span>
@@ -78,6 +78,12 @@ An alternate approach is to generate <a class="reference external" href="https:/
 
 <span class="c1"># For outbound SMS</span>
 <span class="nv">PHONE</span><span class="o">=</span><span class="s1">&#39;1234567890&#39;</span>
+</pre></div>
+</div>
+<p><em>Optionally <code class="docutils literal notranslate"><span class="pre">.env</span></code> files can also be scanned for:</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gmailconnector</span> <span class="k">as</span> <span class="nn">gc</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">load_env</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="send-sms">
@@ -127,8 +133,7 @@ An alternate approach is to generate <a class="reference external" href="https:/
 <p><strong>To verify recipient email before sending. Authentication not required, uses SMTP port <code class="docutils literal notranslate"><span class="pre">25</span></code></strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gmailconnector</span> <span class="k">as</span> <span class="nn">gc</span>
 
-<span class="n">email_addr</span> <span class="o">=</span> <span class="s1">&#39;someone@example.com&#39;</span>
-<span class="n">validation_result</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">validate_email</span><span class="p">(</span><span class="n">email_address</span><span class="o">=</span><span class="n">email_addr</span><span class="p">)</span>
+<span class="n">validation_result</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">validate_email</span><span class="p">(</span><span class="n">email_address</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">ok</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span>  <span class="c1"># Validated and found the recipient address to be valid</span>
 <span class="k">elif</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">ok</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>

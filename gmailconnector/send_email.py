@@ -1,9 +1,9 @@
-import email.mime.application
-import email.mime.multipart
-import email.mime.text
 import os
 import smtplib
 import socket
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Dict, NoReturn, Union
 
 from .models.config import Encryption
@@ -105,7 +105,7 @@ class SendEmail:
             self.server.close()
 
     def multipart_message(self, subject: str, recipient: str or list, sender: str, body: str, html_body: str,
-                          attachments: list, filenames: list, cc: str or list) -> email.mime.multipart.MIMEMultipart:
+                          attachments: list, filenames: list, cc: str or list) -> MIMEMultipart:
         """Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.
 
         Args:
@@ -127,7 +127,7 @@ class SendEmail:
         recipient = [recipient] if isinstance(recipient, str) else recipient
         cc = [cc] if cc and isinstance(cc, str) else cc
 
-        msg = email.mime.multipart.MIMEMultipart()
+        msg = MIMEMultipart()
         msg['Subject'] = subject
         msg['From'] = f"{sender} <{self.gmail_user}>"
         msg['To'] = ','.join(recipient)
@@ -135,9 +135,9 @@ class SendEmail:
             msg['Cc'] = ','.join(cc)
 
         if body:
-            msg.attach(payload=email.mime.text.MIMEText(body, 'plain'))
+            msg.attach(payload=MIMEText(body, 'plain'))
         if html_body:
-            msg.attach(payload=email.mime.text.MIMEText(html_body, 'html'))
+            msg.attach(payload=MIMEText(html_body, 'html'))
 
         for index, attachment_ in enumerate(attachments):
             file_type = attachment_.split('.')[-1]
@@ -162,7 +162,7 @@ class SendEmail:
                 continue
 
             with open(attachment_, 'rb') as file:
-                attribute = email.mime.application.MIMEApplication(file.read(), _subtype=file_type)
+                attribute = MIMEApplication(file.read(), _subtype=file_type)
             attribute.add_header('Content-Disposition', 'attachment', filename=filename)
             msg.attach(payload=attribute)
 

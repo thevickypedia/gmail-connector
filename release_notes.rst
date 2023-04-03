@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.7.5 (04/02/2023)
+------------------
+- Remove unused namespace package
+- Reformat imports and update README.md
+
 0.7.4 (04/02/2023)
 ------------------
 - Reformat and move objects to models dir

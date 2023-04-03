@@ -1,12 +1,12 @@
+import email
 import imaplib
 from concurrent.futures import ThreadPoolExecutor
-from email import message_from_bytes
 from email.header import decode_header, make_header
 from typing import Dict, Union
 
 
 class DeleteSent:
-    """Initiates DeleteSent object to delete a particular email from SentItems.
+    """Initiates DeleteSent object to delete the sent SMS email from SentItems.
 
     >>> DeleteSent
 
@@ -29,7 +29,7 @@ class DeleteSent:
         for response_part in data:
             if not isinstance(response_part, tuple):
                 continue
-            original_email = message_from_bytes(response_part[1])  # gets the raw content
+            original_email = email.message_from_bytes(response_part[1])  # gets the raw content
             sender = str(make_header(decode_header((original_email['From']).split(' <')[0])))
             sub = str(make_header(decode_header(original_email['Subject'])))
             to = str(make_header(decode_header(original_email['To'])))

@@ -25,7 +25,7 @@ pip install gmail-connector
 ```
 
 ## Env Vars
-Environment variables can be loaded from a `.env` file.
+Environment variables can be loaded from any `.env` file.
 ```bash
 # For authentication
 GMAIL_USER='username@gmail.com',
@@ -36,6 +36,13 @@ RECIPIENT='username@gmail.com'
 
 # For outbound SMS
 PHONE='1234567890'
+```
+
+*Optionally `.env` files can also be scanned for:*
+```python
+import gmailconnector as gc
+
+gc.load_env(scan=True)
 ```
 
 ### [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
@@ -84,8 +91,7 @@ print(response.body)
 ```python
 import gmailconnector as gc
 
-email_addr = 'someone@example.com'
-validation_result = gc.validate_email(email_address=email_addr)
+validation_result = gc.validate_email(email_address='someone@example.com')
 if validation_result.ok is True:
     print('valid')  # Validated and found the recipient address to be valid
 elif validation_result.ok is False:

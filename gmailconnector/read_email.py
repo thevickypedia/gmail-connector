@@ -1,9 +1,10 @@
-import email.header
+import email
 import imaplib
 import os
 import socket
 from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
+from email.header import decode_header, make_header
 from typing import Iterable, NoReturn, Union
 
 import pytz
@@ -155,7 +156,7 @@ class ReadEmail:
         else:
             datetime_obj = datetime.now()
         from_ = original_email['From'].split(' <')
-        sub = email.header.make_header(email.header.decode_header(original_email['Subject'])) \
+        sub = make_header(decode_header(original_email['Subject'])) \
             if original_email['Subject'] else None
         # Converts pacific time to local timezone as the default is pacific
         local_time = datetime_obj.replace(tzinfo=pytz.timezone('US/Pacific')).astimezone(tz=self.LOCAL_TIMEZONE)

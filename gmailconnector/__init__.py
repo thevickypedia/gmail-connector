@@ -10,15 +10,20 @@ from .models.options import Category, Condition, Folder  # noqa: F401
 from .read_email import ReadEmail  # noqa: F401
 from .send_email import SendEmail  # noqa: F401
 from .send_sms import SendSMS  # noqa: F401
-from .validator import validate_email  # noqa: F401
+from .validator.validate_email import validate_email  # noqa: F401
 
-version = "0.7.4"
+version = "0.7.5"
 
 
-def load_env(filename: Union[str, os.PathLike] = ".env") -> NoReturn:
+def load_env(filename: Union[str, os.PathLike] = ".env", scan: bool = False) -> NoReturn:
     """Load .env files."""
-    if os.path.isfile(filename):
-        dotenv.load_dotenv(dotenv_path=filename, verbose=False)
+    if scan:
+        for file in os.listdir():
+            if file.endswith(".env"):
+                dotenv.load_dotenv(dotenv_path=file, verbose=False)
+    else:
+        if os.path.isfile(filename):
+            dotenv.load_dotenv(dotenv_path=filename, verbose=False)
 
 
 load_env()

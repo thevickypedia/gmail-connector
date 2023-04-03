@@ -1,7 +1,8 @@
 import ipaddress
 from typing import Union
 
-import idna.core
+from idna.core import IDNAError
+from idna.core import encode as idna_encode
 
 from .exceptions import AddressFormatError
 
@@ -22,8 +23,8 @@ class EmailAddress:
         if not self._user:
             raise AddressFormatError("Empty user")
         try:
-            self._domain = idna.core.encode(self._domain).decode('ascii')
-        except idna.core.IDNAError as error:
+            self._domain = idna_encode(self._domain).decode('ascii')
+        except IDNAError as error:
             raise AddressFormatError(error)
 
     @property
