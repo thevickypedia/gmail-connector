@@ -33,9 +33,9 @@ extensions = [
     'recommonmark',  # supports markdown integration
 ]
 
-# Include private members in the docs
+# Exclude private members in the docs
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_default_options
-autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True}
+autodoc_default_options = {"members": True, "undoc-members": True, "private-members": False}
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#configuration
 napoleon_google_docstring = True

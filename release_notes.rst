@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+0.7.7 (04/03/2023)
+------------------
+- Make all objects available in __init__.py
+- Unhook changelog dependency with version numbers
+- Exclude private members in docs
+
 0.7.6 (04/02/2023)
 ------------------
 - Add more exception handlers

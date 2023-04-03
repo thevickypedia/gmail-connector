@@ -7,12 +7,14 @@ import dotenv
 
 from .models.config import Encryption, SMSGateway  # noqa: F401
 from .models.options import Category, Condition, Folder  # noqa: F401
+from .models.responder import Response  # noqa: F401
 from .read_email import ReadEmail  # noqa: F401
 from .send_email import SendEmail  # noqa: F401
 from .send_sms import SendSMS  # noqa: F401
+from .sms_deleter import DeleteSent  # noqa: F401
 from .validator.validate_email import validate_email  # noqa: F401
 
-version = "0.7.6"
+version = "0.7"
 
 
 def load_env(filename: Union[str, os.PathLike] = ".env", scan: bool = False) -> NoReturn:
