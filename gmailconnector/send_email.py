@@ -8,6 +8,7 @@ from typing import Dict, NoReturn, Union
 
 from .models.config import Encryption
 from .models.responder import Response
+from .validator.address import EmailAddress
 
 
 class SendEmail:
@@ -198,6 +199,7 @@ class SendEmail:
             raise ValueError(
                 'Cannot proceed without the arg: `recipient`'
             )
+        recipient = EmailAddress(address=recipient).email  # validates recipient before sending email
         if not self._authenticated:
             status = self.authenticate
             if not status.ok:

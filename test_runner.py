@@ -5,10 +5,14 @@ import os
 import gmailconnector as gc
 
 logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter('%(asctime)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'))
+logger.addHandler(handler)
 logger.setLevel(logging.INFO)
-logger.addHandler(logging.StreamHandler())
 
 gc.load_env(filename="secrets.env")
+
+logger.info("RUNNING TESTS on version: %s", gc.version)
 
 
 def test_run_read_email():
@@ -77,7 +81,7 @@ def test_run_send_sms_ssl():
 
 def test_run_validate_email_smtp_off():
     """Test run on email validator with SMTP disabled."""
-    logger.info("Test initiated on email validator using SMTP enabled.")
+    logger.info("Test initiated on email validator with SMTP disabled.")
     response = gc.validate_email(email_address=os.environ.get("GMAIL_USER"),
                                  smtp_check=False, debug=True, logger=logger)
     assert response.ok, response.body
@@ -86,7 +90,7 @@ def test_run_validate_email_smtp_off():
 
 def test_run_validate_email_smtp_on():
     """Test run on email validator with SMTP enabled."""
-    logger.info("Test initiated on email validator using SMTP disabled.")
+    logger.info("Test initiated on email validator with SMTP enabled.")
     response = gc.validate_email(email_address=os.environ.get("GMAIL_USER"),
                                  smtp_check=True, debug=True, logger=logger)
     assert response.status <= 299, response.body
@@ -94,10 +98,10 @@ def test_run_validate_email_smtp_on():
 
 
 if __name__ == '__main__':
-    # test_run_validate_email_smtp_off()
-    # test_run_validate_email_smtp_on()
-    # test_run_send_email_tls()
-    # test_run_send_email_ssl()
+    test_run_validate_email_smtp_off()
+    test_run_validate_email_smtp_on()
+    test_run_send_email_tls()
+    test_run_send_email_ssl()
     test_run_send_sms_tls()
     test_run_send_sms_ssl()
-    # test_run_read_email()
+    test_run_read_email()

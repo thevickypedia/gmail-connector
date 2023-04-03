@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+0.7.9 (04/03/2023)
+------------------
+- Validate recipient address format in send_email.py
+- Make validator available on name space package
+- Update test runner
+
 0.7.8 (04/03/2023)
 ------------------
 - Update README.md and python version requirement
