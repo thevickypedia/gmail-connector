@@ -11,6 +11,14 @@ from .models.responder import Response
 from .validator.address import EmailAddress
 
 
+def validate_email(address: Union[str, list]) -> Union[str, list]:
+    """Validates email addresses and returns them as is."""
+    if isinstance(address, str):
+        return EmailAddress(address).email
+    else:
+        return [EmailAddress(addr).email for addr in address]
+
+
 class SendEmail:
     """Initiates Emailer object to email defined recipient from a defined sender with or without attachments.
 
@@ -169,7 +177,7 @@ class SendEmail:
 
         return msg
 
-    def send_email(self, subject: str, recipient: Union[str, list] = None,
+    def send_email(self, subject: str, recipient: Union[str, list],
                    sender: str = 'GmailConnector', body: str = None, html_body: str = None,
                    attachment: Union[str, list] = None, filename: Union[str, list] = None,
                    custom_attachment: Dict[Union[str, os.PathLike], str] = None,
@@ -194,12 +202,9 @@ class SendEmail:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        recipient = recipient or os.environ.get('recipient') or os.environ.get('RECIPIENT')
-        if not recipient:
-            raise ValueError(
-                'Cannot proceed without the arg: `recipient`'
-            )
-        recipient = EmailAddress(address=recipient).email  # validates recipient before sending email
+        recipient = validate_email(address=recipient)
+        cc = validate_email(address=cc) if cc else None
+        bcc = validate_email(address=bcc) if bcc else None
         if not self._authenticated:
             status = self.authenticate
             if not status.ok:

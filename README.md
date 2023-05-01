@@ -31,9 +31,6 @@ Environment variables can be loaded from any `.env` file.
 GMAIL_USER='username@gmail.com',
 GMAIL_PASS='<ACCOUNT_PASSWORD>'
 
-# For outbound emails
-RECIPIENT='username@gmail.com'
-
 # For outbound SMS
 PHONE='1234567890'
 ```
@@ -45,6 +42,7 @@ import gmailconnector as gc
 gc.load_env(scan=True)
 ```
 
+## Usage
 ### [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
 ```python
 import gmailconnector as gc

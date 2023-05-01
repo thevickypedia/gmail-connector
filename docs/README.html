@@ -73,9 +73,6 @@ An alternate approach is to generate <a class="reference external" href="https:/
 <span class="nv">GMAIL_USER</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span>,
 <span class="nv">GMAIL_PASS</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span>
 
-<span class="c1"># For outbound emails</span>
-<span class="nv">RECIPIENT</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span>
-
 <span class="c1"># For outbound SMS</span>
 <span class="nv">PHONE</span><span class="o">=</span><span class="s1">&#39;1234567890&#39;</span>
 </pre></div>
@@ -86,6 +83,9 @@ An alternate approach is to generate <a class="reference external" href="https:/
 <span class="n">gc</span><span class="o">.</span><span class="n">load_env</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <section id="send-sms">
 <h3><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a><a class="headerlink" href="#send-sms" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gmailconnector</span> <span class="k">as</span> <span class="nn">gc</span>
@@ -269,7 +269,8 @@ An alternate approach is to generate <a class="reference external" href="https:/
     <ul>
 <li><a class="reference internal" href="#">Gmail Connector</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#env-vars">Env Vars</a><ul>
+<li><a class="reference internal" href="#env-vars">Env Vars</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#send-sms">Send SMS</a><ul>
 <li><a class="reference internal" href="#additional-args">Additional args:</a></li>
 </ul>

@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.8.0 (05/01/2023)
+------------------
+- Support validating email addresses for iterables
+- Update README.md and test_runner.py
+
 0.7.9 (04/03/2023)
 ------------------
 - Validate recipient address format in send_email.py

@@ -37,7 +37,7 @@ def test_run_send_email_tls():
     sender = gc.SendEmail(encryption=gc.Encryption.TLS)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_email(sender="GmailConnector Tester",
+    response = sender.send_email(sender="GmailConnector Tester", recipient=os.environ.get('RECIPIENT'),
                                  subject="GmailConnector Test Runner - TLS - " + datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send email using TLS")
@@ -49,7 +49,7 @@ def test_run_send_email_ssl():
     sender = gc.SendEmail(encryption=gc.Encryption.SSL)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_email(sender="GmailConnector Tester",
+    response = sender.send_email(sender="GmailConnector Tester", recipient=os.environ.get('RECIPIENT'),
                                  subject="GmailConnector Test Runner - SSL - " + datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send email using SSL")
