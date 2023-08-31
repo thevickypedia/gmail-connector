@@ -1,7 +1,7 @@
 import os
 import smtplib
 import socket
-from typing import NoReturn, Union
+from typing import Union
 
 from .models.config import Encryption, SMSGateway
 from .models.responder import Response
@@ -46,14 +46,14 @@ class SendSMS:
         else:
             self.create_ssl_connection(host=gmail_host, timeout=timeout)
 
-    def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
+    def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> None:
         """Create a connection using SSL encryption."""
         try:
             self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout)
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
-    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
+    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> None:
         """Create a connection using TLS encryption."""
         try:
             self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)
@@ -102,7 +102,7 @@ class SendSMS:
             self.server.close()
 
     @staticmethod
-    def validate_phone(phone: str) -> NoReturn:
+    def validate_phone(phone: str) -> None:
         """Validates all the arguments passed during object initialization.
 
         Args:

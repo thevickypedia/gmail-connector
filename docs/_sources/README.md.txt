@@ -182,15 +182,15 @@ pip install sphinx==5.1.1 pre-commit==2.20.0 recommonmark==0.7.1
 pre-commit run --all-files
 ```
 
-### Change Log
+### [Release Notes](https://github.com/thevickypedia/gmail-connector/blob/master/release_notes.rst)
 **Requirement**
 ```shell
-pip install changelog-generator
+python -m pip install gitverse
 ```
 
 **Usage**
 ```shell
-changelog reverse -f release_notes.rst -t 'Release Notes'
+gitverse-release reverse -f release_notes.rst -t 'Release Notes'
 ```
 
 ### Pypi Module

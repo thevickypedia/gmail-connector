@@ -5,7 +5,7 @@ import socket
 from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
 from email.header import decode_header, make_header
-from typing import Iterable, NoReturn, Union
+from typing import Iterable, Union
 
 import pytz
 
@@ -49,7 +49,7 @@ class ReadEmail:
         self._authenticated = False
         self.create_ssl_connection(gmail_host=gmail_host, timeout=timeout)
 
-    def create_ssl_connection(self, gmail_host: str, timeout: Union[int, float]) -> NoReturn:
+    def create_ssl_connection(self, gmail_host: str, timeout: Union[int, float]) -> None:
         """Creates an SSL connection to gmail's SSL server."""
         try:
             self.mail = imaplib.IMAP4_SSL(host=gmail_host, port=993, timeout=timeout)

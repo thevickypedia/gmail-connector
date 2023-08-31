@@ -2,7 +2,7 @@ import email
 import imaplib
 from concurrent.futures import ThreadPoolExecutor
 from email.header import decode_header, make_header
-from typing import Dict, NoReturn, Union
+from typing import Dict, Union
 
 
 class DeleteSent:
@@ -23,7 +23,7 @@ class DeleteSent:
         self.error = None
         self.create_ssl_connection()
 
-    def create_ssl_connection(self) -> NoReturn:
+    def create_ssl_connection(self) -> None:
         """Create a connection using SSL encryption."""
         try:
             self.mail = imaplib.IMAP4_SSL('imap.gmail.com')

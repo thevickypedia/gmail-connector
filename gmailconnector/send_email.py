@@ -4,7 +4,7 @@ import socket
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Dict, NoReturn, Union
+from typing import Dict, Union
 
 from .models.config import Encryption
 from .models.responder import Response
@@ -58,14 +58,14 @@ class SendEmail:
         else:
             self.create_ssl_connection(host=gmail_host, timeout=timeout)
 
-    def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
+    def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> None:
         """Create a connection using SSL encryption."""
         try:
             self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout)
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
-    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> NoReturn:
+    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> None:
         """Create a connection using TLS encryption."""
         try:
             self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)
