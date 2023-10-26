@@ -1,0 +1,12 @@
+name: none-shall-pass
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  none-shall-pass:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: thevickypedia/none-shall-pass@v2.0
