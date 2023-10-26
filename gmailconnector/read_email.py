@@ -1,9 +1,13 @@
+import base64
+import binascii
 import email
 import imaplib
 import socket
+import warnings
 from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
 from email.header import decode_header, make_header
+from email.message import Message
 from typing import Iterable, Union
 
 import pytz
@@ -175,7 +179,29 @@ class ReadEmail:
         else:
             body = ""
             for payload in original_email.get_payload():
-                body += payload.as_string()
+                if isinstance(payload, Message):
+                    body += payload.as_string()
+                elif isinstance(payload, str):
+                    body += payload
+                elif isinstance(payload, bytes):
+                    try:
+                        decoded = base64.b64decode(payload)
+                    except binascii.Error:
+                        try:
+                            decoded = payload.decode()  # encoding is unknown at this point so default to UTF-8
+                        except UnicodeDecodeError:
+                            warnings.warn(
+                                "Unknown encoding type for payload"
+                            )
+                            continue
+                    body += decoded
+                else:
+                    warnings.warn(
+                        f"Unsupported payload type: {type(payload)}"
+                    )
+        if len(from_) == 1:
+            return Email(dictionary=dict(sender=None, sender_email=from_[0].lstrip('<').rstrip('>'),
+                                         subject=sub, date_time=receive, body=body))
         return Email(dictionary=dict(sender=from_[0], sender_email=from_[1].rstrip('>'),
                                      subject=sub, date_time=receive, body=body))
 

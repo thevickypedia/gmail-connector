@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+v1.0b (10/26/2023)
+------------------
+- Release beta version for v1
+
+v1.0a (10/26/2023)
+------------------
+- Prerelease for v1
+
 0.9.1 (08/30/2023)
 ------------------
 - Includes some minor modifications in type hinting
