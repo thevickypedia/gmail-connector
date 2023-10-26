@@ -6,8 +6,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Dict, Union
 
-from typing_extensions import Unpack
-
 from .models.config import EgressConfig, Encryption
 from .models.responder import Response
 from .validator.address import EmailAddress
@@ -28,7 +26,7 @@ class SendEmail:
 
     """
 
-    def __init__(self, **kwargs: Unpack[EgressConfig]):
+    def __init__(self, **kwargs: EgressConfig):
         """Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.
 
         kwargs:

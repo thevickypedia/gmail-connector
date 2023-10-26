@@ -45,7 +45,8 @@
   <p><a class="reference external" href="https://pypi.org/project/gmail-connector"><img alt="Pypi-version" src="https://img.shields.io/pypi/v/gmail-connector" /></a>
 <a class="reference external" href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue" /></a></p>
 <p><a class="reference external" href="https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment"><img alt="pages-build-deployment" src="https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment/badge.svg" /></a>
-<a class="reference external" href="https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml"><img alt="pypi-publish" src="https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml/badge.svg" /></a></p>
+<a class="reference external" href="https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml"><img alt="pypi-publish" src="https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml"><img alt="none-shall-pass" src="https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml/badge.svg" /></a></p>
 <p><a class="reference external" href="https://pypi.org/project/gmail-connector/#files"><img alt="Pypi-format" src="https://img.shields.io/pypi/format/gmail-connector" /></a>
 <a class="reference external" href="https://pypi.org/project/gmail-connector"><img alt="Pypi-status" src="https://img.shields.io/pypi/status/gmail-connector" /></a>
 <a class="reference external" href="https://github.com/thevickypedia/gmail-connector/network/dependents"><img alt="dependents" src="https://img.shields.io/librariesio/dependents/pypi/gmail-connector" /></a></p>
@@ -69,21 +70,27 @@ An alternate approach is to generate <a class="reference external" href="https:/
 <section id="env-vars">
 <h2>Env Vars<a class="headerlink" href="#env-vars" title="Permalink to this heading">¶</a></h2>
 <p>Environment variables can be loaded from any <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For authentication</span>
-<span class="nv">GMAIL_USER</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span>,
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">GMAIL_USER</span><span class="o">=</span><span class="s1">&#39;username@gmail.com&#39;</span>,
 <span class="nv">GMAIL_PASS</span><span class="o">=</span><span class="s1">&#39;&lt;ACCOUNT_PASSWORD&gt;&#39;</span>
-
-<span class="c1"># For outbound SMS</span>
-<span class="nv">PHONE</span><span class="o">=</span><span class="s1">&#39;1234567890&#39;</span>
 </pre></div>
 </div>
-<p><em>Optionally <code class="docutils literal notranslate"><span class="pre">.env</span></code> files can also be scanned for:</em></p>
+<details>
+<summary><strong>Env variable customization</strong></summary><p>To load a custom <code class="docutils literal notranslate"><span class="pre">.env</span></code> file, set the filename as the env var <code class="docutils literal notranslate"><span class="pre">env_file</span></code> before importing <code class="docutils literal notranslate"><span class="pre">gmailconnector</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;env_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;custom&#39;</span>  <span class="c1"># to load a custom .env file</span>
+<span class="kn">import</span> <span class="nn">gmailconnector</span> <span class="k">as</span> <span class="nn">gc</span>
+</pre></div>
+</div>
+<p>To avoid using env variables, arguments can be loaded during object instantiation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gmailconnector</span> <span class="k">as</span> <span class="nn">gc</span>
-
-<span class="n">gc</span><span class="o">.</span><span class="n">load_env</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">gmail_user</span><span class="o">=</span><span class="s1">&#39;EMAIL_ADDRESS&#39;</span><span class="p">,</span>
+              <span class="n">gmail_pass</span><span class="o">=</span><span class="s1">&#39;PASSWORD&#39;</span><span class="p">,</span>
+              <span class="n">encryption</span><span class="o">=</span><span class="n">gc</span><span class="o">.</span><span class="n">Encryption</span><span class="o">.</span><span class="n">SSL</span><span class="p">,</span>
+              <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">email_obj</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">SendEmail</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
+</details></section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <section id="send-sms">

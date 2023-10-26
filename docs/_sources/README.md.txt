@@ -3,6 +3,7 @@
 
 [![pages-build-deployment](https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment)
 [![pypi-publish](https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml/badge.svg)](https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml)
+[![none-shall-pass](https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml/badge.svg)](https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml)
 
 [![Pypi-format](https://img.shields.io/pypi/format/gmail-connector)](https://pypi.org/project/gmail-connector/#files)
 [![Pypi-status](https://img.shields.io/pypi/status/gmail-connector)](https://pypi.org/project/gmail-connector)
@@ -27,20 +28,29 @@ pip install gmail-connector
 ## Env Vars
 Environment variables can be loaded from any `.env` file.
 ```bash
-# For authentication
 GMAIL_USER='username@gmail.com',
 GMAIL_PASS='<ACCOUNT_PASSWORD>'
-
-# For outbound SMS
-PHONE='1234567890'
 ```
 
-*Optionally `.env` files can also be scanned for:*
+<details>
+<summary><strong>Env variable customization</strong></summary>
+
+To load a custom `.env` file, set the filename as the env var `env_file` before importing `gmailconnector`
+```python
+import os
+os.environ['env_file'] = 'custom'  # to load a custom .env file
+import gmailconnector as gc
+```
+To avoid using env variables, arguments can be loaded during object instantiation.
 ```python
 import gmailconnector as gc
-
-gc.load_env(scan=True)
+kwargs = dict(gmail_user='EMAIL_ADDRESS',
+              gmail_pass='PASSWORD',
+              encryption=gc.Encryption.SSL,
+              timeout=5)
+email_obj = gc.SendEmail(**kwargs)
 ```
+</details>
 
 ## Usage
 ### [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
