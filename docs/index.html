@@ -61,18 +61,21 @@
 <span id="send-sms"></span><h1>Send SMS<a class="headerlink" href="#module-gmailconnector.send_sms" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="gmailconnector.send_sms.SendSMS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.send_sms.</span></span><span class="sig-name descname"><span class="pre">SendSMS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#gmailconnector.models.config.EgressConfig" title="gmailconnector.models.config.EgressConfig"><span class="pre">EgressConfig</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.send_sms.SendSMS" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.send_sms.</span></span><span class="sig-name descname"><span class="pre">SendSMS</span></span><a class="headerlink" href="#gmailconnector.send_sms.SendSMS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Messenger object to send an SMS to a phone number using SMS gateway provided by the mobile carrier.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SendSMS</span>
 </pre></div>
 </div>
 <p>Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.</p>
-<dl class="simple">
-<dt>kwargs:</dt><dd><p>gmail_user: Gmail username to authenticate SMTP lib.
-gmail_pass: Gmail password to authenticate SMTP lib.
-timeout: Connection timeout for SMTP lib.
-encryption: Type of encryption to be used.
-gmail_host: Hostname for gmail’s smtp server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gmail_user</strong> – Gmail username to authenticate SMTP lib.</p></li>
+<li><p><strong>gmail_pass</strong> – Gmail password to authenticate SMTP lib.</p></li>
+<li><p><strong>timeout</strong> – Connection timeout for SMTP lib.</p></li>
+<li><p><strong>encryption</strong> – Type of encryption to be used.</p></li>
+<li><p><strong>gmail_host</strong> – Hostname for gmail’s smtp server.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py property">
@@ -201,18 +204,21 @@ gmail_host: Hostname for gmail’s smtp server.</p>
 <span id="send-email"></span><h1>Send Email<a class="headerlink" href="#module-gmailconnector.send_email" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="gmailconnector.send_email.SendEmail">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.send_email.</span></span><span class="sig-name descname"><span class="pre">SendEmail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#gmailconnector.models.config.EgressConfig" title="gmailconnector.models.config.EgressConfig"><span class="pre">EgressConfig</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.send_email.SendEmail" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.send_email.</span></span><span class="sig-name descname"><span class="pre">SendEmail</span></span><a class="headerlink" href="#gmailconnector.send_email.SendEmail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Emailer object to email defined recipient from a defined sender with or without attachments.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SendEmail</span>
 </pre></div>
 </div>
 <p>Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.</p>
-<dl class="simple">
-<dt>kwargs:</dt><dd><p>gmail_user: Gmail username to authenticate SMTP lib.
-gmail_pass: Gmail password to authenticate SMTP lib.
-timeout: Connection timeout for SMTP lib.
-encryption: Type of encryption to be used.
-gmail_host: Hostname for gmail’s smtp server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gmail_user</strong> – Gmail username to authenticate SMTP lib.</p></li>
+<li><p><strong>gmail_pass</strong> – Gmail password to authenticate SMTP lib.</p></li>
+<li><p><strong>timeout</strong> – Connection timeout for SMTP lib.</p></li>
+<li><p><strong>encryption</strong> – Type of encryption to be used.</p></li>
+<li><p><strong>gmail_host</strong> – Hostname for gmail’s smtp server.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py property">
@@ -312,18 +318,21 @@ gmail_host: Hostname for gmail’s smtp server.</p>
 <span id="read-email"></span><h1>Read Email<a class="headerlink" href="#module-gmailconnector.read_email" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="gmailconnector.read_email.ReadEmail">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.read_email.</span></span><span class="sig-name descname"><span class="pre">ReadEmail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#gmailconnector.models.config.IngressConfig" title="gmailconnector.models.config.IngressConfig"><span class="pre">IngressConfig</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.read_email.ReadEmail" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.read_email.</span></span><span class="sig-name descname"><span class="pre">ReadEmail</span></span><a class="headerlink" href="#gmailconnector.read_email.ReadEmail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Emailer object to authenticate and yield the emails according the conditions/filters.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ReadEmail</span>
 </pre></div>
 </div>
 <p>Initiates necessary args, creates a connection with Gmail host to read emails from the chosen folder.</p>
-<dl class="simple">
-<dt>kwargs:</dt><dd><p>gmail_user: Gmail username to authenticate SMTP lib.
-gmail_pass: Gmail password to authenticate SMTP lib.
-timeout: Connection timeout for SMTP lib.
-gmail_host: Hostname for gmail’s smtp server.
-folder: Folder where the emails have to be read from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gmail_user</strong> – Gmail username to authenticate SMTP lib.</p></li>
+<li><p><strong>gmail_pass</strong> – Gmail password to authenticate SMTP lib.</p></li>
+<li><p><strong>timeout</strong> – Connection timeout for SMTP lib.</p></li>
+<li><p><strong>gmail_host</strong> – Hostname for gmail’s smtp server.</p></li>
+<li><p><strong>folder</strong> – Folder where the emails have to be read from.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">References</p>
@@ -507,7 +516,7 @@ folder: Folder where the emails have to be read from.</p>
 
 </section>
 <section id="module-gmailconnector.validator.exceptions">
-<span id="custom-exceptions"></span><h1>Custom Exceptions<a class="headerlink" href="#module-gmailconnector.validator.exceptions" title="Permalink to this heading">¶</a></h1>
+<span id="exceptions"></span><h1>Exceptions<a class="headerlink" href="#module-gmailconnector.validator.exceptions" title="Permalink to this heading">¶</a></h1>
 <dl class="py exception">
 <dt class="sig sig-object py" id="gmailconnector.validator.exceptions.AddressFormatError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.validator.exceptions.</span></span><span class="sig-name descname"><span class="pre">AddressFormatError</span></span><a class="headerlink" href="#gmailconnector.validator.exceptions.AddressFormatError" title="Permalink to this definition">¶</a></dt>
@@ -1028,7 +1037,7 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <li><a class="reference internal" href="#module-gmailconnector.validator.validate_email">Validator</a></li>
 <li><a class="reference internal" href="#module-gmailconnector.validator.address">Email Address Validation</a></li>
 <li><a class="reference internal" href="#module-gmailconnector.validator.domain">Domain Validation</a></li>
-<li><a class="reference internal" href="#module-gmailconnector.validator.exceptions">Custom Exceptions</a></li>
+<li><a class="reference internal" href="#module-gmailconnector.validator.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#module-gmailconnector.models.config">Models - Config</a></li>
 <li><a class="reference internal" href="#module-gmailconnector.models.options">Models - Options</a></li>
 <li><a class="reference internal" href="#module-gmailconnector.models.responder">Models - Responder</a></li>

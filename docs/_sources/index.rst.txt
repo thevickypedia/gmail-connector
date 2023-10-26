@@ -61,8 +61,8 @@ Domain Validation
    :members:
    :undoc-members:
 
-Custom Exceptions
-=================
+Exceptions
+==========
 
 .. automodule:: gmailconnector.validator.exceptions
    :members:

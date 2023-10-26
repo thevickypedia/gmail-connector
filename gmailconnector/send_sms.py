@@ -2,6 +2,8 @@ import smtplib
 import socket
 from typing import Union
 
+from typing_extensions import Unpack
+
 from .models.config import EgressConfig, Encryption, SMSGateway
 from .models.responder import Response
 from .sms_deleter import DeleteSent
@@ -14,10 +16,10 @@ class SendSMS:
 
     """
 
-    def __init__(self, **kwargs: EgressConfig):
+    def __init__(self, **kwargs: 'Unpack[EgressConfig]'):
         """Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.
 
-        kwargs:
+        Keyword Args:
             gmail_user: Gmail username to authenticate SMTP lib.
             gmail_pass: Gmail password to authenticate SMTP lib.
             timeout: Connection timeout for SMTP lib.

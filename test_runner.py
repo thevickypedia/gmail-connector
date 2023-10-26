@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 
 import gmailconnector as gc
 
@@ -7,9 +8,14 @@ logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'))
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+if os.getenv('debug'):
+    debug = True
+    logger.setLevel(logging.DEBUG)
+else:
+    debug = False
+    logger.setLevel(logging.INFO)
 
-logger.info("RUNNING TESTS on version: %s", gc.version)
+logger.info("RUNNING TESTS on version: %s with logger level: %s", gc.version, logging.getLevelName(logger.level))
 
 
 def test_run_read_email():
@@ -18,8 +24,9 @@ def test_run_read_email():
     reader = gc.ReadEmail(folder=gc.Folder.all)
     filter1 = gc.Condition.since(since=datetime.date(year=2010, month=5, day=1))
     filter2 = gc.Condition.subject(subject="Security Alert")
-    filter3 = gc.Category.not_deleted
-    response = reader.instantiate(filters=(filter1, filter2, filter3))  # Apply multiple filters at the same time
+    filter3 = gc.Condition.text(text=reader.env.gmail_user)
+    filter4 = gc.Category.not_deleted
+    response = reader.instantiate(filters=(filter1, filter2, filter3, filter4))  # Apply multiple filters
     assert response.status <= 299, response.body
     for each_mail in reader.read_mail(messages=response.body, humanize_datetime=False):  # False to get datetime object
         logger.debug(each_mail.date_time.date())
@@ -79,7 +86,7 @@ def test_run_send_sms_ssl():
 def test_run_validate_email_smtp_off():
     """Test run on email validator with SMTP disabled."""
     logger.info("Test initiated on email validator with SMTP disabled.")
-    response = gc.validate_email(gc.EgressConfig().gmail_user, smtp_check=False, debug=True, logger=logger)
+    response = gc.validate_email(gc.EgressConfig().gmail_user, smtp_check=False, debug=debug, logger=logger)
     assert response.ok, response.body
     logger.info("Test successful on validate email with SMTP enabled.")
 
@@ -87,7 +94,7 @@ def test_run_validate_email_smtp_off():
 def test_run_validate_email_smtp_on():
     """Test run on email validator with SMTP enabled."""
     logger.info("Test initiated on email validator with SMTP enabled.")
-    response = gc.validate_email(gc.IngressConfig().gmail_user, smtp_check=True, debug=True, logger=logger)
+    response = gc.validate_email(gc.IngressConfig().gmail_user, smtp_check=True, debug=debug, logger=logger)
     assert response.status <= 299, response.body
     logger.info("Test successful on validate email with SMTP disabled.")
 

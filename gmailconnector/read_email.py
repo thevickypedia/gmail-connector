@@ -7,6 +7,7 @@ from email.header import decode_header, make_header
 from typing import Iterable, Union
 
 import pytz
+from typing_extensions import Unpack
 
 from .models.config import IngressConfig
 from .models.options import Category, Condition
@@ -22,10 +23,10 @@ class ReadEmail:
 
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
-    def __init__(self, **kwargs: IngressConfig):
+    def __init__(self, **kwargs: 'Unpack[IngressConfig]'):
         """Initiates necessary args, creates a connection with Gmail host to read emails from the chosen folder.
 
-        kwargs:
+        Keyword Args:
             gmail_user: Gmail username to authenticate SMTP lib.
             gmail_pass: Gmail password to authenticate SMTP lib.
             timeout: Connection timeout for SMTP lib.
