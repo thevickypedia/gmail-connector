@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os
 
 import gmailconnector as gc
 
@@ -9,8 +8,6 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'))
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
-
-gc.load_env(filename="secrets.env")
 
 logger.info("RUNNING TESTS on version: %s", gc.version)
 
@@ -37,8 +34,8 @@ def test_run_send_email_tls():
     sender = gc.SendEmail(encryption=gc.Encryption.TLS)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_email(sender="GmailConnector Tester", recipient=os.environ.get('RECIPIENT'),
-                                 subject="GmailConnector Test Runner - TLS - " + datetime.datetime.now().strftime('%c'))
+    response = sender.send_email(recipient=sender.env.recipient, sender="GmailConnector Tester",
+                                 subject="GmailConnector Test Run - TLS - " + datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send email using TLS")
 
@@ -49,8 +46,8 @@ def test_run_send_email_ssl():
     sender = gc.SendEmail(encryption=gc.Encryption.SSL)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_email(sender="GmailConnector Tester", recipient=os.environ.get('RECIPIENT'),
-                                 subject="GmailConnector Test Runner - SSL - " + datetime.datetime.now().strftime('%c'))
+    response = sender.send_email(recipient=sender.env.recipient, sender="GmailConnector Tester",
+                                 subject="GmailConnector Test Run - SSL - " + datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send email using SSL")
 
@@ -61,7 +58,7 @@ def test_run_send_sms_tls():
     sender = gc.SendSMS(encryption=gc.Encryption.TLS)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_sms(subject="GmailConnector Test Runner - TLS", delete_sent=True,
+    response = sender.send_sms(subject="GmailConnector Test Run - TLS", delete_sent=True,
                                message=datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send sms using TLS")
@@ -73,7 +70,7 @@ def test_run_send_sms_ssl():
     sender = gc.SendSMS(encryption=gc.Encryption.SSL)
     auth_status = sender.authenticate
     assert auth_status.ok, auth_status.body
-    response = sender.send_sms(subject="GmailConnector Test Runner - SSL", delete_sent=True,
+    response = sender.send_sms(subject="GmailConnector Test Run - SSL", delete_sent=True,
                                message=datetime.datetime.now().strftime('%c'))
     assert response.ok, response.body
     logger.info("Test successful on send sms using SSL")
@@ -82,8 +79,7 @@ def test_run_send_sms_ssl():
 def test_run_validate_email_smtp_off():
     """Test run on email validator with SMTP disabled."""
     logger.info("Test initiated on email validator with SMTP disabled.")
-    response = gc.validate_email(email_address=os.environ.get("GMAIL_USER"),
-                                 smtp_check=False, debug=True, logger=logger)
+    response = gc.validate_email(gc.EgressConfig().gmail_user, smtp_check=False, debug=True, logger=logger)
     assert response.ok, response.body
     logger.info("Test successful on validate email with SMTP enabled.")
 
@@ -91,8 +87,7 @@ def test_run_validate_email_smtp_off():
 def test_run_validate_email_smtp_on():
     """Test run on email validator with SMTP enabled."""
     logger.info("Test initiated on email validator with SMTP enabled.")
-    response = gc.validate_email(email_address=os.environ.get("GMAIL_USER"),
-                                 smtp_check=True, debug=True, logger=logger)
+    response = gc.validate_email(gc.IngressConfig().gmail_user, smtp_check=True, debug=True, logger=logger)
     assert response.status <= 299, response.body
     logger.info("Test successful on validate email with SMTP disabled.")
 

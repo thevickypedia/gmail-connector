@@ -1,6 +1,7 @@
 """Options that can be included while reading emails."""
 
 import datetime
+from enum import Enum
 from typing import Union
 
 
@@ -30,7 +31,7 @@ class Condition:
         return 'SUBJECT "%s"' % subject
 
 
-class Folder:
+class Folder(str, Enum):
     """Wrapper for folders to choose emails from."""
 
     inbox: str = "inbox"

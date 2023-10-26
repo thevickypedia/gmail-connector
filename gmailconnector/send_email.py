@@ -6,7 +6,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Dict, Union
 
-from .models.config import Encryption
+from typing_extensions import Unpack
+
+from .models.config import EgressConfig, Encryption
 from .models.responder import Response
 from .validator.address import EmailAddress
 
@@ -26,37 +28,24 @@ class SendEmail:
 
     """
 
-    def __init__(self, gmail_user: str = None, gmail_pass: str = None, timeout: Union[int, float] = 10,
-                 gmail_host: str = "smtp.gmail.com", encryption: Encryption.__str__ = Encryption.TLS):
-        """Initiates necessary args, creates a connection with Gmail's SMTP on port 587.
+    def __init__(self, **kwargs: Unpack[EgressConfig]):
+        """Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.
 
-        Args:
+        kwargs:
             gmail_user: Gmail username to authenticate SMTP lib.
             gmail_pass: Gmail password to authenticate SMTP lib.
             timeout: Connection timeout for SMTP lib.
             encryption: Type of encryption to be used.
             gmail_host: Hostname for gmail's smtp server.
         """
-        gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
-        gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
         self.server, self.error = None, None
-        if not all([gmail_user, gmail_pass]):
-            raise ValueError("'gmail_user' and 'gmail_pass' are mandatory")
-        if encryption not in (Encryption.TLS, Encryption.SSL):
-            raise ValueError(
-                'Encryption should either be TLS or SSL'
-            )
-        if gmail_user.endswith('@gmail.com'):
-            self.gmail_user = gmail_user
-        else:
-            self.gmail_user = gmail_user + '@gmail.com'
-        self.gmail_pass = gmail_pass
+        self.env = EgressConfig(**kwargs)
         self._failed_attachments = {"FILE NOT FOUND": [], "FILE SIZE OVER 25 MB": []}
         self._authenticated = False
-        if encryption == Encryption.TLS:
-            self.create_tls_connection(host=gmail_host, timeout=timeout)
+        if self.env.encryption == Encryption.TLS:
+            self.create_tls_connection(host=self.env.gmail_host, timeout=self.env.timeout)
         else:
-            self.create_ssl_connection(host=gmail_host, timeout=timeout)
+            self.create_ssl_connection(host=self.env.gmail_host, timeout=self.env.timeout)
 
     def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> None:
         """Create a connection using SSL encryption."""
@@ -88,7 +77,7 @@ class SendEmail:
                 'body': self.error or "failed to create a connection with gmail's SMTP server"
             })
         try:
-            self.server.login(user=self.gmail_user, password=self.gmail_pass)
+            self.server.login(user=self.env.gmail_user, password=self.env.gmail_pass)
             self._authenticated = True
             return Response(dictionary={
                 'ok': True,
@@ -138,7 +127,7 @@ class SendEmail:
 
         msg = MIMEMultipart()
         msg['Subject'] = subject
-        msg['From'] = f"{sender} <{self.gmail_user}>"
+        msg['From'] = f"{sender} <{self.env.gmail_user}>"
         msg['To'] = ','.join(recipient)
         if cc:
             msg['Cc'] = ','.join(cc)

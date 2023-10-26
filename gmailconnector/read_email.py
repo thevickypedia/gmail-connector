@@ -1,6 +1,5 @@
 import email
 import imaplib
-import os
 import socket
 from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
@@ -8,8 +7,10 @@ from email.header import decode_header, make_header
 from typing import Iterable, Union
 
 import pytz
+from typing_extensions import Unpack
 
-from .models.options import Category, Condition, Folder
+from .models.config import IngressConfig
+from .models.options import Category, Condition
 from .models.responder import Email, Response
 
 
@@ -22,13 +23,14 @@ class ReadEmail:
 
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
-    def __init__(self, gmail_user: str = None, gmail_pass: str = None, folder: Folder.__str__ = Folder.inbox,
-                 gmail_host: str = "imap.gmail.com", timeout: Union[int, float] = 10):
-        """Initiates all the necessary args.
+    def __init__(self, **kwargs: Unpack[IngressConfig]):
+        """Initiates necessary args, creates a connection with Gmail host to read emails from the chosen folder.
 
-        Args:
-            gmail_user: Gmail username to authenticate IMAP lib.
-            gmail_pass: Gmail password to authenticate IMAP lib.
+        kwargs:
+            gmail_user: Gmail username to authenticate SMTP lib.
+            gmail_pass: Gmail password to authenticate SMTP lib.
+            timeout: Connection timeout for SMTP lib.
+            gmail_host: Hostname for gmail's smtp server.
             folder: Folder where the emails have to be read from.
 
         References:
@@ -37,17 +39,11 @@ class ReadEmail:
         See Also:
             Uses broad ``Exception`` clause to catch login errors, since the same is raised by ``imaplib``
         """
-        gmail_user = gmail_user or os.environ.get('gmail_user') or os.environ.get('GMAIL_USER')
-        gmail_pass = gmail_pass or os.environ.get('gmail_pass') or os.environ.get('GMAIL_PASS')
-        if not all([gmail_user, gmail_pass]):
-            raise ValueError("'gmail_user' and 'gmail_pass' are mandatory")
-        self.folder = folder
-        self.gmail_user = gmail_user
-        self.gmail_pass = gmail_pass
         self.error = None
         self.mail = None
         self._authenticated = False
-        self.create_ssl_connection(gmail_host=gmail_host, timeout=timeout)
+        self.env = IngressConfig(**kwargs)
+        self.create_ssl_connection(gmail_host=self.env.gmail_host, timeout=self.env.timeout)
 
     def create_ssl_connection(self, gmail_host: str, timeout: Union[int, float]) -> None:
         """Creates an SSL connection to gmail's SSL server."""
@@ -71,9 +67,9 @@ class ReadEmail:
                 'body': self.error or "failed to create a connection with gmail's SMTP server"
             })
         try:
-            self.mail.login(user=self.gmail_user, password=self.gmail_pass)
+            self.mail.login(user=self.env.gmail_user, password=self.env.gmail_pass)
             self.mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
-            self.mail.select(self.folder)
+            self.mail.select(self.env.folder)
             self._authenticated = True
             return Response(dictionary={
                 'ok': True,
@@ -121,7 +117,8 @@ class ReadEmail:
             return Response(dictionary={
                 'ok': False,
                 'status': 204,
-                'body': f'No {filters.lower()!r} emails found for {self.gmail_user} in {self.folder}',
+                'body': f'No emails found in {self.env.gmail_user} [{self.env.folder}] '
+                        f'for the filter(s) {filters.lower()!r}',
                 'count': num
             })
 
@@ -172,12 +169,15 @@ class ReadEmail:
                 receive = local_time.strftime("on %A, %B %d, at %I:%M %p")
         else:
             receive = local_time
-        body = None
         if original_email.get_content_type() == "text/plain":  # ignore attachments and html
             body = original_email.get_payload(decode=True)
             body = body.decode('utf-8')
-        return Email(dictionary=dict(sender=from_[0], sender_email=from_[1].rstrip('>'), subject=sub,
-                                     date_time=receive, body=body))
+        else:
+            body = ""
+            for payload in original_email.get_payload():
+                body += payload.as_string()
+        return Email(dictionary=dict(sender=from_[0], sender_email=from_[1].rstrip('>'),
+                                     subject=sub, date_time=receive, body=body))
 
     def read_mail(self, messages: list or str, humanize_datetime: bool = False) -> Generator[Email]:
         """Yield emails matching the filters' criteria.
