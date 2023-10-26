@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'Gmail Connector'
-copyright = '2021, Vignesh Sivanandha Rao'
-author = 'Vignesh Sivanandha Rao'
+copyright = '2021, Vignesh Rao'
+author = 'Vignesh Rao'
 
 # -- General configuration ---------------------------------------------------
 

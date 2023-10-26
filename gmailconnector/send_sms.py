@@ -20,7 +20,7 @@ class SendSMS:
     """
 
     def __init__(self, **kwargs: 'Unpack[EgressConfig]'):
-        """Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.
+        """Loads all the necessary args, creates a connection with Gmail host based on chosen encryption type.
 
         Keyword Args:
             gmail_user: Gmail username to authenticate SMTP lib.
@@ -58,7 +58,7 @@ class SendSMS:
 
         Returns:
             Response:
-            A custom response class with properties: ok, status and body to the user.
+            A custom response object with properties: ok, status and body to the user.
         """
         if self.server is None:
             return Response(dictionary={
@@ -99,7 +99,7 @@ class SendSMS:
                  subject: str = None,
                  sms_gateway: SMSGateway = None,
                  delete_sent: bool = False) -> Response:
-        """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
+        """Initiates an SMTP connection and sends a text message through SMS gateway of destination number.
 
         Args:
             phone: Phone number.
@@ -112,14 +112,13 @@ class SendSMS:
         See Also:
             - Encodes body of the message to `ascii` with `ignore` flag and then decodes it.
             - This is done to ignore special characters (like °) without raising `UnicodeEncodeError`
-            - Validates the endpoint ``phone-number@sms-gateway`` before trying to send the SMS.
 
         Notes:
             Other flags that can be set includes `replace` and `xmlcharrefreplace`
 
         Returns:
             Response:
-            A custom response class with properties: ok, status and body to the user.
+            A custom response object with properties: ok, status and body to the user.
         """
         if phone:
             self.env.phone = phone
@@ -138,7 +137,7 @@ class SendSMS:
             raise ValueError(
                 f"\n\tcountry code should match the pattern {COUNTRY_CODE.pattern}"
             )
-        body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
+        body = f'\n{message}'.encode('ascii', 'ignore').decode('ascii')
         subject = subject or f"Message from {self.env.gmail_user}"
         if not self._authenticated:
             status = self.authenticate

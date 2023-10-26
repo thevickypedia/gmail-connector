@@ -22,14 +22,14 @@ def validate_email(address: Union[str, list]) -> Union[str, list]:
 
 
 class SendEmail:
-    """Initiates Emailer object to email defined recipient from a defined sender with or without attachments.
+    """Initiates Emailer object to send an email.
 
     >>> SendEmail
 
     """
 
     def __init__(self, **kwargs: 'Unpack[EgressConfig]'):
-        """Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.
+        """Loads all the necessary args, creates a connection with Gmail host based on chosen encryption type.
 
         Keyword Args:
             gmail_user: Gmail username to authenticate SMTP lib.
@@ -68,7 +68,7 @@ class SendEmail:
 
         Returns:
             Response:
-            A custom response class with properties: ok, status and body to the user.
+            A custom response object with properties: ok, status and body to the user.
         """
         if self.server is None:
             return Response(dictionary={
@@ -189,7 +189,7 @@ class SendEmail:
 
         Returns:
             Response:
-            A custom response class with properties: ok, status and body to the user.
+            A custom response object with properties: ok, status and body to the user.
         """
         recipient = validate_email(address=recipient)
         cc = validate_email(address=cc) if cc else None

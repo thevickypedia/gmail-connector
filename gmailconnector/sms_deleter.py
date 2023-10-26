@@ -4,16 +4,26 @@ from concurrent.futures import ThreadPoolExecutor
 from email.header import decode_header, make_header
 from typing import Dict, Union
 
+from .models.options import Folder
+
 
 class DeleteSent:
-    """Initiates DeleteSent object to delete the sent SMS email from SentItems.
+    """Instantiate the DeleteSent object to delete the SMS email from SentItems.
 
     >>> DeleteSent
 
     """
 
     def __init__(self, **kwargs):
-        """Instantiate the members from kwargs."""
+        """Initiates keyword arguments and creates an SSL connection.
+
+        Keyword Args:
+            username: Gmail username to authenticate SMTP lib.
+            password: Gmail password to authenticate SMTP lib.
+            subject: Subject of the email to be deleted.
+            body: Body of the email to be deleted.
+            to: To address of the email to be deleted.
+        """
         self.username = kwargs.get('username')
         self.password = kwargs.get('password')
         self.subject = kwargs.get('subject')
@@ -24,16 +34,16 @@ class DeleteSent:
         self.create_ssl_connection()
 
     def create_ssl_connection(self) -> None:
-        """Create a connection using SSL encryption."""
+        """Creates a connection using SSL encryption and selects the sent folder."""
         try:
             self.mail = imaplib.IMAP4_SSL('imap.gmail.com')
             self.mail.login(user=self.username, password=self.password)
             self.mail.list()
-            self.mail.select('"[Gmail]/Sent Mail"')
+            self.mail.select(Folder.sent)
         except Exception as error:
             self.error = error.__str__()
 
-    def thread_executor(self, item_id: bytes or str) -> Dict[str, str]:
+    def thread_executor(self, item_id: Union[bytes, str]) -> Dict[str, str]:
         """Gets invoked in multiple threads, to set the flag as ``Deleted`` for the message which was just sent.
 
         Args:
@@ -61,7 +71,7 @@ class DeleteSent:
             Invokes ``thread_executor`` to sweep through sent items to delete the email.
 
         Warnings:
-            Deletion time depends on the number of existing emails in the ``Sent`` folder.
+            Time taken for deletion depends on the number of existing emails in the ``Sent`` folder.
         """
         if self.mail is None:
             return

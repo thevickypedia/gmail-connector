@@ -66,7 +66,7 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SendSMS</span>
 </pre></div>
 </div>
-<p>Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.</p>
+<p>Loads all the necessary args, creates a connection with Gmail host based on chosen encryption type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -84,7 +84,7 @@
 <dd><p>Initiates authentication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A custom response class with properties: ok, status and body to the user.</p>
+<dd class="field-odd"><p>A custom response object with properties: ok, status and body to the user.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#gmailconnector.models.responder.Response" title="gmailconnector.models.responder.Response">Response</a></p>
@@ -107,7 +107,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="gmailconnector.send_sms.SendSMS.send_sms">
 <span class="sig-name descname"><span class="pre">send_sms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sms_gateway</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SMSGatewayModel(att='mms.att.net',</span> <span class="pre">tmobile='tmomail.net',</span> <span class="pre">verizon='vtext.com',</span> <span class="pre">boost='smsmyboostmobile.com',</span> <span class="pre">cricket='sms.cricketwireless.net',</span> <span class="pre">uscellular='email.uscc.net')</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_sent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#gmailconnector.models.responder.Response" title="gmailconnector.models.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#gmailconnector.send_sms.SendSMS.send_sms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates a TLS connection and sends a text message through SMS gateway of destination number.</p>
+<dd><p>Initiates an SMTP connection and sends a text message through SMS gateway of destination number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -125,14 +125,13 @@
 <ul class="simple">
 <li><p>Encodes body of the message to <cite>ascii</cite> with <cite>ignore</cite> flag and then decodes it.</p></li>
 <li><p>This is done to ignore special characters (like °) without raising <cite>UnicodeEncodeError</cite></p></li>
-<li><p>Validates the endpoint <code class="docutils literal notranslate"><span class="pre">phone-number&#64;sms-gateway</span></code> before trying to send the SMS.</p></li>
 </ul>
 </div>
 <p class="rubric">Notes</p>
 <p>Other flags that can be set includes <cite>replace</cite> and <cite>xmlcharrefreplace</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A custom response class with properties: ok, status and body to the user.</p>
+<dd class="field-odd"><p>A custom response object with properties: ok, status and body to the user.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#gmailconnector.models.responder.Response" title="gmailconnector.models.responder.Response">Response</a></p>
@@ -148,15 +147,26 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="gmailconnector.sms_deleter.DeleteSent">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.sms_deleter.</span></span><span class="sig-name descname"><span class="pre">DeleteSent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates DeleteSent object to delete the sent SMS email from SentItems.</p>
+<dd><p>Instantiate the DeleteSent object to delete the SMS email from SentItems.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DeleteSent</span>
 </pre></div>
 </div>
-<p>Instantiate the members from kwargs.</p>
+<p>Initiates keyword arguments and creates an SSL connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> – Gmail username to authenticate SMTP lib.</p></li>
+<li><p><strong>password</strong> – Gmail password to authenticate SMTP lib.</p></li>
+<li><p><strong>subject</strong> – Subject of the email to be deleted.</p></li>
+<li><p><strong>body</strong> – Body of the email to be deleted.</p></li>
+<li><p><strong>to</strong> – To address of the email to be deleted.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="gmailconnector.sms_deleter.DeleteSent.create_ssl_connection">
 <span class="sig-name descname"><span class="pre">create_ssl_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent.create_ssl_connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a connection using SSL encryption.</p>
+<dd><p>Creates a connection using SSL encryption and selects the sent folder.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -169,13 +179,13 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Deletion time depends on the number of existing emails in the <code class="docutils literal notranslate"><span class="pre">Sent</span></code> folder.</p>
+<p>Time taken for deletion depends on the number of existing emails in the <code class="docutils literal notranslate"><span class="pre">Sent</span></code> folder.</p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="gmailconnector.sms_deleter.DeleteSent.thread_executor">
-<span class="sig-name descname"><span class="pre">thread_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent.thread_executor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">thread_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gmailconnector.sms_deleter.DeleteSent.thread_executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets invoked in multiple threads, to set the flag as <code class="docutils literal notranslate"><span class="pre">Deleted</span></code> for the message which was just sent.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -192,11 +202,11 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="gmailconnector.send_email.SendEmail">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gmailconnector.send_email.</span></span><span class="sig-name descname"><span class="pre">SendEmail</span></span><a class="headerlink" href="#gmailconnector.send_email.SendEmail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Emailer object to email defined recipient from a defined sender with or without attachments.</p>
+<dd><p>Initiates Emailer object to send an email.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SendEmail</span>
 </pre></div>
 </div>
-<p>Initiates necessary args, creates a connection with Gmail host based on chosen encryption type.</p>
+<p>Loads all the necessary args, creates a connection with Gmail host based on chosen encryption type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -214,7 +224,7 @@
 <dd><p>Initiates authentication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A custom response class with properties: ok, status and body to the user.</p>
+<dd class="field-odd"><p>A custom response object with properties: ok, status and body to the user.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#gmailconnector.models.responder.Response" title="gmailconnector.models.responder.Response">Response</a></p>
@@ -284,7 +294,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A custom response class with properties: ok, status and body to the user.</p>
+<dd class="field-even"><p>A custom response object with properties: ok, status and body to the user.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#gmailconnector.models.responder.Response" title="gmailconnector.models.responder.Response">Response</a></p>
@@ -310,7 +320,7 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ReadEmail</span>
 </pre></div>
 </div>
-<p>Initiates necessary args, creates a connection with Gmail host to read emails from the chosen folder.</p>
+<p>Loads all the necessary args, creates a connection with Gmail host to read emails from the chosen folder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -334,7 +344,7 @@
 <dd><p>Initiates authentication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A custom response class with properties: ok, status and body to the user.</p>
+<dd class="field-odd"><p>A custom response object with properties: ok, status and body to the user.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#gmailconnector.models.responder.Response" title="gmailconnector.models.responder.Response">Response</a></p>
@@ -401,7 +411,7 @@
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>dict</em> – A custom response class with properties: ok, status and body to the user.</p>
+<dd class="field-even"><p><em>dict</em> – A custom response object with properties: ok, status and body to the user.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1070,7 +1080,7 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2021, Vignesh Sivanandha Rao.
+        &#169; Copyright 2021, Vignesh Rao.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
   </body>

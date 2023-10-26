@@ -28,7 +28,7 @@ class ReadEmail:
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
     def __init__(self, **kwargs: 'Unpack[IngressConfig]'):
-        """Initiates necessary args, creates a connection with Gmail host to read emails from the chosen folder.
+        """Loads all the necessary args, creates a connection with Gmail host to read emails from the chosen folder.
 
         Keyword Args:
             gmail_user: Gmail username to authenticate SMTP lib.
@@ -61,7 +61,7 @@ class ReadEmail:
 
         Returns:
             Response:
-            A custom response class with properties: ok, status and body to the user.
+            A custom response object with properties: ok, status and body to the user.
         """
         if self.mail is None:
             return Response(dictionary={
@@ -213,7 +213,7 @@ class ReadEmail:
 
         Yields:
             dict:
-            A custom response class with properties: ok, status and body to the user.
+            A custom response object with properties: ok, status and body to the user.
         """
         for nm in messages[0].split():
             dummy, data = self.mail.fetch(nm, '(RFC822)')

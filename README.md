@@ -222,7 +222,7 @@ gitverse-release reverse -f release_notes.rst -t 'Release Notes'
 
 ## License & copyright
 
-&copy; Vignesh Sivanandha Rao
+&copy; Vignesh Rao
 
 Licensed under the [MIT License][license]
 
