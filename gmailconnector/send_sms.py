@@ -1,3 +1,4 @@
+import re
 import smtplib
 import socket
 from typing import Union
@@ -7,6 +8,8 @@ from typing_extensions import Unpack
 from .models.config import EgressConfig, Encryption, SMSGateway
 from .models.responder import Response
 from .sms_deleter import DeleteSent
+
+COUNTRY_CODE = re.compile("^\\+\\d+")
 
 
 class SendSMS:
@@ -89,18 +92,11 @@ class SendSMS:
         if self.server:
             self.server.close()
 
-    @staticmethod
-    def generate_address(phone: str, gateway: str) -> str:
-        """Validates the digits in the phone number and forms the endpoint using the phone number and sms gateway.
-
-        Returns:
-            str:
-            Returns the formed endpoint. `Example: ``+11234567890@tmomail.net```
-        """
-        phone = f'+1{phone}'
-        return phone + '@' + gateway
-
-    def send_sms(self, message: str, phone: str = None, subject: str = None,
+    def send_sms(self,
+                 message: str,
+                 phone: str = None,
+                 country_code: str = None,
+                 subject: str = None,
                  sms_gateway: SMSGateway = None,
                  delete_sent: bool = False) -> Response:
         """Initiates a TLS connection and sends a text message through SMS gateway of destination number.
@@ -108,7 +104,8 @@ class SendSMS:
         Args:
             phone: Phone number.
             message: Content of the message.
-            subject: Subject line for the message. Defaults to "Message from GmailConnector"
+            country_code: Country code of the phone number.
+            subject: Subject line for the message. Defaults to "Message from email address."
             sms_gateway: Takes the SMS gateway of the carrier as an argument.
             delete_sent: Boolean flag to delete the message from GMAIL's sent items. Defaults to ``False``.
 
@@ -124,21 +121,25 @@ class SendSMS:
             Response:
             A custom response class with properties: ok, status and body to the user.
         """
-        phone = phone or self.env.phone
-        if not phone:
+        if phone:
+            self.env.phone = phone
+            self.env = EgressConfig(**self.env.__dict__)
+        elif not self.env.phone:
             raise ValueError(
-                '\n\tCannot proceed without phone number'
+                '\n\tcannot proceed without phone number'
             )
-
-        body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
-        subject = subject or f"Message from {self.env.gmail_user.replace('@gmail.com', '')}"
         if not sms_gateway:
             sms_gateway = SMSGateway.tmobile
-        elif sms_gateway not in SMSGateway.all:
+        if not country_code:
+            country_code = "+1"
+        if COUNTRY_CODE.match(country_code):
+            to = country_code + self.env.phone + "@" + sms_gateway
+        else:
             raise ValueError(
-                f"SMS gateway should be one of {', '.join(SMSGateway.all)!r}"
+                f"\n\tcountry code should match the pattern {COUNTRY_CODE.pattern}"
             )
-        to = self.generate_address(phone=phone, gateway=sms_gateway)
+        body = f'\n\n{message}'.encode('ascii', 'ignore').decode('ascii')
+        subject = subject or f"Message from {self.env.gmail_user}"
         if not self._authenticated:
             status = self.authenticate
             if not status.ok:
@@ -167,14 +168,12 @@ class SendSMS:
                     'body': f'SMS has been sent to {to}',
                     'extra': delete_response
                 })
-            else:
-                return Response(dictionary={
-                    'ok': True,
-                    'status': 206,
-                    'body': f'SMS has been sent to {to}',
-                    'extra': 'Failed to locate and delete the SMS from Sent Mail.'
-                })
-
+            return Response(dictionary={
+                'ok': True,
+                'status': 206,
+                'body': f'SMS has been sent to {to}',
+                'extra': 'Failed to locate and delete the SMS from Sent Mail.'
+            })
         return Response(dictionary={
             'ok': True,
             'status': 200,

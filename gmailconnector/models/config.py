@@ -32,7 +32,6 @@ class SMSGatewayModel(BaseModel):
     boost: str = "smsmyboostmobile.com"
     cricket: str = "sms.cricketwireless.net"
     uscellular: str = "email.uscc.net"
-    all: tuple = (att, tmobile, verizon, boost, cricket, uscellular)
 
 
 SMSGateway = SMSGatewayModel()

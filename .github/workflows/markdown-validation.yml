@@ -2,7 +2,7 @@ name: none-shall-pass
 
 on:
   push:
-  workflow_dispatch:
+    branches: [ master ]
 
 jobs:
   none-shall-pass:

@@ -1,22 +1,24 @@
-[![Pypi-version](https://img.shields.io/pypi/v/gmail-connector)](https://pypi.org/project/gmail-connector)
+[![Pypi-version](https://img.shields.io/pypi/v/gmail-connector)][pypi]
 [![Python](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)](https://www.python.org/)
 
-[![pages-build-deployment](https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment)
-[![pypi-publish](https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml/badge.svg)](https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml)
-[![none-shall-pass](https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml/badge.svg)](https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml)
+[![](https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment/badge.svg)][gha-pg]
+[![pypi](https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml/badge.svg)][gha-pypi]
+[![none](https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml/badge.svg)][gha-md]
 
-[![Pypi-format](https://img.shields.io/pypi/format/gmail-connector)](https://pypi.org/project/gmail-connector/#files)
-[![Pypi-status](https://img.shields.io/pypi/status/gmail-connector)](https://pypi.org/project/gmail-connector)
-[![dependents](https://img.shields.io/librariesio/dependents/pypi/gmail-connector)](https://github.com/thevickypedia/gmail-connector/network/dependents)
+[![Pypi-format](https://img.shields.io/pypi/format/gmail-connector)][pypi-files]
+[![Pypi-status](https://img.shields.io/pypi/status/gmail-connector)][pypi]
+[![dependents](https://img.shields.io/librariesio/dependents/pypi/gmail-connector)][dependants]
 
-[![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/gmail-connector)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
-[![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/gmail-connector)](https://api.github.com/repos/thevickypedia/gmail-connector)
+[![GitHub Repo created](https://img.shields.io/date/1599432310)][api-repo]
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/gmail-connector)][api-repo]
+[![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/gmail-connector)][api-repo]
 
 # Gmail Connector
 Python module to send SMS, emails and read emails in any folder.
 
-> As of May 30, 2022, Google no longer supports third party applications accessing Google accounts only using username and password (which was originally available through [lesssecureapps](https://myaccount.google.com/lesssecureapps))<br>
+> As of May 30, 2022, Google no longer supports third party applications accessing Google accounts only using username 
+> and password (which was originally available through [lesssecureapps](https://myaccount.google.com/lesssecureapps))
+> <br>
 > An alternate approach is to generate [apppasswords](https://myaccount.google.com/apppasswords) instead.<br>
 > **Reference:** https://support.google.com/accounts/answer/6010255
 
@@ -53,7 +55,7 @@ email_obj = gc.SendEmail(**kwargs)
 </details>
 
 ## Usage
-### [Send SMS](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py)
+### [Send SMS][send-sms]
 ```python
 import gmailconnector as gc
 
@@ -61,25 +63,27 @@ sms_object = gc.SendSMS()
 # sms_object = gc.SendSMS(encryption=gc.Encryption.SSL) to use SSL
 auth = sms_object.authenticate  # Authentication happens before sending SMS if not instantiated separately
 assert auth.ok, auth.body
-response = sms_object.send_sms(phone='+11234567890', message='Test SMS using gmail-connector',
+response = sms_object.send_sms(phone='1234567890', country_code='+1', message='Test SMS using gmail-connector',
                                sms_gateway=gc.SMSGateway.verizon, delete_sent=True)  # set as False to keep the SMS sent
 assert response.ok, response.json()
 print(response.body)
 ```
 <details>
-<summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a></strong></summary>
+<summary><strong>
+More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a>
+</strong></summary>
 
 :warning: Gmail's SMS Gateway has a payload limit. So, it is recommended to break larger messages into multiple SMS.
 
 ###### Additional args:
-- **subject:** Subject of the message. Defaults to `Message from GmailConnector`
-- **sms_gateway:** SMS gateway of the carrier. Defaults to ``tmomail.net`` since the default carrier is ``t-mobile``.
-- **delete_sent:** Boolean flag to delete the outbound email from SentItems. Defaults to ``False``
+- **subject:** Subject of the message. Defaults to `Message from email address`
+- **sms_gateway:** SMS gateway of the carrier. Defaults to `tmomail.net`
+- **delete_sent:** Boolean flag to delete the outbound email from SentItems. Defaults to `False`
 
 > Note: If known, using the `sms_gateway` will ensure proper delivery of the SMS.
 </details>
 
-### [Send Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py)
+### [Send Email][send-email]
 ```python
 import gmailconnector as gc
 
@@ -108,7 +112,9 @@ else:
 ```
 
 <details>
-<summary><strong>More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email</a></strong></summary>
+<summary><strong>
+More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email
+</a></strong></summary>
 
 ```python
 import os
@@ -161,7 +167,7 @@ print(response.json())
 > `recipient=['username1@gmail.com', 'username2@gmail.com']`
 </details>
 
-### [Read Email](https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py)
+### [Read Email][read-email]
 ```python
 import datetime
 
@@ -170,8 +176,9 @@ import gmailconnector as gc
 reader = gc.ReadEmail(folder=gc.Folder.all)
 filter1 = gc.Condition.since(since=datetime.date(year=2010, month=5, day=1))
 filter2 = gc.Condition.subject(subject="Security Alert")
-filter3 = gc.Category.not_deleted
-response = reader.instantiate(filters=(filter1, filter2, filter3))  # Apply multiple filters at the same time
+filter3 = gc.Condition.text(reader.env.gmail_user)
+filter4 = gc.Category.not_deleted
+response = reader.instantiate(filters=(filter1, filter2, filter3, filter4))  # Apply multiple filters
 assert response.ok, response.body
 for each_mail in reader.read_mail(messages=response.body, humanize_datetime=False):  # False to get datetime object
     print(each_mail.date_time.date())
@@ -192,7 +199,7 @@ pip install sphinx==5.1.1 pre-commit==2.20.0 recommonmark==0.7.1
 pre-commit run --all-files
 ```
 
-### [Release Notes](https://github.com/thevickypedia/gmail-connector/blob/master/release_notes.rst)
+### [Release Notes][release-notes]
 **Requirement**
 ```shell
 python -m pip install gitverse
@@ -204,16 +211,33 @@ gitverse-release reverse -f release_notes.rst -t 'Release Notes'
 ```
 
 ### Pypi Module
-[https://pypi.org/project/gmail-connector/](https://pypi.org/project/gmail-connector/)
+[![pypi-module](https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg)][packaging]
+
+[https://pypi.org/project/gmail-connector/][pypi]
 
 ### Runbook
-[https://thevickypedia.github.io/gmail-connector/](https://thevickypedia.github.io/gmail-connector/)
+[![made-with-sphinx-doc](https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg)][sphinx]
 
-### Repository
-[https://github.com/thevickypedia/gmail-connector](https://github.com/thevickypedia/gmail-connector)
+[https://thevickypedia.github.io/gmail-connector/][runbook]
 
 ## License & copyright
 
 &copy; Vignesh Sivanandha Rao
 
-Licensed under the [MIT License](https://github.com/thevickypedia/gmail-connector/blob/master/LICENSE)
+Licensed under the [MIT License][license]
+
+[api-repo]: https://api.github.com/repos/thevickypedia/gmail-connector
+[read-email]: https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py
+[send-email]: https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py
+[send-sms]: https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py
+[release-notes]: https://github.com/thevickypedia/gmail-connector/blob/master/release_notes.rst
+[license]: https://github.com/thevickypedia/gmail-connector/blob/master/LICENSE
+[pypi]: https://pypi.org/project/gmail-connector/
+[pypi-files]: https://pypi.org/project/gmail-connector/#files
+[runbook]: https://thevickypedia.github.io/gmail-connector/
+[packaging]: https://packaging.python.org/tutorials/packaging-projects/
+[sphinx]: https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html
+[gha-md]: https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml
+[gha-pg]: https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment
+[gha-pypi]: https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml
+[dependants]: https://github.com/thevickypedia/gmail-connector/network/dependents

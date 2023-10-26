@@ -43,8 +43,7 @@ class ReadEmail:
         See Also:
             Uses broad ``Exception`` clause to catch login errors, since the same is raised by ``imaplib``
         """
-        self.error = None
-        self.mail = None
+        self.error, self.mail = None, None
         self._authenticated = False
         self.env = IngressConfig(**kwargs)
         self.create_ssl_connection(gmail_host=self.env.gmail_host, timeout=self.env.timeout)
