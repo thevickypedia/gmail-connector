@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+v1.0 (10/26/2023)
+-----------------
+- Uses ``pydantic`` for input validations
+- Includes ``Enum`` wrappers around options
+- Open access for SMS Gateway and Country codes
+- Includes a bug fix for missing sender while reading emails
+- Better documentation and runbook
+
 v1.0b (10/26/2023)
 ------------------
 - Release beta version for v1
