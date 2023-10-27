@@ -70,7 +70,7 @@ print(response.body)
 ```
 <details>
 <summary><strong>
-More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py">Send SMS</a>
+More on <a href="https://github.com/thevickypedia/gmail-connector/blob/main/gmailconnector/send_sms.py">Send SMS</a>
 </strong></summary>
 
 :warning: Gmail's SMS Gateway has a payload limit. So, it is recommended to break larger messages into multiple SMS.
@@ -113,7 +113,7 @@ else:
 
 <details>
 <summary><strong>
-More on <a href="https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py">Send Email
+More on <a href="https://github.com/thevickypedia/gmail-connector/blob/main/gmailconnector/send_email.py">Send Email
 </a></strong></summary>
 
 ```python
@@ -227,11 +227,11 @@ gitverse-release reverse -f release_notes.rst -t 'Release Notes'
 Licensed under the [MIT License][license]
 
 [api-repo]: https://api.github.com/repos/thevickypedia/gmail-connector
-[read-email]: https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/read_email.py
-[send-email]: https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_email.py
-[send-sms]: https://github.com/thevickypedia/gmail-connector/blob/master/gmailconnector/send_sms.py
-[release-notes]: https://github.com/thevickypedia/gmail-connector/blob/master/release_notes.rst
-[license]: https://github.com/thevickypedia/gmail-connector/blob/master/LICENSE
+[read-email]: https://github.com/thevickypedia/gmail-connector/blob/main/gmailconnector/read_email.py
+[send-email]: https://github.com/thevickypedia/gmail-connector/blob/main/gmailconnector/send_email.py
+[send-sms]: https://github.com/thevickypedia/gmail-connector/blob/main/gmailconnector/send_sms.py
+[release-notes]: https://github.com/thevickypedia/gmail-connector/blob/main/release_notes.rst
+[license]: https://github.com/thevickypedia/gmail-connector/blob/main/LICENSE
 [pypi]: https://pypi.org/project/gmail-connector/
 [pypi-files]: https://pypi.org/project/gmail-connector/#files
 [runbook]: https://thevickypedia.github.io/gmail-connector/

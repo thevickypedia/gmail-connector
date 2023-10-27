@@ -2,7 +2,7 @@ name: none-shall-pass
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   none-shall-pass:
