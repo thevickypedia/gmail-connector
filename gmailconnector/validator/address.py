@@ -14,7 +14,13 @@ class EmailAddress:
 
     """
 
-    def __init__(self, address: str):
+    def __init__(self,
+                 address: str):
+        """Converts address into IDNA (Internationalized Domain Name) format.
+
+        Args:
+            address: Email address as a string.
+        """
         self._address = address
         try:
             self._user, self._domain = self._address.rsplit('@', 1)

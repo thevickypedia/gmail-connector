@@ -37,14 +37,18 @@ class SendSMS:
         else:
             self.create_ssl_connection(host=self.env.gmail_host, timeout=self.env.timeout)
 
-    def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> None:
+    def create_ssl_connection(self,
+                              host: str,
+                              timeout: Union[int, float]) -> None:
         """Create a connection using SSL encryption."""
         try:
             self.server = smtplib.SMTP_SSL(host=host, port=465, timeout=timeout)
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
-    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> None:
+    def create_tls_connection(self,
+                              host: str,
+                              timeout: Union[int, float]) -> None:
         """Create a connection using TLS encryption."""
         try:
             self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)

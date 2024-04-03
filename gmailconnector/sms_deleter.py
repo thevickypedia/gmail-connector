@@ -43,7 +43,8 @@ class DeleteSent:
         except Exception as error:
             self.error = error.__str__()
 
-    def thread_executor(self, item_id: Union[bytes, str]) -> Dict[str, str]:
+    def thread_executor(self,
+                        item_id: Union[bytes, str]) -> Dict[str, str]:
         """Gets invoked in multiple threads, to set the flag as ``Deleted`` for the message which was just sent.
 
         Args:

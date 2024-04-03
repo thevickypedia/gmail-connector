@@ -4,7 +4,7 @@ import socket
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 from typing_extensions import Unpack
 
@@ -13,7 +13,7 @@ from .models.responder import Response
 from .validator.address import EmailAddress
 
 
-def validate_email(address: Union[str, list]) -> Union[str, list]:
+def validate_email(address: Union[str, List[str]]) -> Union[str, List[str]]:
     """Validates email addresses and returns them as is."""
     if isinstance(address, str):
         return EmailAddress(address).email
@@ -54,7 +54,9 @@ class SendEmail:
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
-    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> None:
+    def create_tls_connection(self,
+                              host: str,
+                              timeout: Union[int, float]) -> None:
         """Create a connection using TLS encryption."""
         try:
             self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)
@@ -102,13 +104,21 @@ class SendEmail:
         if self.server:
             self.server.close()
 
-    def multipart_message(self, subject: str, recipient: str or list, sender: str, body: str, html_body: str,
-                          attachments: list, filenames: list, cc: str or list) -> MIMEMultipart:
+    def multipart_message(self,
+                          subject: str,
+                          recipient: Union[str, List[str]],
+                          sender: str,
+                          body: str,
+                          html_body: str,
+                          attachments: list,
+                          filenames: list,
+                          cc: Union[str, List[str]]) -> MIMEMultipart:
         """Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.
 
         Args:
-            recipient: Email address of the recipient to whom the email has to be sent.
             subject: Subject line of the email.
+            recipient: Email address of the recipient to whom the email has to be sent.
+            sender: Name of the sender.
             body: Body of the email. Defaults to ``None``.
             html_body: Body of the email. Defaults to ``None``.
             attachments: Names of the files that has to be attached.
@@ -166,11 +176,17 @@ class SendEmail:
 
         return msg
 
-    def send_email(self, subject: str, recipient: Union[str, list],
-                   sender: str = 'GmailConnector', body: str = None, html_body: str = None,
-                   attachment: Union[str, list] = None, filename: Union[str, list] = None,
+    def send_email(self,
+                   subject: str,
+                   recipient: Union[str, list],
+                   sender: str = 'GmailConnector',
+                   body: str = None,
+                   html_body: str = None,
+                   attachment: Union[str, list] = None,
+                   filename: Union[str, list] = None,
                    custom_attachment: Dict[Union[str, os.PathLike], str] = None,
-                   cc: Union[str, list] = None, bcc: Union[str, list] = None,
+                   cc: Union[str, list] = None,
+                   bcc: Union[str, list] = None,
                    fail_if_attach_fails: bool = True) -> Response:
         """Initiates a TLS connection and sends the email.
 
@@ -221,11 +237,18 @@ class SendEmail:
             recipients.append(cc) if isinstance(cc, str) else recipients.extend(cc)
         if bcc:
             recipients.append(bcc) if isinstance(bcc, str) else recipients.extend(bcc)
-        self.server.sendmail(
-            from_addr=sender,
-            to_addrs=recipients,
-            msg=msg.as_string()
-        )
+        for i in range(3):
+            try:
+                self.server.sendmail(
+                    from_addr=sender,
+                    to_addrs=recipients,
+                    msg=msg.as_string()
+                )
+                break
+            except smtplib.SMTPServerDisconnected as err:
+                if i == 2:
+                    raise err
+                continue
         if unattached:
             return Response(dictionary={
                 'ok': True,

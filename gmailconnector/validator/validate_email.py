@@ -20,8 +20,12 @@ default_logger.addHandler(hdlr=handler)
 default_logger.setLevel(level=logging.DEBUG)
 
 
-def validate_email(email_address: str, timeout: Union[int, float] = 5, sender: str = None,
-                   debug: bool = False, smtp_check: bool = True, logger: logging.Logger = default_logger) -> Response:
+def validate_email(email_address: str,
+                   timeout: Union[int, float] = 5,
+                   sender: str = None,
+                   debug: bool = False,
+                   smtp_check: bool = True,
+                   logger: logging.Logger = default_logger) -> Response:
     """Validates email address deliver-ability using SMTP.
 
     Args:

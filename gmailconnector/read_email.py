@@ -48,7 +48,9 @@ class ReadEmail:
         self.env = IngressConfig(**kwargs)
         self.create_ssl_connection(gmail_host=self.env.gmail_host, timeout=self.env.timeout)
 
-    def create_ssl_connection(self, gmail_host: str, timeout: Union[int, float]) -> None:
+    def create_ssl_connection(self,
+                              gmail_host: str,
+                              timeout: Union[int, float]) -> None:
         """Creates an SSL connection to gmail's SSL server."""
         try:
             self.mail = imaplib.IMAP4_SSL(host=gmail_host, port=993, timeout=timeout)
@@ -56,7 +58,7 @@ class ReadEmail:
             self.error = error.__str__()
 
     @property
-    def authenticate(self):
+    def authenticate(self) -> Response:
         """Initiates authentication.
 
         Returns:
@@ -133,7 +135,9 @@ class ReadEmail:
                 'count': num
             })
 
-    def get_info(self, response_part: tuple, dt_flag: bool) -> Email:
+    def get_info(self,
+                 response_part: tuple,
+                 dt_flag: bool) -> Email:
         """Extracts sender, subject, body and time received from response part.
 
         Args:
@@ -204,7 +208,8 @@ class ReadEmail:
         return Email(dictionary=dict(sender=from_[0], sender_email=from_[1].rstrip('>'),
                                      subject=sub, date_time=receive, body=body))
 
-    def read_mail(self, messages: list or str, humanize_datetime: bool = False) -> Generator[Email]:
+    def read_mail(self, messages: Union[list, str],
+                  humanize_datetime: bool = False) -> Generator[Email]:
         """Yield emails matching the filters' criteria.
 
         Args:

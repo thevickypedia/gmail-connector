@@ -80,7 +80,6 @@ An alternate approach is to generate <a class="reference external" href="https:/
 <summary><strong>Env variable customization</strong></summary><p>To load a custom <code class="docutils literal notranslate"><span class="pre">.env</span></code> file, set the filename as the env var <code class="docutils literal notranslate"><span class="pre">env_file</span></code> before importing <code class="docutils literal notranslate"><span class="pre">gmailconnector</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;env_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;custom&#39;</span>  <span class="c1"># to load a custom .env file</span>
-<span class="kn">import</span> <span class="nn">gmailconnector</span> <span class="k">as</span> <span class="nn">gc</span>
 </pre></div>
 </div>
 <p>To avoid using env variables, arguments can be loaded during object instantiation.</p>

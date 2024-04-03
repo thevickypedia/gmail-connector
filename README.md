@@ -16,7 +16,7 @@
 # Gmail Connector
 Python module to send SMS, emails and read emails in any folder.
 
-> As of May 30, 2022, Google no longer supports third party applications accessing Google accounts only using username 
+> As of May 30, 2022, Google no longer supports third party applications accessing Google accounts only using username
 > and password (which was originally available through [lesssecureapps](https://myaccount.google.com/lesssecureapps))
 > <br>
 > An alternate approach is to generate [apppasswords](https://myaccount.google.com/apppasswords) instead.<br>
@@ -41,7 +41,6 @@ To load a custom `.env` file, set the filename as the env var `env_file` before 
 ```python
 import os
 os.environ['env_file'] = 'custom'  # to load a custom .env file
-import gmailconnector as gc
 ```
 To avoid using env variables, arguments can be loaded during object instantiation.
 ```python
