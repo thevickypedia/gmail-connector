@@ -1,12 +1,15 @@
 name: none-shall-pass
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   none-shall-pass:
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - Ubuntu
     steps:
-      - uses: actions/checkout@v3
-      - uses: thevickypedia/none-shall-pass@v2.0
+      - uses: thevickypedia/none-shall-pass@v5
