@@ -25,7 +25,7 @@ class Response:
             bool:
             ``True`` or ``False`` based on the arg value received.
         """
-        return self.raw.get('ok')
+        return self.raw.get("ok")
 
     @property
     def status(self) -> int:
@@ -35,7 +35,7 @@ class Response:
             int:
             ``HTTP`` status code as received.
         """
-        return self.raw.get('status')
+        return self.raw.get("status")
 
     @property
     def body(self) -> str:
@@ -45,7 +45,7 @@ class Response:
             str:
             Returns the message as received.
         """
-        return self.raw.get('body')
+        return self.raw.get("body")
 
     def json(self) -> dict:
         """Returns a dictionary of the argument that was received during class initialization.
@@ -64,7 +64,7 @@ class Response:
             int:
             Returns the number of emails.
         """
-        return self.raw.get('count')
+        return self.raw.get("count")
 
     @property
     def extra(self) -> Any:
@@ -74,7 +74,7 @@ class Response:
             Any:
             Returns information as received.
         """
-        return self.raw.get('extra')
+        return self.raw.get("extra")
 
 
 class Email:
@@ -86,8 +86,8 @@ class Email:
         Args:
             dictionary: Takes the dictionary to be converted as an argument.
         """
-        self.sender: str = dictionary['sender']
-        self.sender_email: str = dictionary['sender_email']
-        self.subject: str = dictionary['subject']
-        self.date_time: Union[str, 'datetime'] = dictionary['date_time']
-        self.body: str = dictionary['body']
+        self.sender: str = dictionary["sender"]
+        self.sender_email: str = dictionary["sender_email"]
+        self.subject: str = dictionary["subject"]
+        self.date_time: Union[str, "datetime"] = dictionary["date_time"]
+        self.body: str = dictionary["body"]

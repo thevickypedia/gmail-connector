@@ -24,11 +24,11 @@ class DeleteSent:
             body: Body of the email to be deleted.
             to: To address of the email to be deleted.
         """
-        self.username = kwargs.get('username')
-        self.password = kwargs.get('password')
-        self.subject = kwargs.get('subject')
-        self.body = kwargs.get('body')
-        self.to = kwargs.get('to')
+        self.username = kwargs.get("username")
+        self.password = kwargs.get("password")
+        self.subject = kwargs.get("subject")
+        self.body = kwargs.get("body")
+        self.to = kwargs.get("to")
         self.mail = None
         self.error = None
         self.create_ssl_connection()
@@ -36,34 +36,44 @@ class DeleteSent:
     def create_ssl_connection(self) -> None:
         """Creates a connection using SSL encryption and selects the sent folder."""
         try:
-            self.mail = imaplib.IMAP4_SSL('imap.gmail.com')
+            self.mail = imaplib.IMAP4_SSL("imap.gmail.com")
             self.mail.login(user=self.username, password=self.password)
             self.mail.list()
             self.mail.select(Folder.sent)
         except Exception as error:
             self.error = error.__str__()
 
-    def thread_executor(self,
-                        item_id: Union[bytes, str]) -> Dict[str, str]:
+    def thread_executor(self, item_id: Union[bytes, str]) -> Dict[str, str]:
         """Gets invoked in multiple threads, to set the flag as ``Deleted`` for the message which was just sent.
 
         Args:
             item_id: Takes the ID of the message as an argument.
         """
-        dummy, data = self.mail.fetch(item_id, '(RFC822)')
+        dummy, data = self.mail.fetch(item_id, "(RFC822)")
         for response_part in data:
             if not isinstance(response_part, tuple):
                 continue
-            original_email = email.message_from_bytes(response_part[1])  # gets the raw content
-            sender = str(make_header(decode_header((original_email['From']).split(' <')[0])))
-            sub = str(make_header(decode_header(original_email['Subject'])))
-            to = str(make_header(decode_header(original_email['To'])))
-            if to == self.to and sub == self.subject and sender == self.username and \
-                    original_email.__dict__.get('_payload', '').strip() == self.body.strip():
-                self.mail.store(item_id.decode('UTF-8'), '+FLAGS', '\\Deleted')
+            original_email = email.message_from_bytes(
+                response_part[1]
+            )  # gets the raw content
+            sender = str(
+                make_header(decode_header((original_email["From"]).split(" <")[0]))
+            )
+            sub = str(make_header(decode_header(original_email["Subject"])))
+            to = str(make_header(decode_header(original_email["To"])))
+            if (
+                to == self.to
+                and sub == self.subject
+                and sender == self.username
+                and original_email.__dict__.get("_payload", "").strip()
+                == self.body.strip()
+            ):
+                self.mail.store(item_id.decode("UTF-8"), "+FLAGS", "\\Deleted")
                 self.mail.expunge()
-                return dict(msg_id=original_email['Message-ID'],
-                            msg_context=" ".join(original_email['Received'].split()))
+                return dict(
+                    msg_id=original_email["Message-ID"],
+                    msg_context=" ".join(original_email["Received"].split()),
+                )
 
     def delete_sent(self) -> Union[Dict[str, str], None]:
         """Deletes the email from GMAIL's sent items right after sending the message.
@@ -76,12 +86,18 @@ class DeleteSent:
         """
         if self.mail is None:
             return
-        return_code, messages = self.mail.search(None, 'ALL')  # Includes SEEN and UNSEEN, although sent is always SEEN
-        if return_code != 'OK':
+        return_code, messages = self.mail.search(
+            None, "ALL"
+        )  # Includes SEEN and UNSEEN, although sent is always SEEN
+        if return_code != "OK":
             return
         with ThreadPoolExecutor(max_workers=1) as executor:
-            for deleted in executor.map(self.thread_executor, sorted(messages[0].split(), reverse=True)):
-                if deleted:  # Indicates the message sent has been deleted, so no need to loop through entire sent items
+            for deleted in executor.map(
+                self.thread_executor, sorted(messages[0].split(), reverse=True)
+            ):
+                if (
+                    deleted
+                ):  # Indicates the message sent has been deleted, so no need to loop through entire sent items
                     executor.shutdown(cancel_futures=True)
                     self.mail.close()
                     self.mail.logout()

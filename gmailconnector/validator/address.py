@@ -14,8 +14,7 @@ class EmailAddress:
 
     """
 
-    def __init__(self,
-                 address: str):
+    def __init__(self, address: str):
         """Converts address into IDNA (Internationalized Domain Name) format.
 
         Args:
@@ -23,13 +22,13 @@ class EmailAddress:
         """
         self._address = address
         try:
-            self._user, self._domain = self._address.rsplit('@', 1)
+            self._user, self._domain = self._address.rsplit("@", 1)
         except ValueError:
             raise AddressFormatError
         if not self._user:
             raise AddressFormatError("Empty user")
         try:
-            self._domain = idna_encode(self._domain).decode('ascii')
+            self._domain = idna_encode(self._domain).decode("ascii")
         except IDNAError as error:
             raise AddressFormatError(error)
 
@@ -46,4 +45,4 @@ class EmailAddress:
     @property
     def email(self) -> str:
         """Returns the email address."""
-        return '@'.join((self.user, self.domain))
+        return "@".join((self.user, self.domain))

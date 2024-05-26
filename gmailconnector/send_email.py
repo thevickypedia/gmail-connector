@@ -28,7 +28,7 @@ class SendEmail:
 
     """
 
-    def __init__(self, **kwargs: 'Unpack[EgressConfig]'):
+    def __init__(self, **kwargs: "Unpack[EgressConfig]"):
         """Loads all the necessary args, creates a connection with Gmail host based on chosen encryption type.
 
         Keyword Args:
@@ -42,10 +42,18 @@ class SendEmail:
         self.env = EgressConfig(**kwargs)
         self._failed_attachments = {"FILE NOT FOUND": [], "FILE SIZE OVER 25 MB": []}
         self._authenticated = False
+        self.create_connection()
+
+    def create_connection(self) -> None:
+        """Creates SSL/TLS connection based on the request parameter."""
         if self.env.encryption == Encryption.TLS:
-            self.create_tls_connection(host=self.env.gmail_host, timeout=self.env.timeout)
+            self.create_tls_connection(
+                host=self.env.gmail_host, timeout=self.env.timeout
+            )
         else:
-            self.create_ssl_connection(host=self.env.gmail_host, timeout=self.env.timeout)
+            self.create_ssl_connection(
+                host=self.env.gmail_host, timeout=self.env.timeout
+            )
 
     def create_ssl_connection(self, host: str, timeout: Union[int, float]) -> None:
         """Create a connection using SSL encryption."""
@@ -54,9 +62,7 @@ class SendEmail:
         except (smtplib.SMTPException, socket.error) as error:
             self.error = error.__str__()
 
-    def create_tls_connection(self,
-                              host: str,
-                              timeout: Union[int, float]) -> None:
+    def create_tls_connection(self, host: str, timeout: Union[int, float]) -> None:
         """Create a connection using TLS encryption."""
         try:
             self.server = smtplib.SMTP(host=host, port=587, timeout=timeout)
@@ -73,46 +79,45 @@ class SendEmail:
             A custom response object with properties: ok, status and body to the user.
         """
         if self.server is None:
-            return Response(dictionary={
-                'ok': False,
-                'status': 408,
-                'body': self.error or "failed to create a connection with gmail's SMTP server"
-            })
+            return Response(
+                dictionary={
+                    "ok": False,
+                    "status": 408,
+                    "body": self.error
+                    or "failed to create a connection with gmail's SMTP server",
+                }
+            )
         try:
             self.server.login(user=self.env.gmail_user, password=self.env.gmail_pass)
             self._authenticated = True
-            return Response(dictionary={
-                'ok': True,
-                'status': 200,
-                'body': 'authentication success'
-            })
+            return Response(
+                dictionary={"ok": True, "status": 200, "body": "authentication success"}
+            )
         except smtplib.SMTPAuthenticationError:
-            return Response(dictionary={
-                'ok': False,
-                'status': 401,
-                'body': 'authentication failed'
-            })
+            return Response(
+                dictionary={"ok": False, "status": 401, "body": "authentication failed"}
+            )
         except smtplib.SMTPException as error:
-            return Response(dictionary={
-                'ok': False,
-                'status': 503,
-                'body': error.__str__()
-            })
+            return Response(
+                dictionary={"ok": False, "status": 503, "body": error.__str__()}
+            )
 
     def __del__(self):
         """Destructor has been called to close the connection and logout."""
         if self.server:
             self.server.close()
 
-    def multipart_message(self,
-                          subject: str,
-                          recipient: Union[str, List[str]],
-                          sender: str,
-                          body: str,
-                          html_body: str,
-                          attachments: list,
-                          filenames: list,
-                          cc: Union[str, List[str]]) -> MIMEMultipart:
+    def multipart_message(
+        self,
+        subject: str,
+        recipient: Union[str, List[str]],
+        sender: str,
+        body: str,
+        html_body: str,
+        attachments: list,
+        filenames: list,
+        cc: Union[str, List[str]],
+    ) -> MIMEMultipart:
         """Creates a multipart message with subject, body, from and to address, and attachment if filename is passed.
 
         Args:
@@ -136,58 +141,66 @@ class SendEmail:
         cc = [cc] if cc and isinstance(cc, str) else cc
 
         msg = MIMEMultipart()
-        msg['Subject'] = subject
-        msg['From'] = f"{sender} <{self.env.gmail_user}>"
-        msg['To'] = ','.join(recipient)
+        msg["Subject"] = subject
+        msg["From"] = f"{sender} <{self.env.gmail_user}>"
+        msg["To"] = ",".join(recipient)
         if cc:
-            msg['Cc'] = ','.join(cc)
+            msg["Cc"] = ",".join(cc)
 
         if body:
-            msg.attach(payload=MIMEText(body, 'plain'))
+            msg.attach(payload=MIMEText(body, "plain"))
         if html_body:
-            msg.attach(payload=MIMEText(html_body, 'html'))
+            msg.attach(payload=MIMEText(html_body, "html"))
 
         for index, attachment_ in enumerate(attachments):
-            file_type = attachment_.split('.')[-1]
+            file_type = attachment_.split(".")[-1]
             try:
                 filename = filenames[index]
             except IndexError:
                 filename = None
-            if filename and '.' in filename:  # filename is passed with an extn
+            if filename and "." in filename:  # filename is passed with an extn
                 pass
-            elif filename and '.' in attachment_:  # file name's extn is got from attachment name
-                filename = f'{filename}.{file_type}'
-            elif filename:  # filename is passed without an extn so proceeding with the same
+            elif (
+                filename and "." in attachment_
+            ):  # file name's extn is got from attachment name
+                filename = f"{filename}.{file_type}"
+            elif (
+                filename
+            ):  # filename is passed without an extn so proceeding with the same
                 pass
             else:
-                filename = attachment_.split(os.path.sep)[-1].strip()  # rips path from attachment as filename
+                filename = attachment_.split(os.path.sep)[
+                    -1
+                ].strip()  # rips path from attachment as filename
 
             if not os.path.isfile(attachment_):
                 self._failed_attachments["FILE NOT FOUND"].append(filename)
                 continue
-            if os.path.getsize(attachment_) / 1e+6 > 25:
+            if os.path.getsize(attachment_) / 1e6 > 25:
                 self._failed_attachments["FILE SIZE OVER 25 MB"].append(filename)
                 continue
 
-            with open(attachment_, 'rb') as file:
+            with open(attachment_, "rb") as file:
                 attribute = MIMEApplication(file.read(), _subtype=file_type)
-            attribute.add_header('Content-Disposition', 'attachment', filename=filename)
+            attribute.add_header("Content-Disposition", "attachment", filename=filename)
             msg.attach(payload=attribute)
 
         return msg
 
-    def send_email(self,
-                   subject: str,
-                   recipient: Union[str, list],
-                   sender: str = 'GmailConnector',
-                   body: str = None,
-                   html_body: str = None,
-                   attachment: Union[str, list] = None,
-                   filename: Union[str, list] = None,
-                   custom_attachment: Dict[Union[str, os.PathLike], str] = None,
-                   cc: Union[str, list] = None,
-                   bcc: Union[str, list] = None,
-                   fail_if_attach_fails: bool = True) -> Response:
+    def send_email(
+        self,
+        subject: str,
+        recipient: Union[str, list],
+        sender: str = "GmailConnector",
+        body: str = None,
+        html_body: str = None,
+        attachment: Union[str, list] = None,
+        filename: Union[str, list] = None,
+        custom_attachment: Dict[Union[str, os.PathLike], str] = None,
+        cc: Union[str, list] = None,
+        bcc: Union[str, list] = None,
+        fail_if_attach_fails: bool = True,
+    ) -> Response:
         """Initiates a TLS connection and sends the email.
 
         Args:
@@ -218,19 +231,37 @@ class SendEmail:
             attachments = list(custom_attachment.keys())
             filenames = list(custom_attachment.values())
         else:
-            attachments = [attachment] if isinstance(attachment, str) else attachment if attachment else []
-            filenames = [filename] if isinstance(filename, str) else filename if filename else []
+            attachments = (
+                [attachment]
+                if isinstance(attachment, str)
+                else attachment if attachment else []
+            )
+            filenames = (
+                [filename]
+                if isinstance(filename, str)
+                else filename if filename else []
+            )
 
-        msg = self.multipart_message(subject=subject, sender=sender, recipient=recipient, attachments=attachments,
-                                     body=body, html_body=html_body, cc=cc, filenames=filenames)
+        msg = self.multipart_message(
+            subject=subject,
+            sender=sender,
+            recipient=recipient,
+            attachments=attachments,
+            body=body,
+            html_body=html_body,
+            cc=cc,
+            filenames=filenames,
+        )
 
-        unattached = {k: ', '.join(v) for k, v in self._failed_attachments.items() if v}
+        unattached = {k: ", ".join(v) for k, v in self._failed_attachments.items() if v}
         if fail_if_attach_fails and unattached:
-            return Response(dictionary={
-                'ok': False,
-                'status': 422,
-                'body': f"Email was not sent. Unattached: {unattached!r}"
-            })
+            return Response(
+                dictionary={
+                    "ok": False,
+                    "status": 422,
+                    "body": f"Email was not sent. Unattached: {unattached!r}",
+                }
+            )
 
         recipients = [recipient] if isinstance(recipient, str) else recipient
         if cc:
@@ -240,9 +271,7 @@ class SendEmail:
         for i in range(3):
             try:
                 self.server.sendmail(
-                    from_addr=sender,
-                    to_addrs=recipients,
-                    msg=msg.as_string()
+                    from_addr=sender, to_addrs=recipients, msg=msg.as_string()
                 )
                 break
             except smtplib.SMTPServerDisconnected as err:
@@ -250,14 +279,18 @@ class SendEmail:
                     raise err
                 continue
         if unattached:
-            return Response(dictionary={
-                'ok': True,
-                'status': 206,
-                'body': f"Email has been sent to {recipient!r}. Unattached: {unattached!r}."
-            })
+            return Response(
+                dictionary={
+                    "ok": True,
+                    "status": 206,
+                    "body": f"Email has been sent to {recipient!r}. Unattached: {unattached!r}.",
+                }
+            )
         else:
-            return Response(dictionary={
-                'ok': True,
-                'status': 200,
-                'body': f"Email has been sent to {recipient!r}"
-            })
+            return Response(
+                dictionary={
+                    "ok": True,
+                    "status": 200,
+                    "body": f"Email has been sent to {recipient!r}",
+                }
+            )

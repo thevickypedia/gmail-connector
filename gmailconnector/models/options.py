@@ -19,10 +19,10 @@ class Condition:
         return 'TEXT "%s"' % text
 
     @staticmethod
-    def since(since: Union[str, float, 'datetime.date']):
+    def since(since: Union[str, float, "datetime.date"]):
         """Condition to retrieve emails since a given date."""
         if isinstance(since, datetime.date):
-            return 'SINCE "%s"' % since.strftime('%d-%b-%Y')
+            return 'SINCE "%s"' % since.strftime("%d-%b-%Y")
         return 'SINCE "%s"' % since
 
     @staticmethod

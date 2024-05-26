@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+v1.0.1 (05/26/2024)
+-------------------
+- Includes a retry logic for occasional errors while sending emails
+- Improved linting and updates to docs and dependencies
+
 v1.0 (10/26/2023)
 -----------------
 - Uses ``pydantic`` for input validations

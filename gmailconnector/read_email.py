@@ -27,7 +27,7 @@ class ReadEmail:
 
     LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
-    def __init__(self, **kwargs: 'Unpack[IngressConfig]'):
+    def __init__(self, **kwargs: "Unpack[IngressConfig]"):
         """Loads all the necessary args, creates a connection with Gmail host to read emails from the chosen folder.
 
         Keyword Args:
@@ -46,14 +46,14 @@ class ReadEmail:
         self.error, self.mail = None, None
         self._authenticated = False
         self.env = IngressConfig(**kwargs)
-        self.create_ssl_connection(gmail_host=self.env.gmail_host, timeout=self.env.timeout)
+        self.create_ssl_connection()
 
-    def create_ssl_connection(self,
-                              gmail_host: str,
-                              timeout: Union[int, float]) -> None:
+    def create_ssl_connection(self) -> None:
         """Creates an SSL connection to gmail's SSL server."""
         try:
-            self.mail = imaplib.IMAP4_SSL(host=gmail_host, port=993, timeout=timeout)
+            self.mail = imaplib.IMAP4_SSL(
+                host=self.env.gmail_host, port=993, timeout=self.env.timeout
+            )
         except socket.error as error:
             self.error = error.__str__()
 
@@ -66,31 +66,34 @@ class ReadEmail:
             A custom response object with properties: ok, status and body to the user.
         """
         if self.mail is None:
-            return Response(dictionary={
-                'ok': False,
-                'status': 408,
-                'body': self.error or "failed to create a connection with gmail's SMTP server"
-            })
+            return Response(
+                dictionary={
+                    "ok": False,
+                    "status": 408,
+                    "body": self.error
+                    or "failed to create a connection with gmail's SMTP server",
+                }
+            )
         try:
             self.mail.login(user=self.env.gmail_user, password=self.env.gmail_pass)
             self.mail.list()  # list all the folders within your mailbox (like inbox, sent, drafts, etc)
             self.mail.select(self.env.folder)
             self._authenticated = True
-            return Response(dictionary={
-                'ok': True,
-                'status': 200,
-                'body': 'authentication success'
-            })
+            return Response(
+                dictionary={"ok": True, "status": 200, "body": "authentication success"}
+            )
         except Exception as error:
             self.error = error.__str__()
-            return Response(dictionary={
-                'ok': False,
-                'status': 401,
-                'body': 'authentication failed'
-            })
+            return Response(
+                dictionary={"ok": False, "status": 401, "body": "authentication failed"}
+            )
 
-    def instantiate(self,
-                    filters: Union[Iterable[Category.__str__], Iterable[Condition.__str__]] = "UNSEEN") -> Response:
+    def instantiate(
+        self,
+        filters: Union[
+            Iterable[Category.__str__], Iterable[Condition.__str__]
+        ] = "UNSEEN",
+    ) -> Response:
         """Searches the number of emails for the category received and forms.
 
         Args:
@@ -108,36 +111,35 @@ class ReadEmail:
             if not status.ok:
                 return status
         if type(filters) in (list, tuple):
-            filters = ' '.join(filters)
+            filters = " ".join(filters)
         return_code, messages = self.mail.search(None, filters)
-        if return_code != 'OK':
-            return Response(dictionary={
-                'ok': False,
-                'status': 404,
-                'body': 'Unable to read emails.'
-            })
+        if return_code != "OK":
+            return Response(
+                dictionary={
+                    "ok": False,
+                    "status": 404,
+                    "body": "Unable to read emails.",
+                }
+            )
 
         num = len(messages[0].split())
         if not num:
-            return Response(dictionary={
-                'ok': False,
-                'status': 204,
-                'body': f'No emails found in {self.env.gmail_user} [{self.env.folder}] '
-                        f'for the filter(s) {filters.lower()!r}',
-                'count': num
-            })
+            return Response(
+                dictionary={
+                    "ok": False,
+                    "status": 204,
+                    "body": f"No emails found in {self.env.gmail_user} [{self.env.folder}] "
+                    f"for the filter(s) {filters.lower()!r}",
+                    "count": num,
+                }
+            )
 
-        if return_code == 'OK':
-            return Response(dictionary={
-                'ok': True,
-                'status': 200,
-                'body': messages,
-                'count': num
-            })
+        if return_code == "OK":
+            return Response(
+                dictionary={"ok": True, "status": 200, "body": messages, "count": num}
+            )
 
-    def get_info(self,
-                 response_part: tuple,
-                 dt_flag: bool) -> Email:
+    def get_info(self, response_part: tuple, dt_flag: bool) -> Email:
         """Extracts sender, subject, body and time received from response part.
 
         Args:
@@ -149,21 +151,26 @@ class ReadEmail:
             Email object with information.
         """
         original_email = email.message_from_bytes(response_part[1])
-        if received := original_email.get('Received'):
-            date = received.split(';')[-1].strip()
+        if received := original_email.get("Received"):
+            date = received.split(";")[-1].strip()
         else:
-            date = original_email.get('Date')
-        if '(PDT)' in date:
+            date = original_email.get("Date")
+        if "(PDT)" in date:
             datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0700 (PDT)")
-        elif '(PST)' in date:
+        elif "(PST)" in date:
             datetime_obj = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S -0800 (PST)")
         else:
             datetime_obj = datetime.now()
-        from_ = original_email['From'].split(' <')
-        sub = make_header(decode_header(original_email['Subject'])) \
-            if original_email['Subject'] else None
+        from_ = original_email["From"].split(" <")
+        sub = (
+            make_header(decode_header(original_email["Subject"]))
+            if original_email["Subject"]
+            else None
+        )
         # Converts pacific time to local timezone as the default is pacific
-        local_time = datetime_obj.replace(tzinfo=pytz.timezone('US/Pacific')).astimezone(tz=self.LOCAL_TIMEZONE)
+        local_time = datetime_obj.replace(
+            tzinfo=pytz.timezone("US/Pacific")
+        ).astimezone(tz=self.LOCAL_TIMEZONE)
         if dt_flag:
             received_date = local_time.strftime("%Y-%m-%d")
             current_date_ = datetime.today().date()
@@ -176,9 +183,11 @@ class ReadEmail:
                 receive = local_time.strftime("on %A, %B %d, at %I:%M %p")
         else:
             receive = local_time
-        if original_email.get_content_type() == "text/plain":  # ignore attachments and html
+        if (
+            original_email.get_content_type() == "text/plain"
+        ):  # ignore attachments and html
             body = original_email.get_payload(decode=True)
-            body = body.decode('utf-8')
+            body = body.decode("utf-8")
         else:
             body = ""
             for payload in original_email.get_payload():
@@ -191,25 +200,38 @@ class ReadEmail:
                         decoded = base64.b64decode(payload)
                     except binascii.Error:
                         try:
-                            decoded = payload.decode()  # encoding is unknown at this point so default to UTF-8
+                            decoded = (
+                                payload.decode()
+                            )  # encoding is unknown at this point so default to UTF-8
                         except UnicodeDecodeError:
-                            warnings.warn(
-                                "Unknown encoding type for payload"
-                            )
+                            warnings.warn("Unknown encoding type for payload")
                             continue
                     body += decoded
                 else:
-                    warnings.warn(
-                        f"Unsupported payload type: {type(payload)}"
-                    )
+                    warnings.warn(f"Unsupported payload type: {type(payload)}")
         if len(from_) == 1:
-            return Email(dictionary=dict(sender=None, sender_email=from_[0].lstrip('<').rstrip('>'),
-                                         subject=sub, date_time=receive, body=body))
-        return Email(dictionary=dict(sender=from_[0], sender_email=from_[1].rstrip('>'),
-                                     subject=sub, date_time=receive, body=body))
+            return Email(
+                dictionary=dict(
+                    sender=None,
+                    sender_email=from_[0].lstrip("<").rstrip(">"),
+                    subject=sub,
+                    date_time=receive,
+                    body=body,
+                )
+            )
+        return Email(
+            dictionary=dict(
+                sender=from_[0],
+                sender_email=from_[1].rstrip(">"),
+                subject=sub,
+                date_time=receive,
+                body=body,
+            )
+        )
 
-    def read_mail(self, messages: Union[list, str],
-                  humanize_datetime: bool = False) -> Generator[Email]:
+    def read_mail(
+        self, messages: Union[list, str], humanize_datetime: bool = False
+    ) -> Generator[Email]:
         """Yield emails matching the filters' criteria.
 
         Args:
@@ -221,10 +243,12 @@ class ReadEmail:
             A custom response object with properties: ok, status and body to the user.
         """
         for nm in messages[0].split():
-            dummy, data = self.mail.fetch(nm, '(RFC822)')
+            dummy, data = self.mail.fetch(nm, "(RFC822)")
             for each_response in data:
                 if isinstance(each_response, tuple):
-                    yield self.get_info(response_part=each_response, dt_flag=humanize_datetime)
+                    yield self.get_info(
+                        response_part=each_response, dt_flag=humanize_datetime
+                    )
         else:
             if self.mail:
                 self.mail.close()

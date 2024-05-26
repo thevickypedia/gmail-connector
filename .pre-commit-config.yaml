@@ -1,42 +1,56 @@
+---
 fail_fast: true
-exclude: ^docs/
+exclude: ^(notebooks/|scripts/|.github/|docs/)
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
-    hooks:
-      - id: check-added-large-files
-      - id: check-ast
-      - id: check-byte-order-marker
-      - id: check-builtin-literals
-      - id: check-case-conflict
-      - id: check-docstring-first
-      - id: check-executables-have-shebangs
-      - id: check-shebang-scripts-are-executable
-      - id: check-merge-conflict
-      - id: check-toml
-      - id: check-vcs-permalinks
-      - id: check-xml
-      - id: debug-statements
-      - id: destroyed-symlinks
-      - id: detect-aws-credentials
-      - id: detect-private-key
-      - id: end-of-file-fixer
-      - id: fix-byte-order-marker
-      - id: mixed-line-ending
-      - id: name-tests-test
-      - id: requirements-txt-fixer
-      - id: trailing-whitespace
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.4.0
+      hooks:
+          - id: check-yaml
+          - id: check-json
+          - id: check-added-large-files
+          - id: check-ast
+          - id: check-byte-order-marker
+          - id: check-builtin-literals
+          - id: check-case-conflict
+          - id: check-docstring-first
+          - id: check-executables-have-shebangs
+          - id: check-shebang-scripts-are-executable
+          - id: check-merge-conflict
+          - id: check-toml
+          - id: check-vcs-permalinks
+          - id: check-xml
+          - id: debug-statements
+          - id: destroyed-symlinks
+          - id: detect-aws-credentials
+          - id: detect-private-key
+          - id: end-of-file-fixer
+          - id: fix-byte-order-marker
+          - id: mixed-line-ending
+          - id: name-tests-test
+          - id: requirements-txt-fixer
+          - id: trailing-whitespace
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
+    - repo: https://github.com/PyCQA/isort
+      rev: 5.12.0
+      hooks:
+          - id: isort
 
-  - repo: local
-    hooks:
-      - id: runbook
-        name: runbook
-        entry: /bin/bash gen_docs.sh
-        language: system
-        pass_filenames: false
-        always_run: true
+    - repo: https://github.com/PyCQA/flake8
+      rev: 7.0.0
+      hooks:
+          - id: flake8
+            args: [-j8, '--ignore=F401,W503,E203,E501,F821,E306,E722,N812']
+
+    - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+      rev: 0.2.3
+      hooks:
+          - id: yamlfmt
+
+    - repo: local
+      hooks:
+          - id: runbook
+            name: runbook
+            entry: /bin/bash gen_docs.sh
+            language: system
+            pass_filenames: false
+            always_run: true

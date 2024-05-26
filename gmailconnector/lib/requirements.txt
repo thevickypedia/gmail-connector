@@ -2,4 +2,4 @@ dnspython==2.6.1
 idna==3.*
 pydantic[email]==2.4.*
 pydantic_settings==2.0.*
-pytz==2023.*
+pytz
