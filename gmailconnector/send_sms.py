@@ -123,19 +123,14 @@ class SendSMS:
             Response:
             A custom response object with properties: ok, status and body to the user.
         """
-        if phone:
-            self.env.phone = phone
-            self.env = EgressConfig(**self.env.__dict__)
-        elif not self.env.phone:
-            raise ValueError(
-                '\n\tcannot proceed without phone number'
-            )
+        if not all((phone, len(phone) == 10)):
+            raise ValueError("\n\tcannot proceed without a valid phone number")
         if not sms_gateway:
             sms_gateway = SMSGateway.tmobile
         if not country_code:
             country_code = "+1"
         if COUNTRY_CODE.match(country_code):
-            to = country_code + self.env.phone + "@" + sms_gateway
+            to = country_code + phone + "@" + sms_gateway
         else:
             raise ValueError(
                 f"\n\tcountry code should match the pattern {COUNTRY_CODE.pattern}"

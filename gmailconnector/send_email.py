@@ -234,12 +234,16 @@ class SendEmail:
             attachments = (
                 [attachment]
                 if isinstance(attachment, str)
-                else attachment if attachment else []
+                else attachment
+                if attachment
+                else []
             )
             filenames = (
                 [filename]
                 if isinstance(filename, str)
-                else filename if filename else []
+                else filename
+                if filename
+                else []
             )
 
         msg = self.multipart_message(

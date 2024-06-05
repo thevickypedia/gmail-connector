@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+v1.0.2 (06/05/2024)
+-------------------
+- Removes complexity with phone number validation
+- Improved code readability
+
 v1.0.1 (05/26/2024)
 -------------------
 - Includes a retry logic for occasional errors while sending emails

@@ -11,4 +11,4 @@ from .sms_deleter import DeleteSent  # noqa: F401
 from .validator.address import EmailAddress  # noqa: F401
 from .validator.validate_email import validate_email  # noqa: F401
 
-version = "1.0.1"
+version = "1.0.2"

@@ -7,8 +7,12 @@ from typing import Union
 from ..models.responder import Response
 from .address import EmailAddress
 from .domain import get_mx_records
-from .exceptions import (AddressFormatError, InvalidDomain, NotMailServer,
-                         UnresponsiveMailServer)
+from .exceptions import (
+    AddressFormatError,
+    InvalidDomain,
+    NotMailServer,
+    UnresponsiveMailServer,
+)
 
 formatter = logging.Formatter(fmt="%(levelname)s\t %(message)s")
 

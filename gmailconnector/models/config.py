@@ -46,8 +46,6 @@ class EgressConfig(BaseSettings):
 
     gmail_user: EmailStr
     gmail_pass: str
-    recipient: Union[EmailStr, None] = None
-    phone: Union[str, None] = Field(None, pattern="\\d{10}$")
     gmail_host: str = "smtp.gmail.com"
     encryption: Encryption = Encryption.TLS
     timeout: int = 10

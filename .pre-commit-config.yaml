@@ -30,16 +30,23 @@ repos:
           - id: requirements-txt-fixer
           - id: trailing-whitespace
 
-    - repo: https://github.com/PyCQA/isort
-      rev: 5.12.0
+    - repo: https://github.com/psf/black
+      rev: 22.3.0
       hooks:
-          - id: isort
+          - id: black
+            exclude: doc_generator/
 
     - repo: https://github.com/PyCQA/flake8
       rev: 7.0.0
       hooks:
           - id: flake8
             args: [-j8, '--ignore=F401,W503,E203,E501,F821,E306,E722,N812']
+
+    - repo: https://github.com/PyCQA/isort
+      rev: 5.12.0
+      hooks:
+          - id: isort
+            args: [--profile, black]
 
     - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
       rev: 0.2.3
