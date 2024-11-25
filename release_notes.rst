@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+v1.0.3 (11/24/2024)
+-------------------
+- Loosen `pydantic` version
+
 v1.0.2 (06/05/2024)
 -------------------
 - Removes complexity with phone number validation
@@ -58,7 +62,7 @@ v1.0a (10/26/2023)
 - Remove unused namespace package
 - Reformat imports and update README.md
 
-0.6.9 (03/16/2023)
+0.6.9 (03/17/2023)
 ------------------
 - Simplify samples in README.md and update responses
 - Update pypi classifiers
@@ -235,14 +239,14 @@ v1.0a (10/26/2023)
 ------------------
 - run on release
 
-0.0.15 (07/18/2021)
+0.0.15 (07/19/2021)
 -------------------
 - 1. Onboard `pypi` module
 - 2. Add `setup.py`, `setup.cfg`, `__init__.py`, `CHANGELOG`
 - 3. Update README.md and docs
 - 4. Move files to `gmailconnector` support package
 
-0.0.16 (07/18/2021)
+0.0.16 (07/19/2021)
 -------------------
 - 1. Onboard `pypi` module
 - 2. Add `setup.py`, `setup.cfg`, `__init__.py`, `CHANGELOG`

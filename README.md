@@ -3,7 +3,7 @@
 
 [![](https://github.com/thevickypedia/gmail-connector/actions/workflows/pages/pages-build-deployment/badge.svg)][gha-pg]
 [![pypi](https://github.com/thevickypedia/gmail-connector/actions/workflows/python-publish.yml/badge.svg)][gha-pypi]
-[![none](https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown-validation.yml/badge.svg)][gha-md]
+[![none](https://github.com/thevickypedia/gmail-connector/actions/workflows/markdown.yml/badge.svg)][gha-md]
 
 [![Pypi-format](https://img.shields.io/pypi/format/gmail-connector)][pypi-files]
 [![Pypi-status](https://img.shields.io/pypi/status/gmail-connector)][pypi]

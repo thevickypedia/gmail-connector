@@ -33,7 +33,7 @@ requires      = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project.optional-dependencies]
-dev = ["pre-commit"]
+dev = ["sphinx==5.1.1", "pre-commit", "recommonmark", "gitverse"]
 
 [project.urls]
 Homepage = "https://github.com/thevickypedia/gmail-connector"
