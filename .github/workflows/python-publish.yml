@@ -7,7 +7,7 @@ on:
 
 jobs:
   pypi-publisher:
-    runs-on: thevickypedia-lite
+    runs-on: thevickypedia-default
     steps:
       - uses: thevickypedia/pypi-publisher@v3
         env:
