@@ -1,4 +1,4 @@
-dnspython==2.6.1
+dnspython==2.9.0
 idna==3.*
 pydantic[email]==2.*
 pydantic_settings==2.*
